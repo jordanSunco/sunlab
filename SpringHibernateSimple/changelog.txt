@@ -1,0 +1,3 @@
+SPRING & Hibernate SIMPLE Template Project CHANGELOG
+
+version 1.0 (2010-03-12)
