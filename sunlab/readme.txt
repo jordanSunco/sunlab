@@ -1,1 +1,0 @@
-﻿Sun's Lab Welcome!
