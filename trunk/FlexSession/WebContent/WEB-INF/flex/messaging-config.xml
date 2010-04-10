@@ -10,5 +10,6 @@
     <default-channels>
         <channel ref="my-polling-amf"/>
     </default-channels>
-
+    
+    <destination id="tutorial-chat"/>
 </service>

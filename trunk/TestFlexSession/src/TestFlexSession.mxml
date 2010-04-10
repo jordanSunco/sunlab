@@ -4,6 +4,7 @@
     <mx:Script>
         <![CDATA[
             import mx.rpc.events.ResultEvent;
+            
             private function showResult(event:ResultEvent):void {
                 ta.text += event.result.toString() + "\n";
             }
@@ -19,6 +20,4 @@
     
     <mx:TextInput id="text" width="300" />
     <mx:Button label="set" click="test.setS(text.text);test.getS();" />
-    
-    
 </mx:Application>
