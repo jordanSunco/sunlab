@@ -12,6 +12,7 @@
 <application path="TestFlexSession.mxml"/>
 <application path="TestMessagingPolling.mxml"/>
 <application path="TestListObject.mxml"/>
+<application path="RemoteJpgUpload.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>

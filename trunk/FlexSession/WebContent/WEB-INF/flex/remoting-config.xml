@@ -21,4 +21,10 @@
             <source>test.TestListObject</source>
         </properties>
     </destination>
+    
+    <destination id="bitmapProcessor">
+        <properties>
+            <source>test.BitmapProcessor</source>
+        </properties>
+    </destination>
 </service>
