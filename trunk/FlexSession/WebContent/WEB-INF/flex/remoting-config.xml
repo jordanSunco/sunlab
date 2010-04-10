@@ -15,4 +15,10 @@
             <source>test.Test</source>
         </properties>
     </destination>
+    
+    <destination id="testListObject">
+        <properties>
+            <source>test.TestListObject</source>
+        </properties>
+    </destination>
 </service>
