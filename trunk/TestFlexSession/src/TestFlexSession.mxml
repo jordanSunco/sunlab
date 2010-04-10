@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical">
+    
+    <mx:Script>
+        <![CDATA[
+            import mx.rpc.events.ResultEvent;
+            private function showResult(event:ResultEvent):void {
+                ta.text += event.result.toString() + "\n";
+            }
+        ]]>
+    </mx:Script>
+    
+    <mx:RemoteObject id="test" destination="test">
+        <mx:method name="getS" result="showResult(event)" />
+    </mx:RemoteObject>
+    
+    <mx:Button label="get" click="test.getS()" />
+    <mx:TextArea id="ta" width="300" height="200"/>
+    
+    <mx:TextInput id="text" width="300" />
+    <mx:Button label="set" click="test.setS(text.text);test.getS();" />
+    
+    
+</mx:Application>
