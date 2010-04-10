@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actionScriptProperties mainApplicationPath="TestFlexSession.mxml" version="3">
-<compiler additionalCompilerArguments="-services &quot;D:\talkweb\workspace\FlexSession\WebContent\WEB-INF\flex\services-config.xml&quot; -locale en_US" copyDependentFiles="true" enableModuleDebug="true" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersion="9.0.124" htmlPlayerVersionCheck="true" outputFolderLocation="D:/talkweb/workspace/FlexSession/WebContent/TestFlexSession" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" useApolloConfig="false" verifyDigests="true" warn="true">
+<compiler additionalCompilerArguments="-services &quot;E:\Wealth\Program\sunlab_googlecode\trunk\FlexSession\WebContent\WEB-INF\flex\services-config.xml&quot; -locale en_US" copyDependentFiles="true" enableModuleDebug="true" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersion="9.0.124" htmlPlayerVersionCheck="true" outputFolderLocation="E:/Wealth/Program/sunlab_googlecode/trunk/FlexSession/WebContent/TestFlexSession" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" useApolloConfig="false" verifyDigests="true" warn="true">
 <compilerSourcePath/>
 <libraryPath defaultLinkType="1">
 <libraryPathEntry kind="4" path=""/>
@@ -11,6 +11,7 @@
 <applications>
 <application path="TestFlexSession.mxml"/>
 <application path="TestMessagingPolling.mxml"/>
+<application path="TestListObject.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>
