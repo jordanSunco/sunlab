@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="compressjs" default="compress" basedir=".">
+    <description>优化js文件</description>
+
+    <property name="js.files.location" value="js" />
+    <property name="yui.compressor.location" value="yuiCompressor/yuicompressor-2.4.2.jar" />
+    <property name="target" value="target" />
+
+    <property name="concat.fileName" value="${target}/js.concat.js" />
+    <property name="compress.fileName" value="${target}/js.compress.js" />
+
+    <target name="clean">
+        <delete file="${concat.fileName}" />
+        <delete file="${compress.fileName}" />
+    </target>
+
+    <!-- 合并js文件 -->
+    <target name="concat" depends="clean">
+        <concat destfile="${concat.fileName}">
+            <fileset dir="${js.files.location}" includes="*.js" />
+        </concat>
+    </target>
+
+    <!-- 压缩js文件 -->
+    <target name="compress" depends="concat">
+        <java jar="${yui.compressor.location}" fork="true">
+            <arg line="-o ${compress.fileName}" />
+            <arg line="${concat.fileName}" />
+        </java>
+    </target>
+</project>
