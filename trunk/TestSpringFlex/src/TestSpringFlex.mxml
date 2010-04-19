@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import mx.rpc.events.ResultEvent;           
+            private function resultHandler(event:ResultEvent):void {
+                trace(event.result);
+            }
+        ]]>
+    </mx:Script>
+
+    <mx:RemoteObject id="test" destination="test" channelSet="{channelSet}"
+        result="resultHandler(event)" />
+    <mx:ChannelSet id="channelSet">
+        <mx:AMFChannel url="/Spring-Flex/messagebroker/amf"/>
+    </mx:ChannelSet>
+    <mx:RemoteObject id="test1" destination="test1" 
+        result="resultHandler(event)" />
+    <mx:RemoteObject id="testt" destination="test" 
+        result="resultHandler(event)" />
+
+    <mx:Button label="直接使用 BlazeDS 指定的 destination" click="test1.getS()"/>
+    <mx:Button label="使用 Spring-Flex 指定的 destination" click="testt.getS()"/>
+    <mx:Button label="报错? 指定通信渠道后" click="test.getS()"/>
+</mx:Application>
