@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+    xmlns:flex="http://www.springframework.org/schema/flex"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/flex
+        http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+
+    <flex:remoting-destination ref="test" />
+
+    <!--
+        Expose the productService bean for BlazeDS remoting
+        
+        <bean id="productService" class="flex.samples.product.ProductServiceImpl" >
+        <flex:remoting-destination />
+        </bean>
+        
+        <flex:remoting-destination ref="productService" 
+        include-methods="read, update" 
+        exclude-methods="create, delete" 
+        channels="my-amf, my-secure-amf" />
+        
+        <bean id="product" class="org.springframework.flex.remoting.RemotingDestinationExporter">
+        <property name="messageBroker" ref="_messageBroker"/>
+        <property name="service" ref="productService"/>
+        <property name="destinationId" value="productService"/>
+        <property name="includeMethods" value="read, update"/>
+        <property name="excludeMethods" value="create, delete"/>
+        <property name="channels" value="my-amf, my-secure-amf"/>
+        </bean>
+    -->
+</beans>
