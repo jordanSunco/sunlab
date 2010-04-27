@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="One key deploy">
+<project name="One key deploy" default="reload">
     <property file="${basedir}/build.properties" />
     
     <echo message="${url}" />
@@ -17,7 +17,13 @@
             update="true" path="/${webapp.name}"
             war="${basedir}/target/${webapp.name}.war" />
     </target>
-
+    
+    <target name="reload" description="Reload application" depends="deploy">
+        <reload url="${url}" username="${username}" password="${password}"
+            path="/${webapp.name}" />
+    </target>
+    
+<!--
     <target name="stop" description="Stop application">
         <stop url="${url}" username="${username}" password="${password}"
             path="/${webapp.name}" />
@@ -42,4 +48,5 @@
         
         <fail if="!${is.app.running}">fail</fail>
     </target>
+-->
 </project>
