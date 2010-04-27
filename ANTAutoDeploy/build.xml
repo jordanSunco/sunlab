@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="One key deploy">
+    <property file="${basedir}/build.properties" />
+    
+    <echo message="${url}" />
+    <echo message="${username}" />
+    <echo message="${password}" />
+    
+    <taskdef file="${basedir}/tomcatTasks.properties">
+        <classpath>
+            <pathelement path="${basedir}/lib/catalina-ant.jar" />
+        </classpath>
+    </taskdef>
+
+    <target name="deploy" description="Install application">
+        <deploy url="${url}" username="${username}" password="${password}"
+            update="true" path="/${webapp.name}"
+            war="${basedir}/target/${webapp.name}.war" />
+    </target>
+
+    <target name="stop" description="Stop application">
+        <stop url="${url}" username="${username}" password="${password}"
+            path="/${webapp.name}" />
+    </target>
+
+    <target name="start" description="Start application">
+        <start url="${url}" username="${username}" password="${password}"
+            path="/${webapp.name}" />
+    </target>
+
+    <target name="list" description="List applications">
+        <property name="app.running" value="/${webapp.name}:running" />
+
+        <list url="${url}" username="${username}" password="${password}"
+            outputproperty="context.status" />
+
+        <echo message="${context.status}" />
+
+        <condition property="is.app.running">
+            <contains string="${context.status}" substring="${app.running}" />
+        </condition>
+        
+        <fail if="!${is.app.running}">fail</fail>
+    </target>
+</project>
