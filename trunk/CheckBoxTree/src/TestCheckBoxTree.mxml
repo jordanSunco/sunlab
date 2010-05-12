@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"  
+        fontSize="12" xmlns:flexx="flexx.*" layout="horizontal"
+        creationComplete="initApp()">
+    <mx:Script>
+        <![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.collections.XMLListCollection;
+            
+            [Bindable]  
+            public var arrarc:ArrayCollection = new ArrayCollection([  
+                {state: 0, label: "有效值"},
+                {state: 0, label: "平均值"},
+                {state: 0, label: "峰值"},
+                {state: 0, label: "峰峰值"},
+                {state: 0, label: "X1"},
+                {state: 2, label: "频带",
+                    children:[
+                        {state: 0, label: "频带1"},
+                        {state: 1, label: "频带2"},
+                        {state: 0, label: "频带3"},
+                        {state: 0, label: "频带4"},
+                        {state: 0, label: "频带5"},
+                    ]
+                }
+            ]);
+  
+            [Bindable]  
+            public var folderList:XMLList = 
+                <>
+                    <folder state="0" label="Marketing Collateral">
+                        <folder state="0" label="Media,PR,and Communications" >
+                            <folder state="0" label="Article Reprint Disclaimers" />
+                            <folder state="0" label="Articles Reprints" />
+                            <folder state="0" label="Interviews and Transcripts" />
+                            <folder state="0" label="Press Kits" />
+                            <folder state="0" label="Press Releases" />
+                            <folder state="0" label="Quick Hits" />
+                            <folder state="0" label="Rep Talking Points" />
+                            <folder state="0" label="Special Updates" />
+                            <folder state="0" label="White Papers" />
+                        </folder>
+                        <folder state="0" label="Forms and Applications" >
+                            <folder state="0" label="Applications" />
+                            <folder state="0" label="Forms" />
+                        </folder>
+                    </folder>
+                </>
+            ;
+            [Bindable]  
+            public var folderCollection:XMLListCollection;  
+            
+            protected function initApp():void {
+                folderCollection = new XMLListCollection(folderList);
+                this.callLater(test);
+            }
+            protected function test():void {
+                tree3.checkBoxOpenItemsOnCheck=true;  
+                tree3.checkBoxCascadeOnCheck=true;  
+                tree3.checkBoxEnableState=false;  
+                tree3.itemDClickSelect=true;  
+                          
+                tree2.checkBoxOpenItemsOnCheck=true;  
+                tree2.checkBoxCascadeOnCheck=true;  
+                tree2.checkBoxEnableState=true;  
+                tree2.checkBoxBgColor=0x000000;  
+            }
+        ]]>
+    </mx:Script>
+    <mx:Panel width="30%" height="100%">
+        <mx:Form width="100%" height="100%">
+            <mx:CheckBox label="取消收回子项" id="checkBoxCloseItemsOnUnCheck" 
+                selected="true"/>
+            <mx:CheckBox label="选中展开子项" id="checkBoxOpenItemsOnCheck"/>
+            <mx:CheckBox label="是否三状态" id="checkBoxEnableState" 
+                selected="true"/>
+            <mx:CheckBox label="是否关联父子" id="checkBoxCascadeOnCheck" 
+                selected="true"/>
+            <mx:FormItem label="样式" direction="vertical">
+                <mx:ColorPicker id="checkBoxBgColor" selectedColor="#009900"/>
+                <mx:HSlider toolTip="透明度" width="61" id="checkBoxBgAlpha" 
+                    allowTrackClick="true" minimum="0" maximum="1" 
+                    snapInterval="0.1" value="1"/>
+            </mx:FormItem>
+            <mx:FormItem label="填充边距">
+                <mx:NumericStepper id="checkBoxBgPadding" value="3" minimum="0" 
+                    maximum="6" />
+            </mx:FormItem>
+            <mx:FormItem label="填充弧度">
+                <mx:NumericStepper id="checkBoxBgElips" value="2" minimum="0" 
+                    maximum="6" />
+            </mx:FormItem>
+            <mx:FormItem label="左边距">
+                <mx:NumericStepper id="checkBoxLeftGap" value="8" minimum="0" 
+                    maximum="20" />
+            </mx:FormItem>
+            <mx:FormItem label="右边距">
+                <mx:NumericStepper id="checkBoxRightGap" value="20" minimum="0" 
+                    maximum="40" />
+            </mx:FormItem>
+            <mx:CheckBox label="双击是否展开项" id="itemDClickSelect" 
+                selected="true"/>
+        </mx:Form>
+    </mx:Panel>
+    
+    <flexx:CheckTree id="tree1" width="100%" height="100%"
+        checkBoxStateField="@state" labelField="@label"
+        dataProvider="{folderCollection}"
+        checkBoxCloseItemsOnUnCheck="{checkBoxCloseItemsOnUnCheck.selected}"
+        checkBoxOpenItemsOnCheck="{checkBoxOpenItemsOnCheck.selected}"
+        checkBoxEnableState="{checkBoxEnableState.selected}"
+        checkBoxCascadeOnCheck="{checkBoxCascadeOnCheck.selected}"
+        checkBoxBgColor="{checkBoxBgColor.selectedColor}"
+        checkBoxBgAlpha="{checkBoxBgAlpha.value}"
+        checkBoxBgPadding="{checkBoxBgPadding.value}"
+        checkBoxBgElips="{checkBoxBgElips.value}"
+        checkBoxLeftGap="{checkBoxLeftGap.value}"
+        checkBoxRightGap="{checkBoxRightGap.value}"
+        itemDClickSelect="{itemDClickSelect.selected}" />
+    <flexx:CheckTree id="tree2" width="100%" height="100%" labelField="label"
+        checkBoxStateField="state" dataProvider="{arrarc}" />
+    <flexx:CheckTree id="tree3" width="100%"  height="100%" labelField="label"
+        checkBoxStateField="state" dataProvider="{arrarc}" />
+</mx:Application>
