@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" creationComplete="initComponent()" backgroundAlpha="0" borderStyle="none">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.DateChooserEvent;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.controls.CalendarLayout;
+			
+			use namespace mx_internal;
+			
+			[Embed(source="assets/VerticalCalendar.png", scaleGridTop="66", scaleGridBottom="170", scaleGridLeft="5", scaleGridRight="111" )]
+            [Bindable]
+            public var calendarBackground:Class;
+			
+			public var dateGrid:CalendarLayout=new CalendarLayout();
+			private var monthArray:Array=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep", "Oct", "Nov", "Dec" ];
+			
+			private function initComponent():void
+			{
+				// Add dates to canvas 
+				dateGrid.x=30;
+				dateGrid.y=55;
+				addChild(dateGrid);
+				
+				// Set required properties
+				dateGrid.allowMultipleSelection=true;
+				dateGrid.allowDisjointSelection=true;
+				dateGrid.showToday=true;
+				dateGrid.setStyle("color","black");
+				dateGrid.setStyle("fontSize",12);
+				dateGrid.setStyle("fontWeight","bold");
+				dateGrid.setStyle("verticalGap",6);
+				dateGrid.setStyle("horizontalGap",6);
+
+				dateGrid.setStyle("rollOverColor","#57DCFD");
+				dateGrid.setStyle("selectionColor","#57DCFD");
+				
+				// Add required event listeners 
+				dateGrid.addEventListener(CalendarLayoutChangeEvent.CHANGE,dateChange);
+				dateGrid.addEventListener(DateChooserEvent.SCROLL,dateChange);
+			}
+			
+			private function dateChange(evt:Event):void
+			{
+				dispatchEvent(evt);
+				lblMonth.text=new String(monthArray[dateGrid.displayedMonth]);
+				lblYear.text=new String(dateGrid.displayedYear);
+				
+				if(dateGrid.selectedDate)
+					lblDate.text=new String(dateGrid.selectedDate.date);
+				else
+					lblDate.text="";
+					
+				if(evt && evt.type==DateChooserEvent.SCROLL)
+				{
+					lblDate.text="";
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Image source="{calendarBackground}" scaleContent="true" maintainAspectRatio="false" width="200" height="220"/>
+	<mx:Label id="lblMonth" fontSize="12" x="45" y="6" fontWeight="bold" color="#FFFFFF"/>
+	<mx:Label id="lblYear" fontSize="12" y="36" textAlign="right" fontWeight="bold" color="#FFFFFF" x="120"/>
+	<mx:Label id="lblDate" fontSize="34" fontWeight="bold" textAlign="center" color="#FFFFFF" textDecoration="normal" x="72" y="12"/>
+	<mx:Image source="assets/BlueArrowLeft.png" buttonMode="true" y="12" x="10" toolTip="Previous Month" click="dateGrid.stepDate(0, -1, event)"/>
+	<mx:Image source="assets/BlueArrowRight.png" buttonMode="true" y="12" x="156" toolTip="Next Month" click="dateGrid.stepDate(0, 1, event)" height="41"/>
+</mx:Canvas>
