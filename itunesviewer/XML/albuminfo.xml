@@ -1,0 +1,212 @@
+﻿<artworkinfo>
+	<albuminfo>
+		<artLocation>image1.jpg</artLocation>
+		<trackName>Hot Diggity Dog</trackName>
+		<artist>Kirupa Chinnathambi</artist>
+		<albumName>Time For Lunch</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://testfor.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image2.jpg</artLocation>
+		<trackName>Yo Yo Yo</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image3.jpg</artLocation>
+		<trackName>Me And My Homedogs</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+	
+	<albuminfo>
+		<artLocation>image4.jpg</artLocation>
+		<trackName>Life As A Gangsta</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image5.jpg</artLocation>
+		<trackName>I%27m Tough With A Gun</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image6.jpg</artLocation>
+		<trackName>Bare Knuckle%27s Not For Me</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image25.jpg</artLocation>
+		<trackName>Some random track name</trackName>
+		<artist>As you can see, you can put whatever you like here</artist>
+		<albumName></albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+
+	<albuminfo>
+		<artLocation>image7.jpg</artLocation>
+		<trackName>I Cut Myself When I%27m Bored</trackName>
+		<artist>Some Emo Band</artist>
+		<albumName>Life Sucks.</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image8.jpg</artLocation>
+		<trackName>Razors For Breakfast</trackName>
+		<artist>Some Emo Band</artist>
+		<albumName>Life Sucks.</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image8.jpg</artLocation>
+		<trackName>Life Hates Me, So I hate Life</trackName>
+		<artist>Some Emo Band</artist>
+		<albumName>Life Sucks.</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image9.jpg</artLocation>
+		<trackName>I Wish I Was Dead</trackName>
+		<artist>Some Emo Band</artist>
+		<albumName>Life Sucks.</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+	
+	<albuminfo>
+		<artLocation>image10.jpg</artLocation>
+		<trackName>Hot Diggity Dog</trackName>
+		<artist>Kirupa Chinnathambi</artist>
+		<albumName>Time For Lunch</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image11.jpg</artLocation>
+		<trackName>Hot Diggity Dog</trackName>
+		<artist>Kirupa Chinnathambi</artist>
+		<albumName>Time For Lunch</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image12.jpg</artLocation>
+		<trackName>Yo Yo Yo</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image13.jpg</artLocation>
+		<trackName>Me And My Homedogs</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+	
+	<albuminfo>
+		<artLocation>image14.jpg</artLocation>
+		<trackName>Life As A Gangsta</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image15.jpg</artLocation>
+		<trackName>I%27m Tough With A Gun</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image16.jpg</artLocation>
+		<trackName>Bare Knuckle%27s Not For Me</trackName>
+		<artist>Some Black Rapper</artist>
+		<albumName>Tha Album</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation></artLocation>
+		<trackName></trackName>
+		<artist></artist>
+		<albumName></albumName>
+		<httptype></httptype>
+		<url></url>
+	</albuminfo>
+
+
+	<albuminfo>
+		<artLocation>image17.jpg</artLocation>
+		<trackName>I Cut Myself When I%27m Bored</trackName>
+		<artist>Some Emo Band</artist>
+		<albumName>Life Sucks.</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image18.jpg</artLocation>
+		<trackName>Razors For Breakfast</trackName>
+		<artist>Some Emo Band</artist>
+		<albumName>Life Sucks.</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image18.jpg</artLocation>
+		<trackName>Life Hates Me, So I hate Life</trackName>
+		<artist>Some Emo Band</artist>
+		<albumName>Life Sucks.</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+	<albuminfo>
+		<artLocation>image19.jpg</artLocation>
+		<trackName>I Wish I Was Dead</trackName>
+		<artist>Some Emo Band</artist>
+		<albumName>Life Sucks.</albumName>
+		<httptype>artwork/</httptype>
+		<url>http://test.com</url>
+	</albuminfo>
+
+
+</artworkinfo>

@@ -1,0 +1,17 @@
+You downloaded this from RMTEMPLATES.COM
+Please visit email copyright@rmtemplates.com if you didnt
+
+-----------------------------
+
+
+
+images.xml - where all the images should be linked using the following:
+
+    <pic>
+        <image>Picture_name.jpg</image>
+        <caption>Comments about the pictures</caption>
+    </pic>
+
+
+
+Image size: 600X420
