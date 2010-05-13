@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:esri="http://www.esri.com/2008/ags" 
+    xmlns:service="com.talkweb.maps.service.*"
+    layout="vertical" creationComplete="init()" xmlns:graphic="com.talkweb.maps.graphic.*" xmlns:zoom="com.talkweb.maps.zoom.*">
+    
+    <mx:Script>
+        <![CDATA[
+            import com.esri.ags.tasks.ExecuteResult;
+            import com.esri.ags.tasks.RouteSolveResult;
+            import com.esri.ags.events.MapMouseEvent;
+            import com.esri.ags.tasks.IdentifyResult;
+            import com.esri.ags.geometry.Geometry;
+            import com.esri.ags.tasks.FeatureSet;
+            import com.esri.ags.events.DrawEvent;
+            import com.esri.ags.toolbars.Draw;
+            import com.esri.ags.geometry.Multipoint;
+            import com.esri.ags.SpatialReference;
+            import com.esri.ags.Graphic;
+            import com.esri.ags.geometry.Polyline;
+            import com.esri.ags.tasks.IdentifyParameters;
+            import com.esri.ags.geometry.MapPoint;
+            import com.talkweb.maps.config.MapConfig;
+            import com.talkweb.maps.graphic.symbol.SymbolUtil;
+            import com.talkweb.maps.info.window.renderer.InfoWindowRenderer;
+            
+            private function init():void {
+                testMapServiceQuery();
+//                testMapServiceIdentify();
+//                testMapServiceMeasureDistance();
+//                testMapServiceMeasureArea();
+//                testMapServiceRoute();
+//                testMapServiceGeoprocess();
+//                testMarkUtilMeasureDistanceByDraw();
+//                testMarkUtilMeasureAreaByDraw();
+//                testMarkUtilClearGraphicsLayer();
+            }
+            
+            public function testMapServiceQuery():void {
+//                mapService.queryByLike(MapConfig.BASE_MAP_SERVICE_URL,
+//                    MapConfig.CITY_REGION_LAYER_INDEX, "市", queryCallback,
+//                    {a: 1, b: 2}
+//                );
+                mapService.queryByWhereClause(MapConfig.BASE_MAP_SERVICE_URL,
+                    MapConfig.CITY_REGION_LAYER_INDEX, "A_BOU_ID = 1", 
+                    queryCallback
+                );
+//                mapService.queryByGeometry(MapConfig.BASE_MAP_SERVICE_URL,
+//                    MapConfig.CITY_REGION_LAYER_INDEX,
+//                    new MapPoint(103.499522, 40.176474), queryCallback
+//                );
+            }
+            
+            private function queryCallback(fs:FeatureSet, t:Object):void {
+                var gg:Graphic = fs.features[0] as Graphic;
+                // 防止在graphic上做了点击事件后, 按在graphic上无法做漫游操作
+                // http://resources.esri.com/help/9.3/arcgisserver/apis/flex/apiref/com/esri/ags/Graphic.html#checkForMouseListeners
+                // Prevents the map from zooming and panning when the mouse is 
+                // over the graphic and the graphic has registered mouse listeners.
+                // The map mouse handler checks for MOUSE_DOWN, MOUSE_MOVE, 
+                // MOUSE_UP, MOUSE_CLICK, MOUSE_DOUBLECLICK event listeners. 
+                // This comes in handy when you have a large polygon on the map 
+                // and that polygon has a mouse listener but you still want to 
+                // pan the map while holding down the mouse over the polygon.
+                // The default value is true.
+                gg.checkForMouseListeners = false;
+                gg.attributes.a = 1;
+                gg.attributes.b = 2;
+                gg.infoWindowRenderer = new ClassFactory(InfoWindowRenderer);
+                
+                markUtil.addGraphics(fs.features);
+                zoomUtil.zoom([fs.features[0]]);
+                
+                markUtil.addInfo(gg);
+//                markUtil.addInfo(gg, InfoWindowRenderer, {a: 1, b: 2});
+            }
+            
+            public function testMapServiceIdentify():void {
+                mapService.identify(MapConfig.BASE_MAP_SERVICE_URL, 
+                    [MapConfig.CITY_REGION_LAYER_INDEX],
+                    new MapPoint(103.499522, 40.176474), function (a:Array, b:Object):void {
+                        var gs:Array = new Array();
+                        
+                        for each (var ir:IdentifyResult in a) {
+                            gs.push(ir.feature);
+                            
+                            ir.feature.infoWindowRenderer = new ClassFactory(InfoWindowRenderer);
+                        }
+                        
+                        zoomUtil.zoom(gs);
+                        markUtil.addGraphics(gs);
+                    }, {a: 1});
+            }
+            
+            public function testMapServiceMeasureDistance():void {
+                mapService.draw.activate(Draw.FREEHAND_POLYLINE);
+                mapService.draw.addEventListener(DrawEvent.DRAW_END, function (event:DrawEvent):void {
+                    mapService.draw.deactivate();
+                    
+                    mapService.measureDistance([event.graphic], 
+                        function (lengths:Array, token:Object):void {
+                            trace(lengths, token);
+                        }, {a:1, b:2}
+                    );
+                });
+            }
+            
+            public function testMapServiceMeasureArea():void {
+                mapService.draw.activate(Draw.POLYGON);
+                mapService.draw.addEventListener(DrawEvent.DRAW_END, function (event:DrawEvent):void {
+                    mapService.draw.deactivate();
+                    
+                    mapService.measureArea([event.graphic],
+                        function (areaLengths:Object, token:Object):void {
+                            trace(areaLengths.areas);
+                            trace(areaLengths.lengths);
+                            trace(token);
+                        }, {a: 1, b: 2}
+                    );
+                });
+            }
+            
+            public function testMapServiceRoute():void {
+                var g:Graphic = new Graphic(new MapPoint(113.47501119592914, 33.89341425411391));
+                var g1:Graphic = new Graphic(new MapPoint(113.474975985, 33.888230010000086));
+                var stops:FeatureSet = new FeatureSet([g, g1]);
+                
+                mapService.route(MapConfig.ROUTE_SERVICE_URL, stops, 
+                    function (routeSolveResult:RouteSolveResult, token:Object):void {
+                        var g:Graphic = routeSolveResult.routeResults[0].route as Graphic;
+                        trace(routeSolveResult, token);
+                    }, {a: 1, b: 2}
+                );
+            }
+            
+            public function testMapServiceGeoprocess():void {
+                var gpParams:Object = new Object();
+                
+                var mapPoint:Geometry = new MapPoint(-20, -10);
+                var featureSet:FeatureSet = new FeatureSet();
+                featureSet.features = [ { geometry: mapPoint } ];
+                
+                gpParams.Input_Point = featureSet;
+                gpParams.Days = 10;
+                
+                mapService.geoprocess(MapConfig.GP_SERVICE_URL, gpParams, 
+                    function (executeResult:ExecuteResult, token:Object):void {
+                        var g:Graphic = executeResult.parameterValues[0].value.features[0];
+                        trace(executeResult, token);
+                    }, {a: 1, b: 2}
+                );
+            }
+            
+            public function testMarkUtilMeasureDistanceByDraw():void {
+                markUtil.measureDistanceByDraw(function (lengths:Array, token:Object):void {
+                    trace(lengths);
+                });
+            }
+            
+            public function testMarkUtilMeasureAreaByDraw():void {
+                markUtil.measureAreaByDraw(function (areaLengths:Object, token:Object):void {
+                    trace(areaLengths);
+                });
+            }
+            
+            public function testMarkUtilClearGraphicsLayer():void {
+                markUtil.measureAreaByDraw(function (areaLengths:Object, token:Object):void {
+                    trace(areaLengths);
+                    setTimeout(function ():void {
+                        markUtil.clearGraphicsLayer();
+                    }, 2000);
+                });
+            }
+        ]]>
+    </mx:Script>
+    
+    <esri:Map id="map" logoVisible="false">
+        <esri:ArcGISTiledMapServiceLayer url="{MapConfig.BASE_MAP_SERVICE_URL}" />
+        <esri:ArcGISDynamicMapServiceLayer url="{MapConfig.BUSINESS_MAP_SERVICE_URL}" />
+        
+        <esri:GraphicsLayer id="graphicsLayer" />
+    </esri:Map>
+    
+    <esri:Draw id="draw" map="{map}" graphicsLayer="{graphicsLayer}" 
+        markerSymbol="{SymbolUtil.HIGH_LIGHT_MARKER_SYMBOL}"
+        lineSymbol="{SymbolUtil.HIGH_LIGHT_LINE_SYMBOL}"
+        fillSymbol="{SymbolUtil.HIGH_LIGHT_FILL_SYMBOL}"/>
+    
+    <service:MapService id="mapService" map="{map}" draw="{draw}" />
+    <graphic:MarkUtil id="markUtil" mapService="{mapService}" />
+    <zoom:ZoomUtil id="zoomUtil" map="{map}" />
+</mx:Application>
