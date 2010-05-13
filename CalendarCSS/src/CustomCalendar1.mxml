@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" creationComplete="initComponent()" backgroundAlpha="0" borderStyle="none">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.DateChooserEvent;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.controls.CalendarLayout;
+			
+			use namespace mx_internal;
+			
+			public var dateGrid:CalendarLayout=new CalendarLayout();
+			private var monthArray:Array=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep", "Oct", "Nov", "Dec" ];
+			
+			private function initComponent():void
+			{
+				// Add dates to canvas 
+				dateGrid.x=170;
+				dateGrid.y=16;
+				addChild(dateGrid);
+				
+				// Set required properties
+				dateGrid.allowMultipleSelection=true;
+				dateGrid.allowDisjointSelection=true;
+				dateGrid.showToday=true;
+				dateGrid.setStyle("color","white");
+				dateGrid.setStyle("fontSize",12);
+				dateGrid.setStyle("fontWeight","bold");
+				dateGrid.setStyle("verticalGap",4);
+				
+				// Add required event listeners 
+				dateGrid.addEventListener(CalendarLayoutChangeEvent.CHANGE,dateChange);
+				dateGrid.addEventListener(DateChooserEvent.SCROLL,dateChange);
+			}
+			
+			private function dateChange(evt:Event):void
+			{
+				dispatchEvent(evt);
+				lblMonth.text=new String(monthArray[dateGrid.displayedMonth]);
+				lblYear.text=new String(dateGrid.displayedYear);
+				
+				if(dateGrid.selectedDate)
+					lblDate.text=new String(dateGrid.selectedDate.date);
+				else
+					lblDate.text="";
+					
+				if(evt && evt.type==DateChooserEvent.SCROLL)
+				{
+					lblDate.text="";
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Image source="assets/CalendarBase.png" y="0"/>
+	<mx:Canvas x="42" y="58">
+		<mx:Image source="assets/CalendarDate.jpg"/>
+		<mx:Label id="lblMonth" x="4" y="2" color="white" fontSize="12" fontWeight="bold"/>
+		<mx:Label id="lblYear" y="2" textAlign="right"  fontSize="12" right="9" color="white" fontWeight="bold"/>
+		<mx:Label id="lblDate" horizontalCenter="0" verticalCenter="10" fontSize="70" fontWeight="bold" textAlign="center"/>
+	</mx:Canvas>
+	<mx:Image source="assets/Hidepod_Left.png" buttonMode="true" y="17" x="41" toolTip="Previous Month" click="dateGrid.stepDate(0, -1, event)"/>
+	<mx:Image source="assets/Hidepod_Right.png" buttonMode="true" y="17" x="120" toolTip="Next Month" click="dateGrid.stepDate(0, 1, event)" height="41"/>
+</mx:Canvas>

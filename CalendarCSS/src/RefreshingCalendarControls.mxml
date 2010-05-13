@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+        xmlns:local="*" layout="horizontal" fontFamily="Arial" 
+        backgroundGradientAlphas="[1,1]" 
+        backgroundGradientColors="[#000000, #747474]" 
+        creationComplete="addListeners()">
+	<mx:Script>
+		<![CDATA[
+            import mx.events.CalendarLayoutChangeEvent;
+			
+			private function addListeners():void {
+				myCalendarControl.addEventListener(CalendarLayoutChangeEvent.CHANGE,onDateSelectionChange);
+				myCalendarContro2.addEventListener(CalendarLayoutChangeEvent.CHANGE,onDateSelectionChange);
+				myCalendarContro3.addEventListener(CalendarLayoutChangeEvent.CHANGE,onDateSelectionChange);
+			}
+			
+			private function onDateSelectionChange(evt:Event):void {
+				trace(evt.currentTarget.id + " : " + evt.currentTarget.dateGrid.selectedDate);
+			}
+		]]>
+	</mx:Script>
+    <local:CustomCalendar1 id="myCalendarControl" />
+    <local:CustomCalendar2 id="myCalendarContro2" />
+    <local:CustomCalendar3 id="myCalendarContro3" />
+</mx:Application>

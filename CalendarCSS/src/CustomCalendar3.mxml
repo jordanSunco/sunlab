@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*" creationComplete="initComponent()" backgroundAlpha="0" borderStyle="none">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.DateChooserEvent;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.controls.CalendarLayout;
+			
+			use namespace mx_internal;
+			
+			public var dateGrid:CalendarLayout=new CalendarLayout();
+			private var monthArray:Array=["January","February","March","April","May","June","July","August","September", "October", "November", "December" ];
+			private var daysArray:Array=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+			
+			private function initComponent():void
+			{
+				// Add dates to canvas
+				dateGrid.x=170;
+				dateGrid.y=20;
+				addChild(dateGrid);
+				
+				// Set required properties
+				dateGrid.allowMultipleSelection=true;
+				dateGrid.allowDisjointSelection=true;
+				dateGrid.showToday=true;
+				dateGrid.setStyle("color","white");
+				dateGrid.setStyle("fontSize",12);
+				dateGrid.setStyle("fontWeight","bold");
+				dateGrid.setStyle("verticalGap",4);
+				dateGrid.setStyle("todayStyleName","mydateChooserTodayStyle");
+				
+				dateGrid.setStyle("rollOverColor","#57DCFD");
+				dateGrid.setStyle("selectionColor","#57DCFD");
+				
+				// Add required event listeners 
+				dateGrid.addEventListener(CalendarLayoutChangeEvent.CHANGE,dateChange);
+				dateGrid.addEventListener(DateChooserEvent.SCROLL,dateChange);
+				
+			}
+			
+			private function dateChange(evt:Event):void
+			{
+				dispatchEvent(evt);
+				lblMonth.text=monthArray[dateGrid.displayedMonth];
+				lblYear.text=new String(dateGrid.displayedYear);
+				lblDay.text = daysArray[dateGrid.selectedDate.day];
+				
+				if(dateGrid.selectedDate)
+					lblDate.text=new String(dateGrid.selectedDate.date);
+				else
+					lblDate.text="";
+					
+				if(evt && evt.type==DateChooserEvent.SCROLL)
+				{
+					lblDate.text="";
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Style>
+		.mydateChooserTodayStyle {
+            color: #BBEA00;
+		}
+	</mx:Style>
+	<mx:Image source="assets/MacCalendarBG.png" y="0" width="325" height="180"/>
+	<mx:Image source="assets/MACArrowL.png" buttonMode="true" y="10" x="162" toolTip="Previous Month" click="dateGrid.stepDate(0, -1, event)"/>
+	<mx:Image source="assets/MACArrowR.png" buttonMode="true" y="10" x="303" toolTip="Next Month" click="dateGrid.stepDate(0, 1, event)"/>
+	<mx:Label id="lblYear" y="7" textAlign="right"  fontSize="12" color="#BBEA00" fontWeight="bold" x="261"/>
+	<mx:Label id="lblMonth" x="178" y="7" color="#BBEA00" fontSize="12" fontWeight="bold"/>
+	<mx:Label id="lblDay" x="35" y="17" color="#BBEA00" fontSize="16" fontWeight="bold" textAlign="center" width="97"/>
+	<mx:Label id="lblDate" fontSize="100" fontWeight="bold" textAlign="center" x="5" y="45" color="#FFFFFF" width="155"/>
+	<mx:VRule x="195" y="28" strokeColor="#292929" height="140"/>
+	<mx:VRule x="215" y="28" strokeColor="#292929" height="140"/>
+	<mx:VRule x="235" y="28" strokeColor="#292929" height="140"/>
+	<mx:VRule x="255" y="28" strokeColor="#292929" height="140"/>
+	<mx:VRule x="275" y="28" strokeColor="#292929" height="140"/>
+	<mx:VRule x="295" y="28" strokeColor="#292929" height="140"/>
+</mx:Canvas>
