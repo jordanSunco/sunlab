@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:arc90="com.arc90.containers.*" 
+	viewSourceURL="srcview/index.html" layout="vertical">
+	
+	<!--<mx:Style source="styles/styles.css"/>-->
+	
+	<mx:Script>
+		<![CDATA[
+			private function clickHandler(event:MouseEvent):void
+			{
+				stack.setStyle("childPaddingBottomTop", bottomTop.text);
+				stack.setStyle("childPaddingLeftRight", leftRight.text);
+				stack.setStyle("moveDuration", duration.text);
+			}		
+		]]>
+	</mx:Script>
+	
+	<mx:Label text="ShuffleStack Example" fontWeight="bold" fontSize="18"/>
+	<mx:HBox width="100%" height="100%" horizontalAlign="center">
+		<mx:Panel title="Change Styles">
+			<mx:Form>
+				<mx:FormItem label="Padding Bottom/Top">
+					<mx:TextInput id="bottomTop" text="15" width="50"/>
+				</mx:FormItem>
+				<mx:FormItem label="Padding Left/Right">
+					<mx:TextInput id="leftRight" text="15" width="50"/>
+				</mx:FormItem>
+				<mx:FormItem label="Move Duration">
+					<mx:TextInput id="duration" text="400" width="50"/>
+				</mx:FormItem>
+			</mx:Form>
+			<mx:ControlBar width="100%" horizontalAlign="center">
+				<mx:Button id="styles" 
+					label="Update" click="clickHandler(event)"/>
+			</mx:ControlBar>	
+		</mx:Panel>
+	<arc90:ShuffleStack id="stack"
+		width="100%" height="100%" >
+		<mx:Canvas label="Canvas 1" backgroundColor="#ffff00" width="100%" height="100%"/>
+		<mx:Canvas label="Canvas 2" backgroundColor="#00ff00" width="100%" height="100%"/>
+		<mx:Canvas label="Canvas 3" backgroundColor="#0000ff" width="100%" height="100%"/>
+		<mx:Canvas label="Canvas 4" backgroundColor="#ffffff" width="100%" height="100%"/>
+		<mx:Canvas label="Canvas 5" backgroundColor="#000000" width="100%" height="100%"/>
+	</arc90:ShuffleStack>
+	</mx:HBox>
+	
+</mx:Application>
