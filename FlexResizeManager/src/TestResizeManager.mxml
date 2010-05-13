@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+        initialize="initApp();">
+    <mx:Script>
+        <![CDATA[
+            import mx.controls.*;
+            import mx.containers.*;
+            import mx.core.UIComponent;
+            import mx.containers.Panel;
+            import mx.managers.PopUpManager;
+            
+            import sjd.managers.ResizeManager;
+            
+            [Bindable]
+            public var cards: Array = [
+                {label:"mx.controls.ComboBox", data:"mx.controls.ComboBox"}, 
+                {label:"mx.containers.Panel", data:"mx.containers.Panel"},
+                {label:"mx.containers.Canvas", data:"mx.containers.Canvas"},
+                {label:"mx.containers.TitleWindow", data:"mx.containers.TitleWindow"},
+                {label:"mx.controls.TextArea", data:"mx.controls.TextArea"},
+                {label:"mx.controls.Button", data:"mx.controls.Button"}
+            ];
+            
+            private function initApp():void{
+                var window:TitleWindow = TitleWindow(PopUpManager.createPopUp(this, TitleWindow, false));
+                window.x = 100;
+                window.y = 100;
+                window.width = 200;
+                window.height = 200;
+                window.title = "PopUp Window"
+                ResizeManager.enableResize(window, 50);
+            }
+            
+            private function creatObj():void{
+                var itemName:String = c1.selectedItem["data"];
+                
+                var obj:UIComponent;
+                
+                switch (itemName) {
+                    case "mx.controls.ComboBox":
+                        obj = new ComboBox();
+                        break;
+                    case "mx.containers.Panel":
+                        obj = new Panel();
+                        obj.width = Math.random() * this.width / 2;
+                        obj.height = Math.random() * this.height / 2;
+                        break;
+                    case "mx.containers.TitleWindow":
+                        obj = new TitleWindow();
+                        obj.width = Math.random() * this.width / 2;
+                        obj.height = Math.random() * this.height / 2;
+                        break;
+                    case "mx.controls.TextArea":
+                        obj = new TextArea();
+                        break;
+                    case "mx.controls.Button":
+                        obj = new Button();
+                        break;
+                    case "mx.containers.Canvas":
+                        obj = new Canvas();
+                        obj.width = Math.random() * this.width / 2;
+                        obj.height = Math.random() * this.height / 2;
+                        obj.setStyle("borderStyle", "solid");
+                        obj.setStyle("backgroundColor", "#FFFF00");
+                        break;
+                }
+                
+                obj.x = Math.random() * this.width - obj.width;
+                obj.y = Math.random() * this.height - obj.height + 50;
+                
+                this.addChild(obj);
+                
+                ResizeManager.enableResize(obj, 50);
+            }
+        ]]>
+    </mx:Script>
+    <mx:ComboBox id="c1" x="0" dataProvider="{cards}" width="200" />
+    <mx:Button id="b1" label="Create" x="210" click="creatObj();" />
+</mx:Application>
