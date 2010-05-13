@@ -1,0 +1,157 @@
+<gallery title="Tony's Photo Album" thumbDir="./images/thumbs/" imageDir="./images/" random="true">
+	<category name="Introducing Seattle">
+		<image>
+			<date>03.31.06</date>
+			<title>View of Seattle</title>
+			<desc>View of Seattle</desc>
+			<thumb>seattle5.jpg</thumb>
+			<img>seattle5.jpg</img>
+		</image>
+		<image>
+			<date>03.31.06</date>
+			<title>View of Seattle</title>
+			<desc>View of Seattle</desc>
+			<thumb>seattle7.jpg</thumb>
+			<img>seattle7.jpg</img>
+		</image>
+		<image>
+			<date>03.31.06</date>
+			<title>My Town</title>
+			<desc>On the way home</desc>
+			<thumb>seattle10.jpg</thumb>
+			<img>seattle10.jpg</img>
+		</image>
+	</category>
+	<category name="Wedding">
+		<image>
+			<date>02.44.04</date>
+			<title>La Jolla Wedding</title>
+			<desc>La Jolla Wedding</desc>
+			<thumb>wedding1.jpg</thumb>
+			<img>wedding1.jpg</img>
+		</image>
+		<image>
+			<date>05.13.05</date>
+			<title>Amazing Kiss</title>
+			<desc>Amazing Kiss</desc>
+			<thumb>wedding2.jpg</thumb>
+			<img>wedding2.jpg</img>
+		</image>
+		<image>
+			<date>11.21.05</date>
+			<title>Wedding Time</title>
+			<desc>Bride smiling</desc>
+			<thumb>wedding3.jpg</thumb>
+			<img>wedding3.jpg</img>
+		</image>
+		<image>
+			<date>02.44.04</date>
+			<title>10th anniversary</title>
+			<desc>Picture taken on our 10th anniversary.</desc>
+			<thumb>wedding4.jpg</thumb>
+			<img>wedding4.jpg</img>
+		</image>
+		<image>
+			<date>05.13.05</date>
+			<title>SD wedding</title>
+			<desc>Wedding at SD convention center</desc>
+			<thumb>wedding5.jpg</thumb>
+			<img>wedding5.jpg</img>
+		</image>
+		<image>
+			<date>11.21.05</date>
+			<title>Wedding Time</title>
+			<desc>Wedding photo</desc>
+			<thumb>wedding6.jpg</thumb>
+			<img>wedding6.jpg</img>
+		</image>
+		<image>
+			<date>06.14.06</date>
+			<title>Togetherness</title>
+			<desc>Wedding ceremony in Hawaii</desc>
+			<thumb>wedding7.jpg</thumb>
+			<img>wedding7.jpg</img>
+		</image>
+	</category>
+	<category name="View of Asia">
+		<image>
+			<date>04.01.06</date>
+			<title>Bangkok</title>
+			<desc>Bankok</desc>
+			<thumb>bangkok1.jpg</thumb>
+			<img>bangkok1.jpg</img>
+		</image>
+		<image>
+			<date>04.01.06</date>
+			<title>Bangkok</title>
+			<desc>Bankok</desc>
+			<thumb>bangkok2.jpg</thumb>
+			<img>bangkok2.jpg</img>
+		</image>
+		<image>
+			<date>04.01.06</date>
+			<title>shopping in Singapore</title>
+			<desc>shopping in Singapore Lau Pa Sat Festival Market Great place to drink & eat your lobsters..</desc>
+			<thumb>sin.jpg</thumb>
+			<img>sin.jpg</img>
+		</image>
+		<image>
+			<date>04.01.06</date>
+			<title>China Town Mexico</title>
+			<desc>Chinese lion head over drums</desc>
+			<thumb>china1.jpg</thumb>
+			<img>china1.jpg</img>
+		</image>
+		<image>
+			<date>04.05.06</date>
+			<title>little bells</title>
+			<desc>voice from the thailand's temple</desc>
+			<thumb>bell.jpg</thumb>
+			<img>bell.jpg</img>
+		</image>
+		<image>
+			<date>04.08.06</date>
+			<title>Green tea farm</title>
+			<desc>Daehan green tea farm: Boseong, South Korea</desc>
+			<thumb>korea1.jpg</thumb>
+			<img>korea1.jpg</img>
+		</image>
+	</category>
+	<category name="Trip to Montreal">
+		<image>
+			<date>03.25.06</date>
+			<title>Touring Old Montreal</title>
+			<desc>**** Touring Old Montreal ****</desc>
+			<thumb>tour3.jpg</thumb>
+			<img>tour3.jpg</img>
+		</image>
+		<image>
+			<date>03.25.06</date>
+			<title>Touring Old Montreal</title>
+			<desc>**** Touring Old Montreal ****</desc>
+			<thumb>tour6.jpg</thumb>
+			<img>tour6.jpg</img>
+		</image>
+		<image>
+			<date>03.25.06</date>
+			<title>Touring Old Montreal</title>
+			<desc>**** Touring Old Montreal ****</desc>
+			<thumb>tour10.jpg</thumb>
+			<img>tour10.jpg</img>
+		</image>
+		<image>
+			<date>03.25.06</date>
+			<title>Touring Old Montreal</title>
+			<desc>**** Touring Old Montreal ****</desc>
+			<thumb>tour11.jpg</thumb>
+			<img>tour11.jpg</img>
+		</image>
+		<image>
+			<date>03.25.06</date>
+			<title>Touring Old Montreal</title>
+			<desc>**** Touring Old Montreal ****</desc>
+			<thumb>tour13.jpg</thumb>
+			<img>tour13.jpg</img>
+		</image>
+	</category>
+</gallery>
