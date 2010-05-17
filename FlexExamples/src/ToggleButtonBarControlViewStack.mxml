@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
+    <mx:ToggleButtonBar id="tbb" dataProvider="{vs}"
+        creationComplete="tbb.selectedIndex = -1" toggleOnClick="true"/>
+   
+    <mx:ViewStack id="vs" visible="{tbb.selectedIndex != -1}"
+            width="50%" height="50%">
+        <mx:Panel width="50%" height="50%" title="Panel A" label="A"
+            toolTip="Panel A ToolTip"/>
+        <mx:Panel width="50%" height="50%" title="Oh! Panel B" label="B"
+            toolTip="Panel B ToolTip"/>
+    </mx:ViewStack>
+</mx:Application>
