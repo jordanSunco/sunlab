@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="horizontal">
+    <mx:Script>
+        <![CDATA[
+            [Bindable]
+            private var start:Date = new Date();
+            [Bindable]
+            private var end:Date = new Date();
+           
+            private function onDateChangeHandler(event:Event):void {
+                start = startDF.selectedDate;
+                end = endDF.selectedDate;
+            }
+        ]]>
+    </mx:Script>
+    <mx:DateField id="startDF" toolTip="开始日期" selectedDate="{start}"
+        selectableRange="{{rangeEnd:end}}" change="onDateChangeHandler(event)" />
+    <mx:Label text=" - "/>
+    <mx:DateField id="endDF" toolTip="结束日期" selectedDate="{end}"
+        selectableRange="{{rangeStart:start}}" change="onDateChangeHandler(event)"/>
+</mx:Application>
