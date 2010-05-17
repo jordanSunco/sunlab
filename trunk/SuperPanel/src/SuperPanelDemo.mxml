@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+        xmlns:containers="net.brandonmeyer.containers.*" layout="horizontal">
+    <mx:Style source="assets/css/Styles.css" />
+    <mx:Script>
+        <![CDATA[
+            import mx.events.CloseEvent;
+            import mx.binding.utils.BindingUtils;
+            
+            private function addNewPanel():void {
+                var panel:SuperPanel = new SuperPanel();
+                panel.width = 300;
+                panel.height = 200;
+                panel.minWidth = 200;
+                panel.minHeight = 100;
+                
+                panel.title = "My Panel " + (panelContainer.numChildren + 1);
+                panel.addEventListener(CloseEvent.CLOSE, function(event:CloseEvent):void{
+                    event.target.parent.removeChild(event.target);
+                });
+                
+                BindingUtils.bindProperty(panel, "allowDrag", allowDragCheck, "selected");
+                BindingUtils.bindProperty(panel, "allowResize", allowResizeCheck, "selected");
+                BindingUtils.bindProperty(panel, "allowClose", allowCloseCheck, "selected");
+                BindingUtils.bindProperty(panel, "allowMaximize", allowMaxCheck, "selected");
+                BindingUtils.bindProperty(panel, "allowMinimize", allowMinCheck, "selected");
+                
+                panelContainer.addChild(panel);
+            }
+            
+            private function getVersionNumber(value:uint):String {
+                var retVal:String = "";
+                retVal += (value >>> 24).toString(16);
+                retVal += ".";
+                retVal += (value >>> 12 & 0xFF).toString(16);
+                retVal += ".";
+                retVal += (value & 0xFF).toString(16);
+                
+                return retVal;
+            }
+        ]]>
+    </mx:Script>
+    
+    <mx:VBox height="100%" styleName="leftBox">
+        <mx:CheckBox id="allowDragCheck" label="Allow Drag" selected="true" />
+        <mx:CheckBox id="allowResizeCheck" label="Allow Resize" selected="true" />
+        <mx:CheckBox id="allowCloseCheck" label="Allow Close" />
+        <mx:CheckBox id="allowMaxCheck" label="Allow Maximize" />
+        <mx:CheckBox id="allowMinCheck" label="Allow Minimize" />
+        <mx:CheckBox id="useSizeConstraintCheck" label="Use Size Constraint Ratio" />
+        <mx:Spacer height="15"/>
+        <mx:Button label="Add New Panel" click="addNewPanel();" />
+        <mx:Spacer height="100%"/>
+        <mx:Label text="Right-click for source code" color="#cccccc" />
+        <mx:Label text="Version: {getVersionNumber(SuperPanel.VERSION)}" color="#cccccc" />
+    </mx:VBox>
+    
+    <mx:Canvas id="panelContainer" width="100%" height="100%">
+        <containers:SuperPanel id="myPanel" title="My Panel" x="20" y="20"
+                width="300" height="200" minWidth="200" minHeight="100"
+                horizontalAlign="center" verticalAlign="middle"
+                allowDrag="{allowDragCheck.selected}"
+                allowResize="{allowResizeCheck.selected}"
+                allowClose="{allowCloseCheck.selected}"
+                allowMaximize="{allowMaxCheck.selected}"
+                allowMinimize="{allowMinCheck.selected}"
+                sizeRatio="{useSizeConstraintCheck.selected ? '4:3' : null}"
+                resizeEffect="Resize" moveEffect="Move"
+                close="panelContainer.removeChild(myPanel);">
+            <mx:Label text="SuperPanel" fontSize="24" fontWeight="bold">
+                <mx:filters>
+                    <mx:DropShadowFilter alpha="0.5"/>
+                </mx:filters>
+            </mx:Label>
+            <mx:Label text="By: Brandon Meyer"/>
+        </containers:SuperPanel>
+    </mx:Canvas>
+</mx:Application>
