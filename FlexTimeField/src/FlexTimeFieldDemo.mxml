@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+        xmlns="*" backgroundColor="#FFFFFF" creationComplete="createComplete()" 
+        fontFamily="Verdana" fontSize="10" fontWeight="normal">
+    <mx:Script>
+        <![CDATA[
+            private function formatValue(value:Number):String {
+                if(value < 10) {
+                    return "0" + String(value);
+                } else {
+                    return String(value);
+                }
+            }
+            
+            [Bindable] private var currentTimeStatic:Date = new Date();
+            [Bindable] private var currentTimeDynamic:Date = new Date();
+            
+            
+            private function returnAMPM(currentTime:Date):String {
+                return (currentTime.hours > 12) ? 'pm' : 'am';
+            }
+            
+            private function setTime():void {
+                this.currentTimeStatic = new Date();
+            }
+            
+            private function setUpdatedTime():void {
+                var newSecond:Number = Number(TE_without_seconds_24Hour_preset.second) + 1;
+                this.currentTimeDynamic = new Date(2007, 0, 1, 
+                    TE_without_seconds_24Hour_preset.hour, 
+                    TE_without_seconds_24Hour_preset.minute, newSecond);
+            }
+            
+            private function createComplete():void {
+                var intervalID:Number = setInterval(setTime, 1000);
+                var intervalID1:Number = setInterval(setUpdatedTime, 1000);
+            }
+        ]]>
+    </mx:Script>
+        
+    <mx:VBox horizontalAlign="left" verticalGap="20">
+        <mx:HBox verticalAlign="middle">
+            <mx:Label text="24 Hour without Seconds" width="300" />
+            <mx:Box width="150">
+                <SM_TimeEntry id="TE_24_without_seconds" showSeconds="false" 
+                    is24Hour="true" backgroundColor="#000000" backgroundAlpha="0.05"
+                    borderColor="#999999" borderThickness="1" borderStyle="solid" 
+                    cornerRadius="5" /> 
+            </mx:Box>
+            <mx:VRule height="{TE_24_without_seconds.height}" width="1" /> 
+            <mx:Label text="{'Value = ' + TE_24_without_seconds.hour + ':' + formatValue(TE_24_without_seconds.minute) + ':' + formatValue(TE_24_without_seconds.second)}" />
+        </mx:HBox>
+        
+        <mx:HBox verticalAlign="middle">
+            <mx:Label text="24 Hour with Seconds" width="300" />
+            <mx:Box width="150">
+                <SM_TimeEntry id="TE_with_seconds" showSeconds="true" is24Hour="true" 
+                    backgroundColor="#000000" backgroundAlpha="0.05"
+                    borderColor="#00FF00" borderThickness="1" borderStyle="solid" cornerRadius="5" /> 
+            </mx:Box>
+            <mx:VRule height="{TE_with_seconds.height}" width="1" /> 
+            <mx:Label text="{'Value = ' + TE_with_seconds.hour + ':' + formatValue(TE_with_seconds.minute) + ':' + formatValue(TE_with_seconds.second)}" />
+        </mx:HBox>
+        
+        <mx:HBox verticalAlign="middle">
+            <mx:Label text="12 Hour without Seconds" width="300" />
+            <mx:Box width="150">
+                <SM_TimeEntry id="TE_without_seconds" showSeconds="false" is24Hour="false" 
+                    backgroundColor="#006699" backgroundAlpha="0.2" borderColor="#999999" />
+            </mx:Box>
+            <mx:VRule height="{TE_without_seconds.height}" width="1" /> 
+            <mx:Label text="{'Value = ' + TE_without_seconds.hour + ':' + formatValue(TE_without_seconds.minute) + ' ' + TE_without_seconds.am_pm}" />
+        </mx:HBox>
+        
+        <mx:HBox verticalAlign="middle">
+            <mx:Label text="12 Hour with Seconds" width="300" />
+            <mx:Box width="150">
+                <SM_TimeEntry id="TE_with_seconds_24Hour" showSeconds="true" is24Hour="false" 
+                    backgroundColor="#CCCCCC" borderColor="#999999" 
+                    borderThickness="3" borderStyle="solid"/>
+            </mx:Box>
+            <mx:VRule height="{TE_with_seconds_24Hour.height}" width="1" /> 
+            <mx:Label text="{'Value = ' + TE_with_seconds_24Hour.hour + ':' + formatValue(TE_with_seconds_24Hour.minute) + ':' + formatValue(TE_with_seconds_24Hour.second) + ' ' + TE_with_seconds_24Hour.am_pm}" />
+        </mx:HBox>
+        
+        <mx:HBox verticalAlign="middle">
+            <mx:Label text="24 Hour without Seconds - larger font" width="300" />
+            <mx:Box width="150">
+                <SM_TimeEntry id="TE_without_seconds_24Hour" showSeconds="false" is24Hour="true" 
+                    backgroundColor="#CCCCCC" borderColor="#999999" 
+                    fontSize="16" fontWeight="bold" cornerRadius="5" 
+                    borderThickness="1" borderStyle="solid" />
+            </mx:Box>
+            <mx:VRule height="{TE_without_seconds_24Hour.height}" width="1" /> 
+            <mx:Label text="{'Value = ' + TE_without_seconds_24Hour.hour + ':' + formatValue(TE_without_seconds_24Hour.minute) + ':' + formatValue(TE_without_seconds_24Hour.second) + ' ' + TE_without_seconds_24Hour.am_pm}" />
+        </mx:HBox>
+        
+        <mx:HBox verticalAlign="middle">
+            <mx:Label text="12 Hour with Seconds - time set - updatable" width="300" />
+            <mx:Box width="150">
+                <SM_TimeEntry id="TE_without_seconds_24Hour_preset" showSeconds="true" is24Hour="false" 
+                    backgroundColor="#FFFFFF" borderColor="#999999" backgroundAlpha="0.05"
+                    borderThickness="1" borderStyle="solid"
+                    hour="{currentTimeDynamic.hours}" 
+                    minute="{currentTimeDynamic.minutes}" 
+                    second="{currentTimeDynamic.seconds}" 
+                    am_pm="{(new Date().hours > 12 ? 'pm' : 'am')}" />
+            </mx:Box>
+            <mx:VRule height="{TE_without_seconds_24Hour_preset.height}" width="1" /> 
+            <mx:Label text="{'Value = ' + TE_without_seconds_24Hour_preset.hour + ':' + formatValue(TE_without_seconds_24Hour_preset.minute) + ':' + formatValue(TE_without_seconds_24Hour_preset.second) + ' ' + TE_without_seconds_24Hour_preset.am_pm}" />
+        </mx:HBox>
+        
+        <mx:HBox verticalAlign="middle">
+            <mx:Label text="12 Hour with Seconds - time set" width="300" />
+            <mx:Box width="150">
+                <SM_TimeEntry id="TE_without_seconds_24Hour_preset_disabled" 
+                    enabled="false" showSeconds="true" is24Hour="false" 
+                    backgroundColor="#FFFFFF" borderColor="#999999" backgroundAlpha="0.05"
+                    borderThickness="1" borderStyle="solid"
+                    hour="{currentTimeStatic.hours}" 
+                    minute="{currentTimeStatic.minutes}" 
+                    second="{currentTimeStatic.seconds}" 
+                    am_pm="{returnAMPM(currentTimeStatic)}" />
+            </mx:Box>
+            <mx:VRule height="{TE_without_seconds_24Hour_preset_disabled.height}" width="1" /> 
+            <mx:Label text="{'Value = ' + TE_without_seconds_24Hour_preset_disabled.hour + ':' + formatValue(TE_without_seconds_24Hour_preset_disabled.minute) + ':' + formatValue(TE_without_seconds_24Hour_preset_disabled.second) + ' ' + TE_without_seconds_24Hour_preset_disabled.am_pm}" />
+        </mx:HBox>
+    </mx:VBox>
+    <mx:Spacer height="20" />
+    <mx:Label text="* Right Click for Source" />
+</mx:Application>
