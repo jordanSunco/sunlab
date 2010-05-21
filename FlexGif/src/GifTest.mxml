@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"
+        creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            /**
+             * AS3 GIFPlayer 0.6
+             * http://www.bytearray.org/?p=95
+             * thibault@bytearray.org
+             */
+            import org.bytearray.gif.player.GIFPlayer;
+            import org.bytearray.gif.decoder.GIFDecoder;
+            import org.bytearray.gif.events.GIFPlayerEvent;
+            import org.bytearray.gif.events.FileTypeEvent;
+            import org.bytearray.gif.events.FrameEvent;
+            import org.bytearray.gif.events.TimeoutEvent;
+            
+            // we create the GIFPlayer, GIF is played automatically
+            private var myGIFPlayer:GIFPlayer = new GIFPlayer();
+            
+            private var imageFilter:FileFilter = new FileFilter("Image Files (*.gif)", "*.gif");
+            
+            private function init():void{
+                // we show it
+                // addChild (myGIFPlayer);
+                gifIm.source = myGIFPlayer;
+                
+                myGIFPlayer.addEventListener(GIFPlayerEvent.COMPLETE, onCompleteGIFLoad);
+                myGIFPlayer.addEventListener(FrameEvent.FRAME_RENDERED, onFrameRendered);
+                myGIFPlayer.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+                myGIFPlayer.addEventListener(FileTypeEvent.INVALID, onInvalidFileLoaded);
+                myGIFPlayer.addEventListener(TimeoutEvent.TIME_OUT, onTimeoutError);
+                
+                // we load a GIF
+                myGIFPlayer.load (new URLRequest("diego.gif"));
+            }
+            
+            private function onCompleteGIFLoad(pEvt:GIFPlayerEvent):void {
+                var FrameRect:Rectangle = pEvt.rect;
+                
+                myGIFPlayer.x = (stage.stageWidth - FrameRect.width) /2;
+                myGIFPlayer.y = (stage.stageHeight - FrameRect.height) /2;
+                
+                infos_txt.htmlText = "Total Frames : " + myGIFPlayer.totalFrames + "<br/>";
+                infos_txt.htmlText += "Loop : " + myGIFPlayer.loopCount + "<br/>";
+            }
+            
+            private function onFrameRendered(pEvt:FrameEvent):void {
+                render_txt.htmlText = "Frame Width : " + pEvt.frame.bitmapData.width + " px<br/>Frame Height : " + pEvt.frame.bitmapData.height + " px";
+                render_txt.htmlText += "<br/>Frame delay : " + pEvt.target.getDelay(pEvt.target.currentFrame);
+                render_txt.htmlText += "<br/>Current frame : " + pEvt.target.currentFrame;
+            }
+
+            private function onIOError(pEvt:IOErrorEvent):void {
+                infos_txt.htmlText = "<font color='#990000'>Sorry there was an error loading the GIF file</font>";
+            }
+
+            private function onInvalidFileLoaded(pEvt:FileTypeEvent):void {
+                infos_txt.htmlText = "Invalid file loaded !";
+            }
+            
+            private function onTimeoutError(pEvt:TimeoutEvent):void {
+                infos_txt.htmlText = "<font color='#990000'>Sorry, TIME_OUT error, please try another GIF file</font>";
+            }
+        ]]>
+    </mx:Script>
+    <mx:Image id="gifIm" width="120" height="160" />
+    <mx:TextArea width="200" height="50" id="infos_txt" editable="false" />
+    <mx:TextArea width="200" height="70" id="render_txt" editable="false" />
+</mx:Application>
