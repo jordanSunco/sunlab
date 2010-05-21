@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+  xmlns:geometry="com.degrafa.geometry.*" 
+  xmlns:degrafa="com.degrafa.*" 
+  xmlns:paint="com.degrafa.paint.*" 
+  xmlns:coreRepeaters="com.degrafa.repeaters.*"
+  xmlns:repeaters="com.degrafa.geometry.repeaters.*"
+  xmlns:transforms="com.degrafa.transform.*" >
+	
+	<!--
+		Weather Station Construction Kit Version Zero
+		
+		Copyright (c) 2009, Roger Webster
+		
+		Last update: 2009-01-20
+		
+		Permission is hereby granted, free of charge, to any person obtaining a copy
+		of this software and associated documentation files (the "Software"), to deal
+		in the Software without restriction, including without limitation the rights
+		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+		copies of the Software, and to permit persons to whom the Software is
+		furnished to do so, subject to the following conditions:
+		
+		The above copyright notice and this permission notice shall be included in
+		all copies or substantial portions of the Software.
+		
+		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+		THE SOFTWARE.
+	-->
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.formatters.NumberFormatter;
+			import mx.core.UITextFormat;
+			import mx.utils.ColorUtil;
+			
+			[Bindable]
+			private var fillHeight : Number = 0;
+			
+			[Bindable]
+			private var fillTop : Number = 0;
+			
+			public function set value (v : Number) : void {							
+				if (isNaN(v))
+					return;
+					
+				if (v > maximum) {
+					maximum = v;
+				}
+					
+				if (v < minimum) {
+					v = minimum;
+				}
+				
+				oldHeight = theBar.height;
+				dataValue = v;
+					
+				if (oldHeight == v) {				
+					return;
+				}
+				
+				if (gaugeType == 0) {
+					if (metric) {
+						maximum = 1100;
+						minimum = 900;
+					}
+					else  {
+						maximum = 32;
+						minimum = 26;
+					}
+				} else if (gaugeType == 1) {
+					if (metric) {
+						var t : int = (v + 9) / 10;
+						t *= 10;
+						maximum = t;
+					}
+					else {
+						maximum = Math.ceil(v);
+					}	
+				}
+					
+				fillHeight = barHeight * ((dataValue - lowValue) / (capacity - lowValue));
+				fillTop = barHeight - barHeight * ((dataValue - lowValue) / (capacity - lowValue));
+				
+				theBar.visible = true;
+				stop1.alpha = fillHeight > 0 ? 1 : 0;
+				stop2.alpha = fillHeight > 0 ? 1 : 0;
+				
+				theLabel = v + suffix;
+			}
+			
+			public function get value () : Number {
+				return dataValue;
+			}
+			
+			[Bindable]
+			private var _metric : Boolean = false;
+			
+			[Bindable]
+			[Editable(noBind)]
+			public function set metric (i : Boolean) : void {
+				_metric = i;
+				invalidateDisplayList();
+			}
+			
+			public function get metric () : Boolean {
+				return _metric;
+			}
+			
+			[Bindable]
+			private var _gaugeType : int = 0;
+			
+			[Bindable]
+			[Persistent]
+			[Editable(noBind)]
+			public function set gaugeType (i : int) : void {
+				_gaugeType = i;
+			}
+			
+			public function get gaugeType () : int {
+				return _gaugeType;
+			}
+			
+			[Bindable]
+			private var marksCount : Number = 51; 
+			
+			[Bindable]
+			private var verticalOffset : Number = -(height - 22) / 5; 
+			
+			private function calculateMaximum (v : Number) : Number {
+				if (gaugeType == 1) {
+					if (metric) {
+						var t : int = (v + 5) / 10;
+						t *= 10;
+						v = Math.max(1, t);
+						if (v < 1)
+							v = 1;
+					}
+					else {
+						var tt : Number = v;
+						var tMax : Number = Math.ceil(v);
+						v = Math.ceil(v * 1.25);
+						if (v >= tMax * 2)
+							v = tMax;
+						if (v < 1)
+							v = 1;
+					}	
+						
+					marksCount = v * 10;
+					if (marksCount > 50)
+						marksCount /= 5;				
+				}
+				else {
+					if (v - lowValue < 20)
+						marksCount = (v - lowValue) * 5;
+					else
+						marksCount = (v - lowValue) / 10;
+				}
+				
+				return v;
+			}
+			
+			[Bindable]
+			public function set maximum (v : Number) : void {
+				if (isNaN(dataValue))
+					v = calculateMaximum(v);
+				else
+					v = calculateMaximum(Math.max(v, dataValue));
+					
+				verticalOffset = (barHeight - 2) / marksCount;
+				marksCount++;
+				
+				capacity = v;
+				
+				setLabels(capacity, lowValue);
+				fillHeight = barHeight * ((dataValue - lowValue) / (capacity - lowValue));
+				fillTop = barHeight - barHeight * ((dataValue - lowValue) / (capacity - lowValue));
+				
+				theBar.visible = true;
+				stop1.alpha = fillHeight > 0 ? 1 : 0;
+				stop2.alpha = fillHeight > 0 ? 1 : 0;
+			}
+			
+			public function get maximum () : Number {
+				return capacity;
+			}
+			
+			[Bindable]
+			private var labelSkipCount : int = 5;
+			
+			[Bindable]
+			private var labelCount : int = 11;
+			
+			[Bindable]
+			private var hashLength : int = 4;
+			
+			private function setLabels (high : Number, low : Number) : void {	
+				if (high == low)
+					return;
+					
+				labels = [];
+				widths = [];	
+				
+				if (gaugeType == 0) {
+					var interval : int = 1;
+						
+					labelSkipCount = high - low - 1;
+					hashLength = 4;
+					var offset : int = 9;
+					
+					if (high - low >= 20) {
+						var diff : Number = high - low;
+						diff = diff / 20;
+						interval = height / diff;
+						interval = 20;
+						
+						labelSkipCount = 2;
+						hashLength = 0;
+						offset = 0;
+					}
+								
+					for (var i : int = high; i >= low; i -= interval) {
+						var s : String = i + "";
+						labels.push(s);
+						
+						if (measureLabel == null)
+							measureLabel = new UITextFormat(this.systemManager, "Verdana", 8, null, true, false, false);
+							
+						measureLabel.antiAliasType = "advanced";
+						measureLabel.gridFitType = "subpixel";
+						
+						tlm = measureLabel.measureText(s, true);
+						
+						widths.push(width - tlm.width - offset);
+					}
+						
+					labelCount = labels.length;
+				}
+				else if (gaugeType == 1) {		// Rain Gauge...
+					diff = high - low;
+					var fInterval : Number = diff / 10;
+					if (Math.round(fInterval) >= 1) {
+						fInterval = Math.round(fInterval);
+						// fInterval = Math.max(1, fInterval);
+					}
+					labelSkipCount = 5;
+					
+					var nf : NumberFormatter = new NumberFormatter();
+					nf.rounding = "nearest";
+					nf.precision = 1;
+					if (high > 10)
+						nf.precision = 0;
+					
+					for (var f : Number = high; f >= low; f -= fInterval) {
+						s = nf.format(f);
+						labels.push(s);
+						
+						if (measureLabel == null)
+							measureLabel = new UITextFormat(this.systemManager, "Verdana", 8, null, true, false, false);
+						measureLabel.antiAliasType = "advanced";
+						measureLabel.gridFitType = "subpixel";
+						
+						tlm = measureLabel.measureText(s, true);
+						
+						widths.push(width - tlm.width - 8);
+					}
+					
+					labelCount = labels.length;
+					marksCount = (labels.length - 1) * 5 + 1;
+					verticalOffset = (barHeight - 2) / marksCount;
+				}
+			}
+			
+			[Bindable]
+			public function set minimum (v : Number) : void {
+				lowValue = v;
+				if (capacity - v < 20)
+					marksCount = (capacity - lowValue) * 5;
+				else
+					marksCount = (capacity - lowValue) / 10;
+				
+				verticalOffset = (barHeight - 2) / marksCount;
+				marksCount++;
+				
+				setLabels(capacity, lowValue);
+				
+				fillHeight = barHeight * ((dataValue - lowValue) / (capacity - lowValue));
+				fillTop = barHeight - barHeight * ((dataValue - lowValue) / (capacity - lowValue));
+				
+				theBar.visible = true;
+				stop1.alpha = fillHeight > 0 ? 1 : 0;
+				stop2.alpha = fillHeight > 0 ? 1 : 0;
+			}
+			
+			public function get minimum () : Number {
+				return lowValue;
+			}
+			
+			[Bindable]
+			private var lowValue : Number = 0;
+			
+			[Bindable]
+			private var oldHeight : Number = 0;
+			
+			[Bindable]
+			private var barHeight : Number = 0;
+			
+			override public function set height (v : Number) : void {
+				super.height = v;
+				
+				var update : Boolean = (barHeight == 0);
+				barHeight = height - 22;
+				if (update && capacity != 0)
+					setLabels(capacity, lowValue);
+
+				fillHeight = barHeight * ((dataValue - lowValue) / (capacity - lowValue));
+				fillTop = barHeight - barHeight * ((dataValue - lowValue) / (capacity - lowValue));
+				
+				theBar.visible = true;
+				stop1.alpha = fillHeight > 0 ? 1 : 0;
+				stop2.alpha = fillHeight > 0 ? 1 : 0;
+			}
+			
+			import mx.events.FlexEvent;
+			    		
+			[Bindable]
+			private var dataValue : Number = 0;
+			
+			[Bindable]
+    	private var capacity : Number = 0;
+    	
+    	private var barFillColor : Number = 0x4444ff;
+
+			[Bindable]
+    	public var _suffix : String = "";
+    	
+    	[Bindable]
+    	public function set suffix (s : String) : void {
+    		_suffix = s;
+    		theLabel = value + s;
+    		// Alert.show(s);
+    	}
+    	public function get suffix () : String {
+    		return _suffix;
+    	}
+    	
+    	[Bindable]
+    	[Editable]
+    	[Persistent]
+    	public function set fillColor (v : Number) : void {
+    		barFillColor = v;
+    	}
+    	public function get fillColor () : Number {
+    		return barFillColor;
+    	}
+    	
+    	[Bindable]
+    	private var labels : Array = ["1.0", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0"];
+		
+			private var measureLabel : UITextFormat = null;
+			private var tlm : TextLineMetrics = null;
+			
+			[Bindable]
+			private var widths : Array = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
+		
+			// Control dynamic reusability...
+			private var r : Boolean = true;
+			
+			public function get reusable () : Boolean {
+				return r;
+			}
+			
+			public function set reusable (b : Boolean) : void {
+				r = b;
+			}  
+			
+			[Bindable]
+			public var theLabel : String = "0";	
+			
+			[Bindable]
+			private var captionWidth : Number = 0;
+
+			private var theCaption : String = "";		
+				
+			[Bindable]
+			[Persistent]
+			[Editable(noBind)]
+			public function set caption (s : String) : void {
+				theCaption = s;
+						
+				measureLabel = new UITextFormat(this.systemManager, "Verdana", 10, null, true, false, false);
+					
+				measureLabel.antiAliasType = "advanced";
+				measureLabel.gridFitType = "subpixel";
+				
+				tlm = measureLabel.measureText(s, true);
+				captionWidth = tlm.width - 30;
+			}
+			public function get caption () : String {
+				return theCaption;
+			}
+											
+		]]>
+	</mx:Script>
+	
+ 	<paint:SolidStroke id="lineStroke" color="#ffffff" weight="1" alpha="0.8"/>
+ 	<paint:SolidFill id="backFill" color="#444444" alpha="1"/>
+	
+	<mx:filters>
+		<mx:DropShadowFilter id="dsf" alpha=".5" distance="2" />
+	</mx:filters>
+	
+	<degrafa:GeometryGroup>
+	
+	<degrafa:GeometryComposition graphicsTarget="{[this]}" autoClearGraphicsTarget="true">
+	
+		<repeaters:HorizontalLineRepeater autoClearGraphicsTarget="false" id="marks" graphicsTarget="{[this]}" x="{width - hashLength}" x1="{width}" y="1" 
+																		count="{marksCount}" 
+																		moveOffsetY="{verticalOffset}" 
+																		stroke="{lineStroke}" />
+				
+		<coreRepeaters:GeometryRepeater count="{labelCount}">    
+	    <geometry:RasterText id="rastText" textColor="0xeeeeee" fontSize="8" fontFamily="Verdana" x="20" y="-7"/>
+	    
+	    <coreRepeaters:modifiers>
+        <coreRepeaters:PropertyModifier targets="{[rastText]}" modifier="{labels}" property="text" modifierOperator="none"/>
+        <coreRepeaters:PropertyModifier targets="{[rastText]}" modifier="{verticalOffset * (labelSkipCount)}" property="y" modifierOperator="add"/>
+        <coreRepeaters:PropertyModifier targets="{[rastText]}" modifier="{widths}" property="x" modifierOperator="none"/>
+	    </coreRepeaters:modifiers>        
+		</coreRepeaters:GeometryRepeater>
+																		
+		<geometry:RegularRectangle x="0" y="0" width="18" height="{barHeight}" fill="{backFill}" autoClearGraphicsTarget="false" graphicsTarget="{[this]}" />
+		
+		<geometry:RoundedRectangle x="0" y="{fillTop}" height="{fillHeight}" cornerRadius="2" id="theBar" graphicsTarget="{[this]}" width="18" autoClearGraphicsTarget="false">		
+	    <geometry:fill>
+	    	<paint:LinearGradientFill angle="0">
+			    <paint:GradientStop id="stop1" alpha="1" color="{fillColor}"/>
+		    	<paint:GradientStop id="stop2" alpha="1" color="{ColorUtil.adjustBrightness2(fillColor,-50)}"/>
+		    </paint:LinearGradientFill>
+	    </geometry:fill>			
+			
+			<geometry:RoundedRectangle x="0" y="0" id="wash" width="{theBar.width/2}" height="{barHeight}" graphicsTarget="{[this]}" autoClearGraphicsTarget="false">
+				<geometry:fill>
+			  	<paint:LinearGradientFill height="{wash.height}" width="{wash.width}" angle="0">
+			    	<paint:GradientStop alpha="0.6" color="#FFFFFF"/>
+				    <paint:GradientStop alpha="0" color="#FFFFFF"/>
+				  </paint:LinearGradientFill>
+		  	</geometry:fill>
+			</geometry:RoundedRectangle>	
+		</geometry:RoundedRectangle>	
+		
+		<degrafa:GeometryComposition>
+			<geometry:RasterText text="{theLabel}" fontWeight="normal" textColor="#FFFFFF" antiAliasType="normal" gridFitType="none" fontSize="10" 
+													fontFamily="Verdana" x="0" y="{barHeight + 6}" autoClearGraphicsTarget="false" graphicsTarget="{[this]}" filters="{[dsf]}" alpha="0.9" />		
+		</degrafa:GeometryComposition>
+		
+		<degrafa:GeometryComposition>
+			<geometry:RasterText text="{caption}" fontWeight="normal" textColor="#FFFFFF" antiAliasType="normal" gridFitType="none" fontSize="10" 
+													fontFamily="Verdana" x="-30" y="0" autoClearGraphicsTarget="false" graphicsTarget="{[this]}" filters="{[dsf]}" alpha="0.9">
+				<geometry:transform>
+        	<transforms:TransformGroup>
+            <transforms:RotateTransform angle="-90" centerX="0" centerY="0"/>
+            <transforms:TranslateTransform x="-18" y="{captionWidth}" />
+        	</transforms:TransformGroup>
+    		</geometry:transform>				
+			</geometry:RasterText>		
+		</degrafa:GeometryComposition>
+		
+	</degrafa:GeometryComposition>
+	</degrafa:GeometryGroup>
+	
+</mx:Canvas>

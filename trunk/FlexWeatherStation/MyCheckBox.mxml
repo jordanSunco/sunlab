@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:CheckBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<!--
+		Weather Station Construction Kit Version Zero
+		
+		Copyright (c) 2009, Roger Webster
+		
+		Last update: 2009-01-11
+		
+		Permission is hereby granted, free of charge, to any person obtaining a copy
+		of this software and associated documentation files (the "Software"), to deal
+		in the Software without restriction, including without limitation the rights
+		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+		copies of the Software, and to permit persons to whom the Software is
+		furnished to do so, subject to the following conditions:
+		
+		The above copyright notice and this permission notice shall be included in
+		all copies or substantial portions of the Software.
+		
+		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+		THE SOFTWARE.
+	-->
+	
+	<mx:Script>
+		<![CDATA[
+			
+			[Persistent]
+	    [Bindable("click")]
+	    [Bindable("valueCommit")]
+	    [Inspectable(category="General", defaultValue="false")]
+			public override function get selected () : Boolean {
+				return super.selected;
+			}
+			
+			public override function set selected (value : Boolean) : void {
+				super.selected = value;
+			}
+			
+			[Persistent]
+			[Bindable]
+			public override function set label (value : String) : void {
+				super.label = value;
+			}
+			public override function get label () : String {
+				return super.label;
+			}
+			
+    	protected override function clickHandler (event : MouseEvent) : void {
+    		selected = !selected;
+        dispatchEvent(new Event(Event.CHANGE));
+    	}
+			
+		
+			// Control dynamic reusability...
+			private var r : Boolean = true;
+			
+			public function get reusable () : Boolean {
+				return r;
+			}
+			
+			public function set reusable (b : Boolean) : void {
+				r = b;
+			}   		
+		]]>
+	</mx:Script>
+	
+</mx:CheckBox>

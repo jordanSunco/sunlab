@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" minHeight="200" minWidth="300" width="400" height="300" backgroundColor="#464646" color="#FFFFFF">
+	<mx:Metadata>	
+	</mx:Metadata>
+	<mx:Script>
+		<![CDATA[
+			include "StripChartScripts.as"
+		]]>
+	</mx:Script>
+	<mx:LineChart dataProvider="{chartData}" id="stripChart" bottom="0" left="0" right="0" top="0">
+		<mx:series>
+			<mx:LineSeries displayName="Strip Chart" yField="">
+		    <mx:lineStroke>
+		        <mx:Stroke color="red" weight="2" alpha="0.6" />
+		    </mx:lineStroke>
+		  </mx:LineSeries>
+
+		</mx:series>
+	</mx:LineChart>
+	
+	<mx:Label id="captionLabel" initialize="setFilters()" text="{Caption}" alpha=".4" verticalCenter="0" horizontalCenter="0" fontSize="12" fontWeight="bold" textAlign="center" visible="true" color="#000000"/>
+	
+</mx:Canvas>
