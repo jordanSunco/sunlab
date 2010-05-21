@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300" horizontalScrollPolicy="off" initialize="initComponent()">
+	<mx:Script>
+		<![CDATA[
+			
+			[Bindable]
+			private var _dataProvider:Object = null;
+			public function set dataProvider(value:Object):void {
+				_dataProvider = value;
+				for each (var obj:Object in _dataProvider) {
+					var child:* = itemRenderer.newInstance();
+					child.data = obj;
+					this.contents.addChild(child);
+				}
+			}
+			
+			[Bindable]
+			public var itemRenderer:IFactory = null;
+			
+			private var momentum:Number = 0;
+			
+			private function initComponent():void {
+				this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			}
+			
+			private function onEnterFrame( e:Event ):void {
+				if (this.mouseX >= 0 && this.mouseX <= this.width && this.mouseY >= 0 && this.mouseY <= this.height) {
+					momentum = ((this.mouseX - this.width/2)/15)*-1;
+				} else {
+					momentum = momentum/1.1;
+				}
+				if(this.contents.x + momentum >= 0 && momentum > 0) {this.contents.x = 0;}
+				else if(this.contents.x + momentum <= this.width - this.contents.width && momentum < 0) {this.contents.x = this.width - this.contents.width;}
+				else {
+					this.contents.x += momentum;
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:HBox id="contents" clipContent="true" width="100%" height="100%" verticalAlign="middle"></mx:HBox>
+</mx:Canvas>
