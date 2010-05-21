@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skins:GraphicBorderSkin xmlns:mx="http://www.adobe.com/2006/mxml" 
+				   xmlns:flash.filters='flash.filters.*'
+                   xmlns:geometry="com.degrafa.geometry.*" 
+                   xmlns:degrafa="com.degrafa.*" 
+                   xmlns:skins="com.degrafa.skins.*" 
+                   xmlns:paint="com.degrafa.paint.*" 
+                   xmlns:trans="com.degrafa.transform.*" 
+                   xmlns:coreRepeaters="com.degrafa.repeaters.*"
+                   xmlns:repeaters="com.degrafa.geometry.repeaters.*">
+                   
+	<!--
+	Weather Station Construction Kit Version Zero
+	
+	Copyright (c) 2009, Roger Webster
+	
+	Last update: 2009-01-11
+	
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+	
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+	
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+	
+	Original version of this skin by Thomas W. Gonzalez, who did not include a copyright
+	notice on this file.
+	-->
+
+	<mx:Script>
+		<![CDATA[
+		import mx.managers.SystemManager;
+		import mx.core.UITextFormat;
+		import mx.controls.Label;
+		import com.degrafa.geometry.RasterText;
+		import com.degrafa.geometry.Line;
+
+		import mx.controls.Button;
+		import mx.utils.ColorUtil;
+		import com.brightPoint.controls.DegrafaGauge;
+		import com.degrafa.skins.GraphicBorderSkin;
+		
+		[Bindable]
+		private var _diameter : Number = 200;
+		
+		[Bindable]
+		private var _indicatorFillRotation : Number;
+		
+		[Bindable]
+		private var _secondaryIndicatorFillRotation : Number;
+		
+		[Bindable]
+		private var _highValueFillRotation : Number = 0;
+		
+		[Bindable]
+		private var _lowValueFillRotation : Number = 0;
+		
+		[Bindable]
+		// private var _indicatorColor : Number = 0xFC5976;
+		private var _indicatorColor : Number = 0xEB5976;
+		
+		[Bindable]
+		// private var _indicatorColor : Number = 0xFC5976;
+		private var _secondaryIndicatorColor : Number = 0xeeee00;
+		
+		[Bindable]
+		private var _highValueColor : Number = 0xFC5976;
+		
+		[Bindable]
+		private var _lowValueColor : Number = 0xccccff;
+		
+		[Bindable]
+		private var _measureMarksColor : Number = 0xFFFFFFF;
+		
+		[Bindable]
+		private var _measureMarksAlpha : Number = 1;
+		
+		[Bindable]
+		private var _faceColor : Number = 0x333333;
+		
+		[Bindable]
+		private var _bezelColor : Number = 0xAAAAAA;
+		
+		[Bindable]
+		private var _markLabelsColor : Number = 0xEEEEEE;
+		
+		[Bindable]
+		private var _captionColor : Number = 0xCCCCCC;
+		
+		[Bindable]
+		private var _valueColor : Number = 0xDDDDDD;
+		
+		[Bindable]
+		private var _indicatorCrownColor : Number = 0xAAAAAA;
+		
+		[Bindable]
+		private var _startAngle : Number = 30;
+		
+		[Bindable]
+		private var _endAngle : Number = 330;
+		
+		override public function set rotation (value : Number) : void { 
+			_indicatorFillRotation = value + 270; //this accounts for the offset of how we have drawn our indicator in relation to the gauge angle
+			_secondaryIndicatorFillRotation = value + 270; //this accounts for the offset of how we have drawn our indicator in relation to the gauge angle
+			_highValueFillRotation = value + 270;
+			_lowValueFillRotation = value + 270;
+			super.rotation = value; 
+		}
+
+	
+		[Bindable]
+		private var majorTickOffset : Number = 30;
+		
+		[Bindable]
+		private var minorTickOffset : Number = 30;
+		
+		[Bindable]
+		private var majorTickRepeaters : Number = 0;
+		
+		private var speedLabels5 : Array = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+		private var speedLabels10 : Array = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
+		private var temperatureLabels : Array = [];
+		private var directionLabels : Array = [" S", "", "", "", " W", "", "", "", " N", "", "", "", " E", "", "", "", ""];
+		
+		[Bindable]
+		private var speedLabels : Array = speedLabels5;
+		
+		[Bindable]
+		public var caption : String = "";
+		
+		[Bindable]
+		public var gaugeValue : String = "";
+		
+		[Bindable]
+		public var yOffsetMultiplier : Number = 1; 
+		
+		public function setSpeedLabels (kind : int) : void {
+			switch (kind) {
+				case 0: speedLabels = speedLabels5; break;
+				
+				case 1: speedLabels = speedLabels10; break;
+				
+				case 2: 
+					temperatureLabels = [];
+					for (var ii : Number = DegrafaGauge(parent).minimum; ii <= useMaximum; ii += 10) {
+						temperatureLabels.push(ii);
+					}
+					
+					if (speedLabels.length != temperatureLabels.length)
+						speedLabels = temperatureLabels;
+					else if (speedLabels[0] != temperatureLabels[0] || speedLabels[speedLabels.length - 1] != temperatureLabels[temperatureLabels.length - 1])
+						speedLabels = temperatureLabels;
+					
+					break;
+					
+				case 3:
+					if (speedLabels != directionLabels)
+						speedLabels = directionLabels;
+					break;
+			}
+		}
+		
+		private function setLabels () : void {
+			if (DegrafaGauge(parent).gaugeType == DegrafaGauge.SpeedAutoScaleType) {
+				if ((DegrafaGauge(parent)).maximum > 50) {
+					setSpeedLabels(1);
+				}
+				else {
+					setSpeedLabels(0);
+				}
+				return;
+			}
+			
+			if (DegrafaGauge(parent).gaugeType == DegrafaGauge.BasicGaugeType) {
+    		setSpeedLabels(1);
+				return;
+			}
+			
+			if (DegrafaGauge(parent).gaugeType == DegrafaGauge.CompassType) {
+    		setSpeedLabels(3);
+				return;
+			}
+			
+			if (DegrafaGauge(parent).gaugeType == DegrafaGauge.PlusMinusAutoScaleType) {
+    		setSpeedLabels(2);
+				return;
+			}
+		}
+		
+		private var useDivisor : Number = 5;
+		
+		public function calculateUsableMaximum () : Number {					
+			var valueRange : Number = DegrafaGauge(parent).maximum - DegrafaGauge(parent).minimum;
+			var divisor : Number = 5;
+			if (valueRange > 50)
+				divisor = 10;
+				
+			var majorTicks : Number = Math.round(valueRange / divisor);
+			if (DegrafaGauge(parent).gaugeType == DegrafaGauge.CompassType) {
+				majorTicks = 16;
+				useDivisor = 2;
+				var angleRange : Number = _endAngle - _startAngle;
+				
+				majorTickOffset = angleRange / Math.round(majorTicks);
+				majorTickRepeaters = majorTicks;
+				return 360;
+			}
+					
+			majorTickRepeaters = majorTicks;
+			
+			angleRange = _endAngle - _startAngle;
+			
+			majorTickOffset = angleRange / Math.round(majorTicks);
+			var um : Number = majorTicks * divisor;
+			return um + DegrafaGauge(parent).minimum;
+		}
+		
+		public function setActualBorder (x : Number, y : Number, w : Number, h : Number) : void {
+			if (isNaN(x))
+				return;
+				
+			if (w + 10 != actualBorder.width || h + 10 != actualBorder.height) {
+				actualBorder.x = -(w + 10)/2;
+				actualBorder.y = y * 0.4;
+				actualBorder.width = w + 10;
+				actualBorder.height = h + 10;
+			}
+		}
+		
+		public var useMaximum : Number = 0;
+		
+		private var measureLabel : UITextFormat = null;
+		private var tlm : TextLineMetrics = null;
+		[Bindable]
+		private var capWidth : Number = 0;
+		[Bindable]
+		private var valWidth : Number = 0;
+		
+		override protected function updateDisplayList (w : Number, h : Number ) : void {	
+			_diameter = w;
+			this.x = _diameter / 2;
+			this.y = _diameter / 2;
+			super.updateDisplayList(w, h);
+			
+			// the name property determines which skin is being drawn.
+			switch (name) {
+				case "faceSkin":
+					
+					if (getStyle("faceColor")!=null) _faceColor = getStyle("faceColor");
+					if (getStyle("bezelColor")!=null) _bezelColor = getStyle("bezelColor");
+					_startAngle = DegrafaGauge(parent).startAngle;
+					_endAngle = DegrafaGauge(parent).endAngle;
+					
+					// Adjust angles to match tick marks using best fit rounding - 
+					//  this prevents boundary conditions where the tick marks don't match the exact range of motion
+					useMaximum = calculateUsableMaximum();
+					setLabels();
+					
+					minorTickOffset = majorTickOffset / useDivisor;
+					
+					// Get values for alerts and translate into angles
+					var values : Array = getStyle("alertValues");
+					var colors : Array = getStyle("alertColors");
+					var alphas : Array = getStyle("alertAlphas");
+
+					if (values && colors && alphas) {
+						values.reverse();
+						colors.reverse();
+						alphas.reverse();
+						
+						if (colors.length == values.length - 1 && alphas.length == values.length - 1) { 
+							var startOffsets : Array = [];
+							var arcs : Array = [];
+							
+							for (var i : int = 0; i < values.length - 1; i++) {
+								startOffsets.push(270 - DegrafaGauge(parent).calculateAngleFromValue(values[i + 1]));
+								arcs.push((DegrafaGauge(parent).calculateAngleFromValue(values[i + 1]) - DegrafaGauge(parent).calculateAngleFromValue(values[i])));
+							}
+							
+							startAngleOffsets.modifier = startOffsets;
+							arcOffsets.modifier = arcs;
+							colorOffsets.modifier = colors;
+						 	alphaOffsets.modifier = alphas;
+							alertRepeater.count = colors.length;
+							alertRepeater.invalidated = true;
+						}
+					}
+					else {
+						alertRepeater.count = 0;
+					}
+					
+					// Force a draw cycle on face 
+					face.draw(this.graphics, null);
+					
+					if (getStyle("measureMarksColor") != null) 	_measureMarksColor = getStyle("measureMarksColor");
+					if (getStyle("measureMarksAlpha") != null) 	_measureMarksAlpha = getStyle("measureMarksAlpha");
+					if (getStyle("markLabelsColor") != null)   	_markLabelsColor   = getStyle("markLabelsColor");
+					
+					face.visible = true;
+					
+					// Force a draw cycle on face 
+					face.draw(this.graphics, null);
+					break;
+					
+				case "indicatorSkin":
+					if (getStyle("indicatorColor") != null) _indicatorColor = getStyle("indicatorColor");
+					indicator.visible = true;
+					break;
+					
+				case "secondaryIndicatorSkin":
+					if (getStyle("secondaryIndicatorColor") != null) _secondaryIndicatorColor = getStyle("secondaryIndicatorColor");
+					secondaryIndicator.visible = DegrafaGauge(parent).showSecondaryIndicator;
+					break;
+					
+				case "highValueSkin":
+					if (getStyle("highValueColor") != null) _highValueColor = getStyle("highValueColor");
+					highValue.visible = DegrafaGauge(parent).showHighMark;
+					break;
+					
+				case "lowValueSkin":
+					if (getStyle("lowValueColor") != null) _lowValueColor = getStyle("lowValueColor");
+					lowValue.visible = DegrafaGauge(parent).showLowMark;
+					break;
+					
+				case "indicatorCrownSkin":
+					if (getStyle("indicatorCrownColor") != null) _indicatorCrownColor = getStyle("indicatorCrownColor");
+					indicatorCrown.visible = true;
+					break;
+					
+				case "highlightSkin":
+					faceReflection.visible = true;
+					break;
+					
+				case "gaugeCaptionSkin":					
+					if (measureLabel == null)
+						measureLabel = new UITextFormat(DegrafaGauge(parent).systemManager, "Helvetica", 14 * _diameter / 300.0, null, true, false, false);
+						
+					measureLabel.antiAliasType = "advanced";
+					measureLabel.gridFitType = "subpixel";
+					
+					tlm = measureLabel.measureText(caption, true);
+					capWidth = tlm.width;
+						
+					gaugeCaption.visible = true;
+					if (getStyle("captionColor") != null) 			
+						_captionColor 		 = getStyle("captionColor");
+					break;
+					
+				case "gaugeValueSkin":			
+					if (measureLabel == null)
+						measureLabel = new UITextFormat(DegrafaGauge(parent).systemManager, "Helvetica", 14 * _diameter / 300.0, null, true, false, false);
+						
+					measureLabel.antiAliasType = "advanced";
+					measureLabel.gridFitType = "subpixel";
+					
+					tlm = measureLabel.measureText(gaugeValue, true);
+					valWidth = tlm.width;
+						
+					gaugeValueItem.visible = true;
+					if (getStyle("valueColor") != null) 				_valueColor 			 = getStyle("valueColor");
+					break;
+					
+				case "labelBorderSkin":
+					break;
+			}
+		}
+			
+		]]>
+	</mx:Script>
+	
+ 	<skins:fills>
+		<paint:RadialGradientFill id="faceFill">
+			<paint:GradientStop alpha="1" color="{_faceColor}" ratio=".7"/>
+			<paint:GradientStop alpha="1" color="{ColorUtil.adjustBrightness2(_faceColor,-10)}" ratio=".96"/>
+			<paint:GradientStop alpha="1" color="{ColorUtil.adjustBrightness2(_faceColor,-30)}" ratio="1"/>
+		</paint:RadialGradientFill>
+		
+		<paint:LinearGradientFill angle="90" id="reflectionFillTop">
+			<paint:GradientStop alpha=".4" color="#FFFFFF" ratio="0"/>
+			<paint:GradientStop alpha="0" color="#FFFFFF" ratio=".65"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill angle="70" id="labelBorderFill">
+			<paint:GradientStop alpha="0" color="#222222" ratio="0"/>
+			<paint:GradientStop alpha=".1" color="#444444" ratio=".65"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill angle="270" id="reflectionFillBottom">
+			<paint:GradientStop alpha=".2" color="#FFFFFF"/>
+			<paint:GradientStop alpha="0" color="#FFFFFF" ratio=".3"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill id="indicatorFill" angle="{_indicatorFillRotation}">
+			<paint:GradientStop color="{_indicatorColor}"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_indicatorColor,-45)}"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill id="secondaryIndicatorFill" angle="{_secondaryIndicatorFillRotation}">
+			<paint:GradientStop color="{_secondaryIndicatorColor}"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_secondaryIndicatorColor,-45)}"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill id="highValueFill" angle="{_highValueFillRotation}">
+			<paint:GradientStop color="{_indicatorColor}"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_indicatorColor,-45)}"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill id="lowValueFill" angle="{_lowValueFillRotation}">
+			<paint:GradientStop color="{_lowValueColor}"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_lowValueColor,-45)}"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill angle="90" id="highlightFill">
+			<paint:GradientStop alpha="0" color="#FFFFFF"/>
+			<paint:GradientStop alpha=".3" color="#FFFFFF"/>
+		</paint:LinearGradientFill>
+
+		<paint:LinearGradientFill id="indicatorCrownFillOuter" angle="45">
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_indicatorCrownColor,60)}" ratio="0"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_indicatorCrownColor,-40)}" ratio="1"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill id="indicatorCrownFillInner" angle="225">
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_indicatorCrownColor,60)}" ratio="0"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_indicatorCrownColor,-40)}" ratio="1"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill id="outerBezelFill" angle="315">
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_bezelColor,70)}" ratio="0"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_bezelColor,-40)}" ratio="1"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill id="centerBezelFill" angle="45">
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_bezelColor,85)}" ratio="0"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_bezelColor,-50)}" ratio="1"/>
+		</paint:LinearGradientFill>
+		
+		<paint:LinearGradientFill id="innerBezelFill" angle="135">
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_bezelColor,60)}" ratio="0"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_bezelColor,-40)}" ratio="1"/>
+		</paint:LinearGradientFill>
+  </skins:fills>
+
+	<skins:strokes>
+		<paint:LinearGradientStroke id="indicatorStroke" weight="{_diameter/300}" angle="{_indicatorFillRotation-90}">
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_indicatorColor,-30)" alpha=".5"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_indicatorColor,0)" alpha=".5"/>
+		</paint:LinearGradientStroke>
+		
+		<paint:LinearGradientStroke id="secondaryIndicatorStroke" weight="{_diameter/300}" angle="{_indicatorFillRotation-90}">
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_secondaryIndicatorColor,-30)" alpha=".5"/>
+			<paint:GradientStop color="{ColorUtil.adjustBrightness2(_secondaryIndicatorColor,0)" alpha=".5"/>
+		</paint:LinearGradientStroke>
+		
+ 		<paint:SolidStroke id="measureMarksStroke" color="{_measureMarksColor}" weight="{_diameter/200}" alpha="{_measureMarksAlpha}"/>
+ 		<paint:SolidStroke id="innerBezelStroke" color="{ColorUtil.adjustBrightness2(_faceColor,-40)}" weight="{_diameter/200}" alpha=".7"/>
+ 		<paint:SolidStroke id="labelBorderStroke" color="#CCCCCC" weight="1" />
+ 		
+ 		<paint:LinearGradientStroke id="greyGradStroke" angle="45">
+			<paint:GradientStop alpha=".8" color="#999999"/>
+			<paint:GradientStop alpha=".2" color="#444444"/>
+		</paint:LinearGradientStroke>
+	</skins:strokes>
+	
+  <skins:geometry>   		
+		<degrafa:GeometryComposition id="face" visible="false">
+			<geometry:Circle radius="{_diameter*.5}" fill="{outerBezelFill}" stroke="{greyGradStroke}"/>
+			<geometry:Circle radius="{_diameter*.495}" fill="{centerBezelFill}"/>
+			<geometry:Circle radius="{_diameter*.47}" fill="{innerBezelFill}"/>
+			<geometry:Circle radius="{_diameter*.46}" fill="{outerBezelFill}"/>
+			<geometry:Circle radius="{_diameter*.46}" fill="{faceFill}" stroke="{innerBezelStroke}" />
+			
+			<coreRepeaters:GeometryRepeater count="0" id="alertRepeater" suppressEventProcessing="true">
+				<geometry:EllipticalArc x="{-_diameter*.395}" y="{-_diameter*.395}" width="{_diameter*.395*2}" height="{_diameter*.395*2}" closureType="open">
+					<geometry:stroke>
+						<paint:SolidStroke color="0xFFFFFF" weight="{30*_diameter/400}" suppressEventProcessing="true" caps="none"/>
+					</geometry:stroke>
+				</geometry:EllipticalArc>
+				<coreRepeaters:modifiers>
+					<coreRepeaters:PropertyModifier property="startAngle" modifier="none" id="startAngleOffsets" />
+					<coreRepeaters:PropertyModifier property="arc" modifier="none" id="arcOffsets" />
+					<coreRepeaters:PropertyModifier property="stroke.color" modifier="none" id="colorOffsets" />
+					<coreRepeaters:PropertyModifier property="stroke.alpha" modifier="none" id="alphaOffsets" />
+				</coreRepeaters:modifiers>
+			</coreRepeaters:GeometryRepeater>
+			
+			<repeaters:ArcLineRepeater centerXOffset="0" centerYOffset="0" 
+				startAngle="{_startAngle}" endAngle="{_endAngle}" angleOffset="{minorTickOffset}" 
+				innerRadius="{_diameter*.37}" outerRadius="{_diameter*.44}"
+				stroke="{measureMarksStroke}"/>	
+				
+			<repeaters:ArcLineRepeater id="majorTickRepeater" centerXOffset="0" centerYOffset="0"
+				startAngle="{_startAngle}" endAngle="{_endAngle}" angleOffset="{majorTickOffset}" 
+				innerRadius="{_diameter*.34}" outerRadius="{_diameter*.44}"
+				stroke="{measureMarksStroke}"/>	
+				
+			<coreRepeaters:GeometryRepeater count="{majorTickRepeaters + 1}">    
+        <geometry:RasterText width="{_diameter*0.40}" height="{_diameter*0.40}" id="rastText" textColor="{_markLabelsColor}" fontSize="14" fontFamily="Helvetica">
+	        <geometry:transform>
+            <trans:TransformGroup>
+	            <trans:RotateTransform id="rotTransform" angle="{_startAngle+45}"/>
+	            <trans:RotateTransform id="numberRotate" registrationPoint="center" angle="{-_startAngle-45}"/>
+	            <trans:TranslateTransform x="{_diameter*0.165}" y="{_diameter*0.16}"/>
+            </trans:TransformGroup>
+	        </geometry:transform>
+        </geometry:RasterText>
+        
+        <coreRepeaters:modifiers>
+	        <coreRepeaters:PropertyModifier targets="{[rotTransform]}" modifier="{majorTickRepeater.angleOffset}" property="angle" modifierOperator="add"/>
+	        <coreRepeaters:PropertyModifier targets="{[numberRotate]}" modifier="{-majorTickRepeater.angleOffset}" property="angle" modifierOperator="add"/>
+	        <coreRepeaters:PropertyModifier targets="{[rastText]}" modifier="{speedLabels}" property="text" modifierOperator="none"/>
+	        <coreRepeaters:PropertyModifier targets="{[rastText]}" modifier="{15 * _diameter / 300.0}" property="fontSize" modifierOperator="none"/>
+        </coreRepeaters:modifiers>        
+    	</coreRepeaters:GeometryRepeater>
+							
+		</degrafa:GeometryComposition>
+		
+		<degrafa:GeometryComposition id="gaugeCaption" visible="false">
+			<geometry:RasterText id="gaugeCaptionRasterText" text="{caption}" fontSize="{14 * _diameter / 300.0}"
+									fontWeight="bold" textColor="{_captionColor}" fontFamily="Helvetica" x="{-capWidth/2}" y="{-_diameter*0.17}" />	
+		</degrafa:GeometryComposition>	
+		
+		<degrafa:GeometryComposition id="gaugeValueItem" visible="false">
+			<geometry:RasterText id="gaugeValueRasterText" text="{gaugeValue}" fontSize="{14 * _diameter / 300.0}"
+									fontWeight="bold" textColor="{_valueColor}" fontFamily="Helvetica" x="{-valWidth/2}" y="{_diameter*0.33*yOffsetMultiplier}" />	
+		</degrafa:GeometryComposition>	
+			
+		<degrafa:GeometryComposition id="indicator" visible="false">
+			<!-- rotated to face straight down -->
+			<geometry:Polygon fill="{indicatorFill}" stroke="{indicatorStroke}"
+				data="{
+					String(_diameter*-.02) + ',' + String(0) + ' ' + 
+					String(_diameter*-.03) + ',' + String(0) + ' ' +
+					String(_diameter*-.01) + ',' + String(_diameter*.40) + ' ' +
+					String(0) + ',' + String(_diameter*.41) + ' ' +
+					String(_diameter*.01) + ',' + String(_diameter*.40) + ' ' +
+					String(_diameter*.03) + ',' + String(0) + ' ' +
+					String(_diameter*.02) + ',' + String(0) 
+				}"/>
+		</degrafa:GeometryComposition>
+			
+		<degrafa:GeometryComposition id="secondaryIndicator" visible="false">
+			<!-- rotated to face straight down -->
+			<geometry:Polygon fill="{secondaryIndicatorFill}" stroke="{secondaryIndicatorStroke}"
+				data="{
+					String(_diameter*-.02) + ',' + String(0) + ' ' + 
+					String(_diameter*-.03) + ',' + String(0) + ' ' +
+					String(_diameter*-.01) + ',' + String(_diameter*.40) + ' ' +
+					String(0) + ',' + String(_diameter*.41) + ' ' +
+					String(_diameter*.01) + ',' + String(_diameter*.40) + ' ' +
+					String(_diameter*.03) + ',' + String(0) + ' ' +
+					String(_diameter*.02) + ',' + String(0) 
+				}"/>
+		</degrafa:GeometryComposition>
+		
+		<degrafa:GeometryComposition id="indicatorCrown" visible="false">
+			<geometry:Circle radius="{_diameter*.06}" fill="{indicatorCrownFillOuter}" stroke="{greyGradStroke}"/>
+			<geometry:Circle radius="{_diameter*.05}" fill="{indicatorCrownFillInner}"/>
+			<geometry:Circle radius="{_diameter*.04}" fill="{indicatorCrownFillInner}"/>
+			<geometry:Circle radius="{_diameter*.02}" fill="{indicatorCrownFillOuter}"/>
+		</degrafa:GeometryComposition>
+		
+		<degrafa:GeometryComposition id="highValue" visible="false">
+			<!-- rotated to face straight down -->
+			<geometry:Polygon fill="{highValueFill}" 
+				data="{
+					String(_diameter*-.02) + ',' + String(_diameter*.45) 							+ ' ' + 
+					String(_diameter*-.03) + ',' + String(_diameter*.45) 							+ ' ' +
+					String(_diameter*-.03) + ',' + String(_diameter*.45) 	+ ' ' +
+					String(0) 						 + ',' + String(_diameter*.41) 	+ ' ' +
+					String(_diameter*.03)  + ',' + String(_diameter*.45) 	+ ' ' +
+					String(_diameter*.03)  + ',' + String(_diameter*.45) 							+ ' ' +
+					String(_diameter*.02)  + ',' + String(_diameter*.45) 
+				}"/>
+		</degrafa:GeometryComposition>
+		
+		<degrafa:GeometryComposition id="lowValue" visible="false">
+			<!-- rotated to face straight down -->
+			<geometry:Polygon fill="{lowValueFill}"
+				data="{
+					String(_diameter*-.02) + ',' + String(_diameter*.45) 							+ ' ' + 
+					String(_diameter*-.03) + ',' + String(_diameter*.45) 							+ ' ' +
+					String(_diameter*-.03) + ',' + String(_diameter*.45) 	+ ' ' +
+					String(0) 						 + ',' + String(_diameter*.41) 	+ ' ' +
+					String(_diameter*.03)  + ',' + String(_diameter*.45) 	+ ' ' +
+					String(_diameter*.03)  + ',' + String(_diameter*.45) 							+ ' ' +
+					String(_diameter*.02)  + ',' + String(_diameter*.45) 
+				}"/>
+		</degrafa:GeometryComposition>		
+		
+		<degrafa:GeometryComposition id="labelBorder" visible="false">
+			<geometry:RoundedRectangle id="actualBorder" fill="{labelBorderFill}" stroke="{labelBorderStroke}" cornerRadius="3"/>
+		</degrafa:GeometryComposition>
+		
+		<degrafa:GeometryComposition id="faceReflection" visible="false">
+			<geometry:Ellipse width="{_diameter*.65}" height="{_diameter*.48}" fill="{reflectionFillTop}" y="{_diameter*-.43}" x="{_diameter*-.325}" />
+			<geometry:Ellipse width="{_diameter*.5}" height="{_diameter*.25}" fill="{reflectionFillBottom}"  y="{_diameter*.23}" x="{_diameter*-.235}"/>
+		</degrafa:GeometryComposition>
+		
+	</skins:geometry>
+</skins:GraphicBorderSkin>
