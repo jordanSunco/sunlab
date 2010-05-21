@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="75" height="75" horizontalScrollPolicy="off" verticalScrollPolicy="off" initialize="this.addEventListener(Event.ENTER_FRAME, onEnterFrame)">
+	<mx:Script>
+		<![CDATA[
+			private function onEnterFrame( e:Event ):void {
+				//this.width = 75 - Math.min(50,Math.abs(this.mouseX+this.width/2)/20);
+				//this.height = 75 - Math.min(50,Math.abs(this.mouseX+this.width/2)/20);
+				var focus:Number = (75 - Math.min(50,Math.abs(this.mouseX+this.width/2)/20))/75
+				var matrix:Array = new Array();
+            	matrix = matrix.concat([focus, 0, 0, 0, 0]); // red
+            	matrix = matrix.concat([0, focus, 0, 0, 0]); // green
+            	matrix = matrix.concat([0, 0, focus, 0, 0]); // blue
+            	matrix = matrix.concat([0, 0, 0, 1, 0]); // alpha
+            	this.filters = new Array(new ColorMatrixFilter(matrix));
+			}
+		]]>
+	</mx:Script>
+	<mx:Image id="thumb" source="http://static.flickr.com/{data.server}/{data.id}_{data.secret}_s.jpg" click="navigateToURL(new URLRequest('http://www.flickr.com/photos/'+ data.owner + '/' + data.id))" toolTip="{data.title}" completeEffect="Fade" width="75" height="75" />
+</mx:Canvas>
