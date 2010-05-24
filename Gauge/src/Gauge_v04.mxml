@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+	xmlns:degrafa="http://www.degrafa.com/2007" backgroundGradientColors="[0x222222,0x555555]"
+	xmlns:flash.filters='flash.filters.*' creationComplete="processAlerts()"
+	 xmlns:local="*" xmlns:controls="com.brightPoint.controls.*" viewSourceURL="srcview/index.html">
+	
+	
+	<mx:Script>
+		<![CDATA[ 
+		/*
+		Copyright (c) 2008, Thomas W. Gonzalez
+		
+		Permission is hereby granted, free of charge, to any person obtaining a copy
+		of this software and associated documentation files (the "Software"), to deal
+		in the Software without restriction, including without limitation the rights
+		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+		copies of the Software, and to permit persons to whom the Software is
+		furnished to do so, subject to the following conditions:
+		
+		The above copyright notice and this permission notice shall be included in
+		all copies or substantial portions of the Software.
+		
+		THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+		THE SOFTWARE.
+		
+		www.brightpointinc.com
+		
+		*/
+		
+			import com.brightPoint.controls.gauge.GaugeSkin;
+			
+			private function processAlerts():void {
+				
+				var values:Array=alertValues.text.split(",");
+				var colors:Array=alertColors.text.split(",");
+				var alphas:Array=alertAlphas.text.split(",");
+				
+				gauge.setStyle("alertValues",values);
+				gauge.setStyle("alertColors",colors);
+				gauge.setStyle("alertAlphas",alphas);
+				
+				gauge.invalidateDisplayList();
+				
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Style>
+		.dialSkin {
+			faceSkin:		ClassReference("com.brightPoint.controls.gauge.DialSkin");
+			indicatorSkin:		ClassReference("com.brightPoint.controls.gauge.DialSkin");
+			indicatorCrownSkin:		ClassReference("com.brightPoint.controls.gauge.DialSkin");
+			highlightSkin:		ClassReference("com.brightPoint.controls.gauge.DialSkin");
+		}
+		
+		.gaugeSkin {
+			faceSkin:		ClassReference("com.brightPoint.controls.gauge.GaugeSkin");
+			indicatorSkin:		ClassReference("com.brightPoint.controls.gauge.GaugeSkin");
+			indicatorCrownSkin:		ClassReference("com.brightPoint.controls.gauge.GaugeSkin");
+			highlightSkin:		ClassReference("com.brightPoint.controls.gauge.GaugeSkin");
+		}
+		
+		.gaugeLabel {
+			fontSize:14pt;
+			color:#FFFFFF;	
+		}
+	
+	</mx:Style>
+		<mx:HBox width="100%" height="100%">
+		<mx:VBox color="0xFFFFFF">
+			<mx:Form>
+				<mx:FormItem label="Value">
+					<mx:HSlider minimum="{gauge.minimum}" maximum="{gauge.maximum}" change="gauge.value=event.target.value" snapInterval="1" />
+				</mx:FormItem>
+				<mx:FormItem label="Size">
+					<mx:HSlider minimum="25" maximum="1000" id="gaugeSize" value="{gauge.diameter}" change="{gauge.diameter=gaugeSize.value;}" />
+				</mx:FormItem>
+				<mx:FormItem label="Face">
+					<mx:ColorPicker selectedColor="0x327bc2" change="{gauge.setStyle('backgroundColor',event.target.selectedColor)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Rim (Bezel)">
+					<mx:ColorPicker selectedColor="0xAAAAAA" change="{gauge.setStyle('bezelColor',event.target.selectedColor)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Tick Marks">
+					<mx:ColorPicker selectedColor="0xFFFFFF" change="{gauge.setStyle('measureMarksColor',event.target.selectedColor)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Tick Alpha">
+					<mx:HSlider value="1" minimum="0" maximum="1" snapInterval=".01" change="{gauge.setStyle('measureMarksAlpha',event.target.value)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Alert Values (comma delimited list)">
+					<mx:TextInput id="alertValues" text="0,50,70,100" focusOut="processAlerts();" color="0"/>
+				</mx:FormItem>
+				<mx:FormItem label="Alert Colors (comma delimited list - one less than Alert Values)">
+					<mx:TextInput id="alertColors" text="0x00BB11,0xFFFF00,0xFF0000" focusOut="processAlerts();" color="0"/>
+				</mx:FormItem>
+				<mx:FormItem label="Alert Alphas (comma delimited list - one less than Alert Values)">
+					<mx:TextInput id="alertAlphas" text=".7,.7,.7" focusOut="processAlerts();" color="0"/>
+				</mx:FormItem>
+				<mx:FormItem label="Min/Max Angle">
+					<mx:HSlider thumbCount="2" allowThumbOverlap="false" minimum="0" maximum="360" values="{[45,315]}"
+					 change="{gauge.setStyle('startAngle',event.target.values[0]); gauge.setStyle('endAngle',event.target.values[1]);}"/>
+				</mx:FormItem>
+				<mx:FormItem label="indicator">
+					<mx:ColorPicker selectedColor="0xFC5976" change="{gauge.setStyle('indicatorColor',event.target.selectedColor)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="indicator crown">
+					<mx:ColorPicker selectedColor="0xAAAAAA" change="{gauge.setStyle('indicatorCrownColor',event.target.selectedColor)}"/>
+				</mx:FormItem>
+				<mx:FormItem label="Skin">
+					<mx:RadioButtonGroup change="{gauge.setStyle('styleName',event.target.selectedValue)}" id="skinGroup"/>
+					<mx:RadioButton label="Gauge Skin" selected="true" value="gaugeSkin" groupName="skinGroup"/>
+					<mx:RadioButton label="Dial Skin"  value="dialSkin" groupName="skinGroup"/>					
+				</mx:FormItem>
+				<mx:FormItem label="Label Y Offset">
+					<mx:HSlider minimum="0" maximum="1" snapInterval=".01" value="{.7}" change="{gauge.setStyle('labelYOffsetRatio',event.target.value);}" />
+				</mx:FormItem>
+				<mx:FormItem label="Label X Offset">
+					<mx:HSlider minimum="-100" maximum="100" snapInterval="1" value="0" change="{gauge.setStyle('labelXOffset',event.target.value);}" />
+				</mx:FormItem>
+				<mx:FormItem label="Use Bounce Effect">
+					<mx:CheckBox change="if (useBounce.selected) gauge.setStyle('useBounceEffect',true) else gauge.setStyle('useBounceEffect',false)" selected="true" id="useBounce"/>
+				</mx:FormItem>
+				<mx:FormItem label="Value Scale">
+					<mx:RadioButtonGroup id="valueGroup" change="gauge.valueScale=valueGroup.selectedValue.toString();"/>
+					<mx:RadioButton label="Linear" groupName="valueGroup" value="linear" selected="true"/>
+					<mx:RadioButton label="Log" groupName="valueGroup" value="log"/>
+				</mx:FormItem>
+			</mx:Form>
+		</mx:VBox>
+		<mx:Canvas width="100%" height="100%" backgroundColor="0xBB0000" id="can">
+				<mx:Label color="0xFFFFFF" text="* - left click the mouse down and mover over the gauge to adjust the value" top="5" left="5"/>
+				<controls:DegrafaGauge 	id="gauge" diameter="400" liveDragging="true" horizontalCenter="0" verticalCenter="0" styleName="gauge"
+					startAngle="45"  minimum="1" maximum="100" 
+					endAngle="315" 
+					labelStyleName="gaugeLabel" labelFormatter="{formatter}"
+					/>
+		</mx:Canvas>
+	</mx:HBox>
+				
+	<mx:NumberFormatter precision="0" id="formatter"/>
+		
+</mx:Application>
