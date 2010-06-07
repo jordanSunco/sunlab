@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>2008年第29届北京奥运会金牌榜</title>
+        <script type="text/javascript" src="styles/scripts/swfobject.js"></script>
+        <script type="text/javascript">
+            function exportImage() {
+                var flashMovie = document.getElementById("ampie");
+                if (flashMovie) {
+                    flashMovie.exportImage("ExportImage"); 
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div id="flashcontent">
+            <strong>You need to upgrade your Flash Player</strong>
+        </div>
+        <script type="text/javascript">
+            var so = new SWFObject("styles/amcharts/ampie.swf", "ampie", "425", "260", "8", "#FFFFFF");
+            // so.addVariable("path", "styles/amcharts/");
+            so.addVariable("settings_file", "ampie_settings.xml");
+            so.addVariable("data_file", "ampie_data.xml");
+            so.addVariable("preloader_color", "#999999");
+            so.write("flashcontent");
+        </script>
+        <hr noshade size="1">
+        <input type="button" value="导出图片" onclick="exportImage()" />
+	</body>
+</html>
