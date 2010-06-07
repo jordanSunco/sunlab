@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pie>
+	<slice title="中国" pull_out="true">27</slice>
+	<slice title="美国" pull_out="false" alpha="80">16</slice>
+	<slice title="德国" pull_out="false">8</slice>
+	<slice title="韩国" pull_out="false">7</slice>
+	<slice title="意大利" alpha="100">6</slice>
+</pie>
