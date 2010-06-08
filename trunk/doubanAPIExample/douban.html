@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <style type="text/css" media="screen"> 
+        body {
+            margin: 50px 0px;
+            padding: 0px;
+            text-align: center;
+        }
+
+        h2 {
+            text-algin:center;
+        }
+
+        #container {
+            width:650px;
+            margin:0px auto; 
+            text-align:left; 
+            padding:15px;
+            border:1px dashed #333;
+            background-color:#eee;
+        }
+
+        #name {
+            padding: 3.5px;
+            width: 300px;
+            border: 1px solid #cccccc;
+        }
+        </style> 
+        <script type="text/javascript" src="js/mootools-release-1.11.js"></script>    
+        <script type="text/javascript" src="http://www.douban.com/js/api.js?v=1"></script>
+        <script type="text/javascript" src="js/douban_cal.js"></script>
+        <script type="text/javascript">
+        function isReady(){
+            $('name').addEvent('keydown',function(event){
+                if (event.keyCode == 13) {
+                    startgen();
+                }
+            })
+        }
+        </script>
+    </head>
+    <body onLoad="isReady();">
+        <div id="container" >
+            <h2>豆瓣统计工具</h2>
+            <p>豆瓣用户名或地址(比如: <strong>frankel</strong> 或者 <strong>http://www.douban.com/people/frankel/</strong>)
+                <input id="name" type="text" onfocus="this.style.border='1px solid #14568A';" 
+                    onblur="this.style.border='1px solid #CCCCCC';" />
+            </p>
+            <table style="margin-bottom:10px;">
+                <tr>
+                    <td><input name="cat" value="book" id="book" checked="true" type="radio" /><label for="book">书</label></td>
+                    <td><input name="cat" value="movie" id="movie" type="radio" /><label for="movie">电影</label></td>
+                    <td><input name="cat" value="music" id="music" type="radio" /><label for="music">音乐</label></td>
+                </tr>
+            </table>
+            <table style="margin-bottom:10px;">
+                <tr>
+                    <td>
+                        <select id="year" style="width: 80px">
+                            <option value="2009">2009年</option>
+                            <option value="2008">2008年</option>
+                            <option value="2007">2007年</option>
+                            <option value="alltime">所有</option>
+                        </select>
+                    </td>
+                    <td>每行显示</td>
+                    <td>
+                        <select id="colNo" style="width: 50px">
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                        </select>
+                    </td>
+                    <td>个</td>
+                    <td><input id="startBtn" value="开始" onclick="startgen()" type="button" /></td>
+                    <td id="loading_gif" style="display:none;"><img src="images/ajax-loader.gif"/></td>
+                </tr>
+            </table>
+            <div id="selectUser"></div>
+            <div id="output"></div>
+            <hr />
+            <p>复制输出的HTML代码</p>
+            <textarea id="htmlcode" cols="35" onclick="this.select();" onfoucs="this.select();"></textarea>
+        </div>
+    </body>
+</html>
