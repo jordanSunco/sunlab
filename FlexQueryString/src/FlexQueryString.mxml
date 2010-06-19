@@ -1,0 +1,33 @@
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical">
+    <mx:Script>
+        <![CDATA[
+            import com.abdulqabiz.utils.QueryString;
+            import info.flexer.QueryString;
+
+            private function getVars():void {
+                var qs:com.abdulqabiz.utils.QueryString = new com.abdulqabiz.utils.QueryString();
+                var parameterNameValue:String = parameterName.text;
+                showParameterValue(parameterNameValue, qs.parameters[parameterNameValue]);
+                trace(qs.url);
+            }
+
+            private function getVars1():void {
+                var qs:info.flexer.QueryString = new info.flexer.QueryString();
+                var parameterNameValue:String = parameterName.text;
+                showParameterValue(parameterNameValue, qs.parameters[parameterNameValue]);
+            }
+
+            private function showParameterValue(key:String, value:String):void {
+                parameterValue.text = key + " = " + value;
+            }
+        ]]>
+    </mx:Script>
+    <mx:HBox>
+        <mx:Label id="parameterValue" fontWeight="bold"/>
+    </mx:HBox>
+    <mx:HBox>
+        <mx:TextInput id="parameterName" />
+        <mx:Button label="abdulqabiz.com getParameter" click="getVars()" />
+        <mx:Button label="flexer.info getParameter" click="getVars1()" />
+    </mx:HBox>
+</mx:Application>
