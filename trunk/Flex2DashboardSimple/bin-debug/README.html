@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Dashboard Readme</title>
+<link href="../readme.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+ 
+  <h1>Dashboard Readme </h1>
+  <p><a href="dashboard.html" target="_blank">Run Dashboard</a></p>
+  <p>The Dashboard application shows  the power of the Adobe<sup>&reg;</sup> Flex<sup>&#8482;</span></sup> 2 framework in presenting 
+  information to the user.  The chart on the left shows total revenue across
+  all regions on a monthly places.  When you click  a data point in this chart, Flex updates the chart in the upper-right panel; that chart provides a breakdown of the contributions 
+  from each region for the given month.  If you select a region in the
+  breakdown of contributions, Flex updates the chart in the lower-right panel, which shows that individual
+  region's revenue compared to the average for the given time period.</p>
+  <h2>Flex framework features</h2>
+  <p>You use charts to show data, and use the Flex components' effects to help highlight the user's action as
+    they drill down into that data. For example, you can use a DataGrid component to show an alternate view of
+    that same data. You can use a ViewStack component to show either the Chart or the DataGrid, and
+    you can use a ToggleButtonBar component  to control which view you see. In the Dashboard application, you can also see one
+    of the techniques for creating a template component. The RevenueTimeline creates
+    a slot for a Chart, and then the subclasses of that component (AllRegions and 
+  RegionDetail) instantiate the chart that is displayed.</p>
+  <p>This application is keyboard and screen reader accessible. If accessibility is turned on, there are additional features to ensure the screen reader will read everything correctly, and all interactions can be done without a mouse. For example, when a DataGrid has focus, its columns can be sorted by pressing the corresponding column number (e.g. &quot;1&quot; for  the first column, &quot;2&quot; for the second column, etc.). In the accessible version, the slider that is used to select the date range is replaced with two ComboBoxes, one for the start, and one for the end, which are fully accessible and easier to use with a screen reader.</p>
+  <h2>Notes for Adobe<sup class="h2sup">&reg;</sup> Flex<sup class="h2sup">&#8482;</sup> Builder<sup class="h2sup">&#8482;</sup> 2</h2>
+  <p>To run this application with accessibility enabled select Project &gt; Properties. Select the Flex Compiler page and check &quot;Generate accessible SWF file.&quot;</p>
+  <p>The &quot;run&quot; links in this Readme file point to an HTML wrapper that is located in the same directory as the Readme, which in turn must be in the same directory as the compiled SWF file. If you are running this application in Flex Builder, the compiled SWF file and its matching HTML wrapper may be in the <a href="bin/dashboard.html">bin</a> directory. </p>
+  <h2>Notes for Adobe<sup class="h2sup">&reg;</sup> Flex<sup class="h2sup">&#8482;</sup> SDK</h2>
+  <p>The build script for the Dashboard application assumes that you  run the application  from the local 
+  file system (<code>file:///</code> in your browser).  If you plan to run the application from a web
+  server (<code>http://</code> in your browser), change the <code>-use-network</code> setting in
+the build script to <code>true</code>. To compile with accessibility, add <code>-accessible=true</code> in the options <code></code>.</p>
+  <p><a href="dashboard.html" target="_blank">Run Dashboard</a></p>
+</body>
+</html>

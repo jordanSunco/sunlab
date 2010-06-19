@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<RevenueTimeline xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    title="Revenue Timeline (All Regions)" creationComplete="init();">
+
+    <mx:Script>
+
+        <![CDATA[
+        	import mx.controls.Button;
+        
+        import mx.charts.HitData;
+		import mx.events.FlexEvent;
+
+		[Bindable]
+        public var lcToolTip:String = "";
+
+        private function formatDataTip(hitData:HitData):String
+        {
+            var name:String = hitData.item.name;
+            var revenue:Number = hitData.item.revenue;
+            return "<b>Month: "+name+"</b><br>Revenue: "+cf.format(revenue);
+        }
+        
+        private function init():void 
+        {
+        	if(Accessibility.active) 
+        	{
+				this.tabIndex=50;
+
+        		toggle.tabIndex = 70;
+        		//chart instead of grid is shown first when in accessibility mode
+        		toggle.selectedIndex = 1; 
+        		
+				var chartButton:Button = Button(toggle.getChildAt(0));
+				var gridButton:Button = Button(toggle.getChildAt(1));
+
+				chartButton.tabIndex = 75;
+				gridButton.tabIndex = 80;
+				
+        		gridButton.toolTip = "View revenue timeline in grid" ;
+        		chartButton.toolTip = "View revenue timeline in chart";
+        		
+        		var index:int = toggle.selectedIndex;
+        		
+        		//sets toolTip for toogle bar depending on which view is selected
+				if(index == 0) 
+				{ 
+					togToolTip = chartButton.toolTip + 
+						" is selected. To view in grid hit the right arrow and then space bar."; 
+				} 
+				else 
+				{ 
+					togToolTip = gridButton.toolTip + 
+						" is selected. To view in chart hit the left arrow and then space bar."; 
+				}
+        		
+        		gridToolTip = this.title + ". To sort grid by Month press 1, to sort by Total " + 
+        				"Revenue press 2, to sort by Average Across Regions press 3";
+
+				//Added for changing the value of the togglebutton toolTip when the views are changed
+				toggle.addEventListener(FlexEvent.VALUE_COMMIT, toggleUpdate);
+        	}
+        	
+		}
+
+		//Added for changing the value of the togglebutton toolTip when the views are changed
+		private function toggleUpdate(e:Event):void
+		{
+			var index:int = toggle.selectedIndex;
+			
+			var chartButton:Button = Button(toggle.getChildAt(0));
+			var gridButton:Button = Button(toggle.getChildAt(1));
+			
+			//sets toolTip for toogle bar depending on which view is selected
+			if(index == 0) 
+			{ 
+				togToolTip = chartButton.toolTip + 
+					" is selected. To view in grid " + 
+					"hit the right arrow and then space bar."; 
+			} 
+			else 
+			{ 
+				togToolTip = gridButton.toolTip + 
+					" is selected. To view in chart hit the left arrow and then space bar."; 
+			}
+		}
+		
+		private function chartComp():void
+		{
+			if(Accessibility.active) 
+        	{
+        		chart.tabIndex=40;
+        		chart.accessibilityProperties.forceSimple = true;
+
+				//Trying to make chart accessible
+				var accessProps:AccessibilityProperties = new AccessibilityProperties();
+				accessProps.name = "Chart data is available in grid view";
+				accessProps.description = "Chart data is available in grid view";
+				accessProps.forceSimple = true;
+
+				chart.accessibilityProperties = accessProps;
+				Accessibility.updateProperties(); 
+
+				lcToolTip = "Chart data is available in grid view";
+        	}
+		}
+
+        ]]>
+
+    </mx:Script>
+
+    <!-- will go into the IDeferredInstance slot of the superclass -->
+   <chart>
+		<mx:LineChart id="chart" dataProvider="{revenueData}" name="Chart data is available in grid view" showDataTips="true" width="100%" height="100%" toolTip="{lcToolTip}" dataTipFunction="formatDataTip"
+			itemClick="monthChange(event.hitData.item)"
+			creationComplete="chartComp()">
+
+			<mx:horizontalAxis>
+				<mx:CategoryAxis dataProvider="{revenueData}" categoryField="name"/>
+			</mx:horizontalAxis>
+
+			<mx:verticalAxis>
+				<mx:LinearAxis labelFunction="currencyFormat"/>
+			</mx:verticalAxis>
+
+			<mx:series>
+				<mx:Array>
+					<mx:LineSeries yField="revenue" showDataEffect="{interpolate}">
+						<mx:stroke>
+							<mx:Stroke color="#708EA4" weight="1"/>
+				</mx:stroke>
+					</mx:LineSeries>
+				</mx:Array>
+			</mx:series>
+
+			<mx:backgroundElements>
+				<mx:Array>
+			        <mx:GridLines direction="both">
+						<mx:verticalStroke>
+							<mx:Stroke weight="1" color="#CCCCCC"/>
+						</mx:verticalStroke>
+					</mx:GridLines>
+				</mx:Array>
+			</mx:backgroundElements>
+
+		</mx:LineChart>
+	</chart>
+
+</RevenueTimeline>

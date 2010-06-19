@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="368" height="24" xmlns:local="*">
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.events.AbstractEvent;
+			import mx.events.SliderEvent;
+			import mx.controls.ComboBox;
+			import mx.controls.HSlider;
+			import mx.controls.sliderClasses.Slider;
+			import mx.controls.sliderClasses.SliderThumb;
+    	    import mx.collections.ArrayCollection;
+		
+			[Bindable]
+			public var monthData:Array;
+			
+			[Bindable]
+			public var regionData:Array;
+			
+			[Bindable]
+	        public var slicedMonthData:ArrayCollection;
+	
+			[Bindable]
+	        public var slicedRegionData:ArrayCollection;
+	        
+	        public var startValue:int;
+	        public var endValue:int;
+	        
+	        [Bindable]
+	        private var startMonths:ArrayCollection;
+	        
+	        [Bindable]
+	        private var endMonths:ArrayCollection;
+	        
+		
+			private function getSliderLabel(value:String):String
+	        {            
+	            return monthData[parseInt(value)].name;
+	        }
+	        
+	        private function rangeChange():void
+	        {
+	        	valueUpdate();
+	        		        	
+				if (monthData != null) 
+		        	slicedMonthData.source = monthData.slice(startValue, endValue + 1);
+	
+				if (regionData != null)
+					slicedRegionData.source = monthData.slice(startValue, endValue + 1);
+ 		
+	        }
+	        
+	        public function sliderComp():void
+	        {
+	        	if (monthData != null) 
+	        	{
+	        		slider.maximum = monthData.length - 1;
+			    	slider.values = [0, monthData.length - 1];
+	        	}
+	        				    
+	        	startValue = slider.values[0];
+				endValue = slider.values[1];
+	        }
+	        
+	        public function comboComp():void
+	        {
+	        	//an event is dispatched whenever the start and end month comboBoxes are changed.
+	        	//a change in the start comboBox is handled by updating the end month comboBox 
+	        	//(so that the end month can't be before the start month) and vice versa
+
+	        	startMonths = new ArrayCollection(monthData);	
+	        	startMonths.filterFunction = startFilter;
+
+				endMonths = new ArrayCollection(monthData);
+				endMonths.filterFunction = endFilter;
+				
+		       	startCombo.addEventListener("change", 
+		       		function():void
+		       		{
+			       		endMonths.refresh();
+		       		});
+		       	endCombo.addEventListener("change", 
+		       		function ():void
+		       		{
+			       		startMonths.refresh();
+		       		});
+
+	        	endCombo.selectedIndex = endCombo.dataProvider.length - 1;
+	        	
+	        	startValue = startCombo.selectedIndex;
+	        	endValue = endCombo.selectedIndex;
+	        }
+	        
+	        //filters start months so that they can't be after selected end month
+	        private function startFilter(item:Object):Boolean
+	        {
+	        	var contains:Boolean = monthData.slice(0, (monthData.length - 
+	        		(endCombo.dataProvider.length - endCombo.selectedIndex))).some(
+	        		function(element:*, index:int, array:Array):Boolean 
+	        		{
+	        			return element == item;
+	        		});
+	        		
+	        	return contains;
+	        }
+	        
+	        //filters end months so that they can't be before selected start month
+	        private function endFilter(item:Object):Boolean
+	        {
+	        	var contains:Boolean = monthData.slice(startCombo.selectedIndex + 1, monthData.length).some(
+	        		function(element:*, index:int, array:Array):Boolean 
+	        		{
+	        			return element == item;
+	        		});
+	        		
+	        	return contains;
+	        }
+	        
+	        public function valueUpdate():void
+	        {
+				// Checking that any screen reader is active or not
+	        	if(Accessibility.active) {
+	        		if(endCombo != null) 
+	        		{
+		        		startValue = startCombo.selectedIndex;
+		        		endValue = monthData.length - (endCombo.dataProvider.length - endCombo.selectedIndex);
+	        		} 
+	        		else 
+	        		{
+	        			startValue = 0;
+	  					endValue = monthData.length;
+	        		}
+	        	} else {
+	        		if(slider != null) 
+	        		{
+	        			startValue = slider.values[0];
+	        			endValue = slider.values[1];
+	        		} 
+	        		else 
+	        		{
+	        			startValue = 0;
+	  					endValue = monthData.length;
+	        		}
+	        	}
+	        }
+	        
+	        private function stackComp():void 
+	        {
+				// Checking that any screen reader is active or not
+	        	if(Accessibility.active) 
+					viewstack.selectedIndex = 1;
+	        }
+	        
+	        private function labelsComp():void
+	        {
+	        	startLabel.accessibilityProperties.silent = true;
+	        	endLabel.accessibilityProperties.silent = true;
+	        }
+
+		]]>
+	</mx:Script>
+
+	<mx:ViewStack x="-1" y="0" id="viewstack" width="100%" height="100%" creationComplete="stackComp()">
+		<mx:Canvas id="dateSlider" width="100%" height="100%">
+			<mx:HSlider id="slider" 
+				x="0" y="4" width="180" 
+				thumbCount="2" 
+				snapInterval="1" 
+				minimum="0" 
+				dataTipPlacement="bottom" 
+				dataTipFormatFunction="getSliderLabel" 
+				change="rangeChange()"
+				creationComplete="sliderComp()"/>
+		</mx:Canvas>
+		<mx:Canvas id="combo" width="100%" height="100%">
+			<mx:Label x="2" y="3" text="Start Month" id="startLabel"/>
+			<mx:ComboBox id="startCombo" 
+				toolTip="Select period start month"
+				x="77" y="1" width="80" 
+				dataProvider="{startMonths}" 
+				labelField="name" 
+				change="rangeChange()" tabIndex="5"/>
+			<mx:Label x="183" y="2" text="End Month" id="endLabel" creationComplete="labelsComp()"/>
+			<mx:ComboBox id="endCombo"
+				toolTip="Select period end month"
+				x="252" y="1" width="80" 
+				dataProvider="{endMonths}" 
+				labelField="name" 
+				change="rangeChange()" tabIndex="10"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+	
+	
+</mx:Canvas>

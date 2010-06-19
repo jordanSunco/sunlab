@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*">
+
+    <mx:Metadata>
+        [Event("monthChange")]
+    </mx:Metadata>
+
+    <mx:Script>
+
+        <![CDATA[
+        import mx.controls.ToolTip;
+        import mx.controls.Button;
+        import mx.charts.chartClasses.ChartBase;
+        import flash.events.KeyboardEvent;
+        import mx.events.DataGridEvent;
+
+        [Bindable]
+        public var revenueData:Array;
+
+        [Bindable]
+        public var selectedMonth:Object;
+        
+        [Bindable]
+        public var gridToolTip:String = "";
+        
+        [Bindable]
+        public var togToolTip:String = "";
+
+        /**
+         * Should be assigned by subclasses
+         */
+        public var chart:ChartBase;
+
+        override protected function childrenCreated():void
+        {
+        	if (chart != null)
+        	{
+        		chartVBox.addChild(chart);
+        	}        	
+        	super.childrenCreated();
+        }
+		
+        protected function monthChange(month:Object):void
+        {
+            selectedMonth = month;
+            dispatchEvent(new Event("monthChange"));
+        }
+
+        protected function currencyFormat(value:Object, arg2:Object, arg3:Object):String
+        {
+            return cf.format(value);
+        }
+
+        private function dataGridCurrencyFormat(item:Object, column:Object):String
+        {
+            return cf.format(item[column.dataField]);
+        }
+
+        private function sortByDates(obj1:Object, obj2:Object):Number
+		{
+			var n:Number = SortUtils.sortByDates(obj1, obj2, "name");
+			return n;
+		}
+		
+         
+        private function gridComp():void
+        {
+        	if(this.accessibilityProperties) 
+        	{
+        		grid.addEventListener(KeyboardEvent.KEY_DOWN, gridKeyDownHander);
+        	}
+        }
+        
+        //used only when accessibility is true
+        //sorts dataGrid according to column (e.g. pressing "1" will sort the 1st column)
+        //not global because dataGrid uses a keyboardEvent handler to jump in datagrid (e.g. if "1" is pressed, 
+        //will find first entry that starts with "1")
+        private function gridKeyDownHander(event:KeyboardEvent):void 
+		{
+			//checks to see if key pressed is between 1 and however many columns are in the datagrid
+			// keyCode for "1" = 48, "2" = 49, ...
+			var colIdx:int = event.keyCode - 49;
+			
+			if ((colIdx < grid.columns.length) && (colIdx >= 0)) 
+			{
+
+				var col:DataGridColumn = grid.columns[colIdx];
+				
+				//dispatches an event to sort indicated column
+				var dataGridEvent:DataGridEvent = new DataGridEvent(DataGridEvent.HEADER_RELEASE, false, true);
+							dataGridEvent.columnIndex = colIdx;
+							dataGridEvent.dataField = col.dataField;
+							grid.dispatchEvent(dataGridEvent);
+			}
+		}
+        
+        ]]>
+
+    </mx:Script>
+
+    <mx:SeriesInterpolate id="interpolate" elementOffset="10"/>
+
+    <mx:CurrencyFormatter id="cf"/>
+
+    <mx:ViewStack id="vs" width="100%" height="100%">
+
+        <mx:VBox id="chartVBox" width="100%" height="100%" icon="@Embed('icon_chart.png')" toolTip="View in Chart" hideEffect="Fade" showEffect="Fade">
+        <!-- chart IDeferredInstance will go here -->
+		</mx:VBox>
+
+        <mx:VBox width="100%" height="100%" icon="@Embed('icon_grid.png')" toolTip="View in Grid" hideEffect="Fade" showEffect="Fade">
+            <mx:DataGrid dataProvider="{revenueData}" width="100%" height="100%" creationComplete="gridComp()"
+            	change="monthChange(DataGrid(event.target).selectedItem)" id="grid" toolTip="{gridToolTip}">
+                <mx:columns>
+                    <mx:Array>
+                        <mx:DataGridColumn dataField="name" headerText="Month"
+                            sortCompareFunction="sortByDates" />
+                        <mx:DataGridColumn dataField="revenue" headerText="Total Revenue"
+                            labelFunction="dataGridCurrencyFormat" />
+                        <mx:DataGridColumn dataField="average" headerText="Average Across Regions"
+                            labelFunction="dataGridCurrencyFormat" />
+                    </mx:Array>
+                </mx:columns>
+            </mx:DataGrid>
+        </mx:VBox>
+
+	</mx:ViewStack>
+
+    <mx:ControlBar>
+        <mx:ToggleButtonBar dataProvider="{vs}" id="toggle" toolTip="{togToolTip}"/>
+    </mx:ControlBar>
+
+</mx:Panel>
