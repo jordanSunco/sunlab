@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    paddingTop="3"
+    creationComplete="initApp()"
+    pageTitle="Dashboard"
+    xmlns:local="*" xmlns:view="view.*">
+
+    <mx:Style source="main.css"/>
+
+	<mx:Script>
+
+        <![CDATA[
+        import mx.controls.sliderClasses.SliderThumb;
+        import mx.core.UIComponent;
+        import mx.collections.ArrayCollection;
+        import mx.rpc.events.*;
+
+		[Bindable]
+        public var slicedMonthData:ArrayCollection;
+
+		[Bindable]
+        public var slicedRegionData:ArrayCollection;
+
+		[Bindable]
+        private var monthData:Array;
+        
+        [Bindable]
+        private var regionData:Array;
+        
+        [Bindable]
+        private var periodToolTip:String = "";
+         
+        [Bindable]
+        private var dashboardToolTip:String = "";
+                
+
+        private function initApp():void
+        {
+            srv.send();
+            slicedMonthData = new ArrayCollection();
+            slicedRegionData = new ArrayCollection();	
+        }
+
+        private function resultHandler(event:ResultEvent):void
+        {
+            monthData = event.result.list.month.source as Array;
+            regionData = new Array(monthData.length);
+            
+            slicedMonthData.source = monthData;
+            regionBreakdown.month = monthData[0];
+
+			dateRange.monthData = this.monthData;
+			dateRange.regionData = this.regionData;
+			dateRange.slicedMonthData = this.slicedMonthData;
+			dateRange.slicedRegionData = this.slicedRegionData;
+			            
+            if(Accessibility.active) 
+            {
+            	dateRange.comboComp();
+            } 
+            else 
+            {
+            	dateRange.sliderComp();
+            }
+            
+            var monthTotal:Number;
+            for (var i:Number = 0; i < monthData.length; i++)
+            {
+                regionData[i] = {name: monthData[i].name, average: 0, revenue: 0};
+                var regions:Array = monthData[i].region.source as Array;
+                monthTotal = 0;
+                for (var j:Number = 0; j < regions.length; j++)
+                {
+                    monthTotal += regions[j].revenue;
+                }
+                regionData[i].average = monthTotal/monthData[i].region.length
+            }
+            
+			dateRange.valueUpdate();
+            slicedRegionData.source = regionData.slice(dateRange.startValue, dateRange.endValue);
+        }
+
+        private function monthChange():void
+        {
+            regionBreakdown.month = allRegions.selectedMonth
+        }
+        
+        private function regionChange():void
+        {
+			regionDetail.region = regionBreakdown.selectedRegion.name;
+
+            for (var i:Number = 0; i < monthData.length; i++)
+            {
+                var regions:Array = monthData[i].region.source;
+                for (var j:Number = 0; j < regions.length; j++)
+                {
+                    if (regions[j].name == regionBreakdown.selectedRegion.name)
+                    {
+                        regionData[i].revenue = regions[j].revenue;
+                        break;
+                    }
+                }
+            }
+            slicedRegionData.source = regionData.slice(dateRange.startValue, dateRange.endValue + 1);
+       	}
+       	
+       	private function labelsComp():void
+       	{
+       		if(Accessibility.active) 
+       		{
+       			dashboardLabel.accessibilityProperties.silent = true;
+       			selectPeriodLabel.accessibilityProperties.silent = true;
+       		}
+       	}
+       	
+        ]]>
+
+    </mx:Script>
+
+    <mx:HTTPService id="srv" url="results.xml" useProxy="false" result="resultHandler(event)"/>
+
+    <mx:Spacer height="1"/>
+
+    <mx:ApplicationControlBar width="100%" tabChildren="true" id="appControlBar">
+        <mx:Label text="Dashboard:" id="dashboardLabel"/>
+        <mx:ComboBox width="150" id="revTimelineCombo" toolTip="Dashboard" tabIndex="0">
+            <mx:dataProvider>
+                <mx:Array>
+                    <mx:String>Revenue Timeline</mx:String>
+                </mx:Array>
+            </mx:dataProvider>
+        </mx:ComboBox>
+        <mx:Spacer width="10"/>
+        <mx:Label text="Select Period:" id="selectPeriodLabel" creationComplete="labelsComp()"/>
+        <AccessibleDateRange id="dateRange" tabIndex="5"/>
+    </mx:ApplicationControlBar>
+
+    <mx:HDividedBox width="100%" height="100%">
+
+        <AllRegions id="allRegions" revenueData="{slicedMonthData.source}"
+        	monthChange="monthChange()"
+        	width="50%" height="100%" tabIndex="30"/>
+
+        <mx:VDividedBox width="50%" height="100%">
+            <RegionBreakdown id="regionBreakdown" regionChange="regionChange()" width="100%" height="100%" tabIndex="100"/>
+            <RegionDetail id="regionDetail" revenueData="{slicedRegionData.source}" width="100%" height="100%" tabIndex="200"/>
+        </mx:VDividedBox>
+
+    </mx:HDividedBox>
+
+</mx:Application>

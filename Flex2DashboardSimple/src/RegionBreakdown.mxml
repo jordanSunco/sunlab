@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" creationComplete="init();">
+    <mx:Metadata>
+        [Event("regionChange")]
+    </mx:Metadata>
+    
+    <mx:Script>
+
+        <![CDATA[
+        import mx.events.FlexEvent;
+        import mx.controls.dataGridClasses.DataGridColumn;
+    	import mx.controls.Button;
+    	import mx.controls.Label;
+    	import mx.controls.ToolTip;
+        import mx.charts.HitData;
+        
+        private var chartToolTip:String;
+        private var gridToolTip:String;
+        private var selectedIndex:String;
+        
+        [Bindable] 
+        private var togToolTip:String = "";
+        
+        [Bindable]
+        private var chartDGToolTip:String = "";
+
+		[Bindable]
+        public var pcToolTip:String = "";
+        
+        import flash.events.KeyboardEvent;
+        import mx.events.DataGridEvent;
+        
+        private function init():void 
+        {
+        	if(Accessibility.active)
+			{
+				this.tabIndex=120;
+        		//charts instead of grid is shown first when in accessibility mode
+        		toggle.selectedIndex = 1;
+        		
+				var chartButton:Button = Button(toggle.getChildAt(0));
+				var gridButton:Button = Button(toggle.getChildAt(1));
+
+        		gridButton.toolTip = "View regional breakdown in grid" ;
+        		chartButton.toolTip = "View regional breakdown in chart";
+        		
+        		var index:int = toggle.selectedIndex;
+        		
+        		//sets toolTip for toogle bar depending on which view is selected
+				if(index == 0) 
+				{ 
+					togToolTip = chartButton.toolTip + 
+						" is selected. To view in grid " + 
+						"hit the right arrow and then space bar."; 
+				} 
+				else 
+				{ 
+					togToolTip = gridButton.toolTip + 
+						" is selected. To view in chart hit the left arrow and then space bar."; 
+				}
+
+				chartButton.addEventListener(FlexEvent.BUTTON_DOWN, toggleUpdate);
+				gridButton.addEventListener(FlexEvent.BUTTON_DOWN, toggleUpdate);
+				toggle.addEventListener(KeyboardEvent.KEY_DOWN, toggleUpdate);
+
+				//Added for changing the value of the togglebutton toolTip when the views are changed
+				toggle.addEventListener(FlexEvent.VALUE_COMMIT, toggleUpdate);
+        	}        	
+		}
+		
+		private function toggleUpdate(e:Event):void
+		{
+			var index:int = toggle.selectedIndex;
+			
+			var chartButton:Button = Button(toggle.getChildAt(0));
+			var gridButton:Button = Button(toggle.getChildAt(1));
+			
+			//sets toolTip for toogle bar depending on which view is selected
+			if(index == 0) 
+			{ 
+				togToolTip = chartButton.toolTip + 
+					" is selected. To view in grid " + 
+					"hit the right arrow and then space bar."; 
+			} 
+			else 
+			{ 
+				togToolTip = gridButton.toolTip + 
+					" is selected. To view in chart hit the left arrow and then space bar."; 
+			}
+		}
+        
+        //used only when accessibility is true
+        //sorts dataGrid according to column (e.g. pressing "1" will sort the 1st column)
+        //not global because dataGrid uses a keyboardEvent handler to jump in datagrid (e.g. if "1" is pressed, 
+        //will find first entry that starts with "1")
+        private function gridKeyDownHander(event:KeyboardEvent):void 
+		{
+			//checks to see if key pressed is between 1 and however many columns are in the datagrid
+			// keyCode for "1" = 48, "2" = 49, ...
+			var colIdx:int = event.keyCode - 49;
+			
+			if ((colIdx < grid.columns.length) && (colIdx >= 0)) 
+			{
+
+				var col:DataGridColumn = grid.columns[colIdx];
+				
+				//dispatches an event to sort indicated column
+				var dataGridEvent:DataGridEvent = new DataGridEvent(DataGridEvent.HEADER_RELEASE, false, true);
+							dataGridEvent.columnIndex = colIdx;
+							dataGridEvent.dataField = col.dataField;
+							grid.dispatchEvent(dataGridEvent);
+			}
+		}
+        
+        public function set month(m:Object):void
+        {
+        	_month = m;
+        	this.title = "Regional Breakdown [" + _month.name + "]";
+        	if (Accessibility.active) 
+        	{
+        		chartDGToolTip = this.title + ". To sort data grid by Region press 1, to sort by Revenue press 2";     	
+        	}
+    	}
+    	
+    	public function get month():Object
+    	{
+    		return _month;
+    	}
+   
+
+		[Bindable()]
+		private var _month:Object;
+
+        private function getSliceLabel(item:Object, arg2:String, arg3:Number, arg4:Number):String
+        {
+            return item==null?"":item.name;
+        }
+
+		private var _selectedRegion:Object;
+		
+        public function get selectedRegion():Object
+        {
+            return _selectedRegion;
+        }
+
+        public function set selectedRegion(item:Object):void
+        {
+            _selectedRegion = item;
+
+            var index:int = -1;
+            for (var i:int=0; i < _month.region.length && index == -1; i++)
+            {
+                if (_month.region[i].name == item.name)
+                    index = i;
+            }
+            //we only want to explode the selected region
+            var explodeData:Array = [];
+            explodeData[index] = 0.15;
+            pcRegion.series[0].perWedgeExplodeRadius = explodeData;
+        }
+
+        private function regionChange(item:Object):void
+        {
+            selectedRegion = item;
+            dispatchEvent(new Event("regionChange"));
+        }
+
+        private function dataGridCurrencyFormat(item:Object, column:Object):String
+        {
+            return cf.format(item[column.dataField]);
+        }
+
+        private function formatDataTip(hitData:HitData):String
+        {
+            var name:String = hitData.item.name;
+            var revenue:Number = hitData.item.revenue;
+            return "<b>Region: "+name+"</b><br>Revenue: "+cf.format(revenue);
+        }
+        
+        private function gridComp():void
+        {
+        	if(Accessibility.active) 
+        	{
+        		grid.addEventListener(KeyboardEvent.KEY_DOWN, gridKeyDownHander);
+        	}
+        }
+        
+		private function chartComp():void
+		{
+			if(Accessibility.active) 
+        	{
+        		pcRegion.accessibilityProperties.forceSimple = true;
+
+				//Trying to make chart accessible
+				var accessProps:AccessibilityProperties = new AccessibilityProperties();
+				accessProps.name = "Chart data is available in grid view";
+				accessProps.description = "Chart data is available in grid view";
+				accessProps.forceSimple = true;
+
+				pcRegion.accessibilityProperties = accessProps;
+				Accessibility.updateProperties(); 
+
+				pcToolTip = "Chart data is available in grid view";
+        	}
+		}
+
+
+        ]]>
+
+    </mx:Script>
+
+    <mx:CurrencyFormatter id="cf"/>
+
+    <mx:SeriesInterpolate id="interpolate" elementOffset="10"/>
+
+    <mx:ViewStack id="vs" width="100%" height="100%">
+        <mx:VBox id="gridBox" width="100%" height="100%"  icon="@Embed('icon_chart.png')" toolTip="View in Chart" hideEffect="Fade" showEffect="Fade">
+            <mx:PieChart id="pcRegion" dataProvider="{_month.region}" name="Chart data is available in grid view" toolTip="{pcToolTip}" showDataTips="true" width="100%" height="100%"
+                itemClick="regionChange(event.hitData.item)"
+                dataTipFunction="formatDataTip"
+                creationComplete="chartComp()">
+
+                <mx:series>
+                    <mx:Array>
+                        <mx:PieSeries field="revenue" nameField="name" labelPosition="callout"
+                                      labelFunction="getSliceLabel" showDataEffect="{interpolate}">
+                          <mx:fills>
+	                        <mx:Array>
+	                            <mx:RadialGradient>
+	                                <mx:entries>
+	                                    <mx:Array>
+	                                        <mx:GradientEntry color="#EF7651" ratio="0"/>
+	                                        <mx:GradientEntry color="#994C34" ratio="1"/>
+	                                    </mx:Array>
+	                                </mx:entries>
+	                            </mx:RadialGradient>
+	                            <mx:RadialGradient>
+	                                <mx:entries>
+	                                    <mx:Array>
+	                                        <mx:GradientEntry color="#E9C836" ratio="0"/>
+	                                        <mx:GradientEntry color="#AA9127" ratio="1"/>
+	                                    </mx:Array>
+	                                </mx:entries>
+	                            </mx:RadialGradient>
+	                            <mx:RadialGradient>
+	                                <mx:entries>
+	                                    <mx:Array>
+	                                        <mx:GradientEntry color="#6FB35F" ratio="0"/>
+	                                        <mx:GradientEntry color="#497B54" ratio="1"/>
+	                                    </mx:Array>
+	                                </mx:entries>
+	                            </mx:RadialGradient>
+	                            <mx:RadialGradient>
+	                                <mx:entries>
+	                                    <mx:Array>
+	                                        <mx:GradientEntry color="#A1AECF" ratio="0"/>
+	                                        <mx:GradientEntry color="#47447A" ratio="1"/>
+	                                    </mx:Array>
+	                                </mx:entries>
+	                            </mx:RadialGradient>
+	                            <mx:RadialGradient>
+	                                <mx:entries>
+	                                    <mx:Array>
+	                                        <mx:GradientEntry color="#BA9886" ratio="0"/>
+	                                        <mx:GradientEntry color="#AE775B" ratio="1"/>
+	                                    </mx:Array>
+	                                </mx:entries>
+	                            </mx:RadialGradient>
+	                        </mx:Array>
+	                    </mx:fills>
+	                    </mx:PieSeries>
+                    </mx:Array>
+                </mx:series>
+
+            </mx:PieChart>
+        </mx:VBox>
+
+        <mx:VBox id="chartBox" width="100%" height="100%" icon="@Embed('icon_grid.png')" toolTip="View in Grid" hideEffect="Fade" showEffect="Fade">
+            <mx:DataGrid dataProvider="{_month.region}" width="100%" height="100%" id="grid" creationComplete="gridComp();"
+            	change="regionChange(DataGrid(event.target).selectedItem)" toolTip="{chartDGToolTip}">
+                <mx:columns>
+                    <mx:Array>
+                        <mx:DataGridColumn dataField="name" headerText="Region"/>
+                        <mx:DataGridColumn dataField="revenue" headerText="Revenue" labelFunction="dataGridCurrencyFormat" />
+                    </mx:Array>
+                </mx:columns>
+            </mx:DataGrid>
+            
+        </mx:VBox>
+    </mx:ViewStack>
+
+    <mx:ControlBar>
+        <mx:ToggleButtonBar dataProvider="{vs}" id="toggle" toolTip="{togToolTip}"/>
+    </mx:ControlBar>
+
+</mx:Panel>
