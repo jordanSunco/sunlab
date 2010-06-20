@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+        creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import mx.core.UIComponent;
+
+            import com.unitzeroone.pv3d.examples.HelloWorld;
+            import com.unitzeroone.pv3d.examples.HelloPivotMoon;
+
+            private function init():void {
+                var ui:UIComponent = new UIComponent();
+//                ui.addChild(new HelloWorld());
+                ui.addChild(new HelloPivotMoon());
+                addChild(ui);
+            }
+        ]]>
+    </mx:Script>
+</mx:Application>
