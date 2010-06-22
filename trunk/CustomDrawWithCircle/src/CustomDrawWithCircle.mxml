@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	   xmlns:esri="http://www.esri.com/2008/ags"
+	   xmlns:flash="flash.text.*"
+	   xmlns:draw="com.esri.draw.*">
+	<mx:Script>
+        <![CDATA[
+            import mx.events.ItemClickEvent;
+
+            import com.esri.ags.Graphic;
+            import com.esri.ags.geometry.Geometry;
+            import com.esri.ags.events.DrawEvent;
+            import com.esri.ags.toolbars.Draw;
+
+            /**
+             * Draw Toolbar event handler
+             */
+            private function itemClickHandler(event:ItemClickEvent):void {
+                var activateDrawType:String = event.label;
+                if (activateDrawType != "") {
+                    circleTool.activate(activateDrawType);   
+                } else {
+                    deactivate();
+                }
+            }
+            
+            /**
+             * deactivate the drawing toolbar to allow map navigation
+             */
+            private function deactivate():void {
+                circleTool.deactivate();
+                tbb.selectedIndex = -1;         
+            }
+           	
+            /**
+             * drawEnd  event handler
+             */
+            private function drawEndHandler(event:DrawEvent):void {
+            	var graphic:Graphic = event.graphic;
+//                if (graphic == null) {
+//                    return;
+//                }
+                var geometry:Geometry = graphic.geometry;
+//                if (geometry == null) {
+//                    return;
+//                }
+
+                //deactivate();                
+
+                switch (geometry.type) {
+                	case Geometry.MAPPOINT:
+            			// do something - perform some query for example          			
+            			break;
+                	case Geometry.POLYGON:
+                		// do something
+                		break;
+                }
+           }
+
+           /**
+            * event handler - fires when drawing starts
+            * clear the previous graphics from the map
+            */
+           private function drawStartHandler(event:DrawEvent):void {
+           		// clear all selections before new drawing
+                // graphicsLayer.clear();           
+           }
+	   ]]>
+    </mx:Script>    
+	
+	<mx:Array id="arr">
+        <mx:Object label="{Draw.MAPPOINT}" toolTip="Click Me!" />
+        <mx:Object label="{Draw.POLYGON}" toolTip="Click Me!" />
+        <mx:Object label="{Draw.FREEHAND_POLYGON}" toolTip="Click Me!" />
+        <mx:Object label="{CustomDraw.CIRCLE}" toolTip="Click Me! Then press the mouse key on the map and hold while dragging to draw a cirlce. Free the mouse key to create the circle." />
+        <mx:Object label="" toolTip="Stop drawing to zoom in/out and pan the map." />
+    </mx:Array>
+
+	<!-- Draw Circle -->
+    <draw:CustomDraw id="circleTool" map="{map}" displayRadius="true"
+            displayCenter="true" graphicsLayer="{graphicsLayer}"
+        	drawStart="drawStartHandler(event)" drawEnd="drawEndHandler(event)" >        
+        <draw:textSymbol>
+        	<esri:TextSymbol color="0xFF00FF" placement="above"
+        	       backgroundColor="0xFFFFFF" background="true">
+        		<flash:TextFormat bold="true" size="12" italic="true" />
+        	</esri:TextSymbol>
+        </draw:textSymbol>
+        <draw:centerPointSymbol>
+        	<esri:SimpleMarkerSymbol style="cross" color="0xFF00FF" alpha="1" size="8" />
+        </draw:centerPointSymbol>
+        <draw:fillSymbol>
+            <!-- Symbol for Polygon and FreeHand Polygon-->
+            <esri:SimpleFillSymbol color="0xFF00FF" alpha="0.5" style="solid" />            	
+        </draw:fillSymbol>
+        <draw:lineSymbol>
+            <!-- Symbol for Polyline and FreeHand_Polyline -->
+            <esri:SimpleLineSymbol style="solid" color="0xFF00FF" width="1" alpha="1" />
+        </draw:lineSymbol>
+        <draw:markerSymbol>
+            <!-- Symbol for Point -->
+            <esri:SimpleMarkerSymbol style="x" color="0xFF00FF" size="12" />
+        </draw:markerSymbol>
+    </draw:CustomDraw>
+
+	<mx:ToggleButtonBar id="tbb" height="20" dataProvider="{arr}"
+    	creationComplete="tbb.selectedIndex = -1"
+    	itemClick="itemClickHandler(event)" />
+	<esri:Map id="map">
+		<esri:ArcGISTiledMapServiceLayer
+			url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer"/>
+		<esri:GraphicsLayer id="graphicsLayer" />
+	</esri:Map>
+</mx:Application>
