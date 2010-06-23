@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:local="com.adobe.aharui.*" >
+    <mx:Script>
+        <![CDATA[
+            [Bindable]
+            private var dp:Array = [
+                {symbol: "ADBE", name: "Adobe Systems Inc.", price: 49.95},
+                {symbol: "BETA", name: "Beta Inc.", price: 19.95},
+                {symbol: "CSCO", name: "Cisco Inc.", price: 45.95},
+                {symbol: "DELL", name: "Dell Inc.", price: 34.95},
+                {symbol: "EXPD", name: "Expedia Inc.", price: 39.95},
+                {symbol: "FOXS", name: "Fox Sports Inc.", price: 9.95},
+                {symbol: "GOOG", name: "Google Inc.", price: 139.95},
+                {symbol: "ICON", name: "Icon Inc.", price: 32.95},
+                {symbol: "JUNI", name: "Juniper Inc.", price: 23.95},
+                {symbol: "KLA", name: "KLA Tencor Inc.", price: 37.95},
+                {symbol: "MACR", name: "Macromedia Inc.", price: 39.95},
+                {symbol: "MSFT", name: "Microsoft Corp.", price: 25.95},
+                {symbol: "IBM", name: "IBM Corp.", price: 42.55}
+            ];
+
+            public function averageFunction(col:DataGridColumn):String {
+                var n:int = dp.length;
+                var avg:Number = 0;
+                for (var i:int = 0; i < n; i++) {
+                    avg += dp[i][col.dataField];
+                }
+                avg /= n;
+                return "AVG: " + avg.toFixed(2);
+            }
+        ]]>
+    </mx:Script>
+    <local:FooterDataGrid dataProvider="{dp}">
+        <local:columns>
+            <local:FooterDataGridColumn headerText="Name" dataField="name" width="140" >
+                <mx:DataGridColumn headerText="Name" dataField="name" />
+            </local:FooterDataGridColumn>
+            <local:FooterDataGridColumn headerText="Symbol" dataField="symbol" width="60" >
+                <mx:DataGridColumn headerText="Symbol" dataField="symbol" />
+            </local:FooterDataGridColumn>
+            <local:FooterDataGridColumn headerText="Price" dataField="price" >
+                <mx:DataGridColumn labelFunction="averageFunction" dataField="price" />
+            </local:FooterDataGridColumn>
+        </local:columns>
+    </local:FooterDataGrid>
+</mx:Application>
