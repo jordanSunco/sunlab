@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:local="com.adobe.aharui.*">
+    <mx:Script>
+        <![CDATA[
+            [Bindable]
+            private var arr:Array = [
+                {firstName: "Alex", lastName: "Harui", age: 48},
+                {firstName: "Gordon", lastName: "Smith", age: 54},
+                {firstName: "Deepa", lastName: "Subramanian", age: 22},
+                {firstName: "Matt", lastName: "Chotin", age: 28},
+                {firstName: "Ely", lastName: "Greenfield", age: 32},
+                {firstName: "Kevin", lastName: "Lynch", age: 15},
+                {firstName: "Shantanu", lastName: "Narayan", age: 50},
+                {firstName: "Joan", lastName: "Lafferty", age: 23},
+                {firstName: "Ryan", lastName: "Frishberg", age: 19},
+                {firstName: "Jason", lastName: "Szeto", age: 30},
+                {firstName: "Mark", lastName: "Anders", age: 40},
+                {firstName: "Peter", lastName: "Flynn", age: 24},
+                {firstName: "Heidi", lastName: "Williams", age: 18}
+            ];
+        ]]>
+    </mx:Script>
+    <local:CheckBoxDataGrid id="dg" dataProvider="{arr}"
+            allowMultipleSelection="true"
+            change="foo.text = dg.selectedIndices.toString()">
+        <local:columns>
+            <mx:DataGridColumn dataField="firstName" width="20" sortable="false"
+                itemRenderer="com.adobe.aharui.renderers.CheckBoxRenderer"
+                headerRenderer="com.adobe.aharui.renderers.CheckBoxHeaderRenderer" />
+            <mx:DataGridColumn dataField="firstName" />
+            <mx:DataGridColumn dataField="lastName" />
+        </local:columns>
+    </local:CheckBoxDataGrid>
+    <mx:Label id="foo" />
+
+    <local:CheckBoxList id="list" dataProvider="{arr}"
+        labelField="lastName" itemRenderer="com.adobe.aharui.renderers.CheckBoxRenderer"
+        allowMultipleSelection="true"
+        change="bar.text = list.selectedIndices.toString()" />
+    <mx:Label id="bar" />
+</mx:Application>
