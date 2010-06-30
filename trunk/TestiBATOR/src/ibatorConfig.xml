@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ibatorConfiguration PUBLIC 
+    "-//Apache Software Foundation//DTD Apache iBATIS Ibator Configuration 1.0//EN"
+    "http://ibatis.apache.org/dtd/ibator-config_1_0.dtd">
+<ibatorConfiguration>
+    <classPathEntry location="D:\talkweb\workspace\TestiBATOR\libs\h2-1.1.119.jar"/>
+    <ibatorContext id="context1">
+        <ibatorPlugin type="org.apache.ibatis.ibator.plugins.SqlMapConfigPlugin">
+            <property name="targetPackage" value="domain" />
+            <property name="targetProject" value="TestiBATOR" />
+        </ibatorPlugin>
+        <jdbcConnection driverClass="org.h2.Driver" 
+            connectionURL="jdbc:h2:tcp://localhost/~/test" userId="sa" password="" />
+        <javaModelGenerator targetPackage="domain" targetProject="TestiBATOR" />
+        <sqlMapGenerator targetPackage="domain" targetProject="TestiBATOR" />
+        <daoGenerator targetPackage="dao" targetProject="TestiBATOR" type="GENERIC-CI" />
+        <table schema="" tableName="ACCOUNT">
+            <columnOverride column="ACC_ID" property="id" />
+            <columnOverride column="ACC_FIRST_NAME" property="firstName" />
+            <columnOverride column="ACC_LAST_NAME" property="lastName" />
+            <columnOverride column="ACC_EMAIL" property="emailAddress" />
+        </table>
+    </ibatorContext>
+</ibatorConfiguration>
