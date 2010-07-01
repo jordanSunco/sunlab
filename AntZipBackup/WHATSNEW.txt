@@ -1,0 +1,29 @@
+Changes from AntZipBackup 1.1
+=============================================
+
+Fixed bugs:
+发送中文名附件时, 附件名显示为乱码
+-----------
+
+Other changes:
+--------------
+ANT采用最新的 1.8.1
+
+通过修改org.apache.tools.ant.taskdefs.email.MimeMailer(JavaMail的实现类), 将附件文件名进行编码来解决乱码问题
+MimeUtility.encodeWord(file.getName()), 详见MimeMailer.send()
+
+编译MimeMailer需要添加引用ANT库(ant.jar), JavaMail库(activation.jar, mailapi.jar, smtp.jar)
+
+libs/ant-javamail.jar 为MimeMailer编译后打包的jar, 而非ANT中原有的ant-javamail.jar
+
+运行ANT脚本, 需要在Classpath中添加libs下面所有的jar
+* ANT 启动必须
+    ant.jar, ant-launcher.jar
+* ANT 支持JavaScript
+    ant-nodeps.jar, ant-apache-bsf.jar
+    commons-logging-1.1.1.jar, bsf.jar, js-14.jar
+* ANT 支持mail
+    ant-javamail.jar
+    activation.jar, mailapi.jar, smtp.jar
+
+Eclipse中Run as Ant Build需要将Classpath中的 ANT Home 去掉, 然后再加入libs下面所有的jar
