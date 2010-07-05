@@ -1,0 +1,26 @@
+/* Non customizable CSS */
+.map { overflow:hidden; }
+.map .container { position:relative; border:none; padding:0px; margin:0px; left:0px; top:0px; overflow:hidden; width:100%; height:100%; }
+.map .container .layersDiv { position:relative; left:0px; top:0px; width:100%; height:100%; }
+.map .container .layersDiv .layerTile { position:absolute; border:none; margin:0px; padding:0px; }
+
+/* User customizable CSS */
+
+/* To customize the map logo
+ * - Replace image url and size appropriately
+ */
+/*.map .logo { position:absolute; right:5px; bottom:5px; width:78px; height:33px; z-index:49; background-image:url(../images/map/esrilogoMg.jpg); cursor:pointer; _background-image:none; }*/
+
+/* To customize fixed pan image:
+ * - Customize <jsapi>/images/map/fixed-pan-sprite.pdf and save as fixed-pan-sprite.png
+ * - Or modify images & CSS appropriately
+ */
+.map .container .fixedPan { position:absolute; width:15px; height:15px; background-image:url(../images/map/fixed-pan-sprite.png); overflow:hidden; cursor:pointer; }
+.map .container .panUp { background-position:-16px 0px; top:5px; }
+.map .container .panUpperRight { background-position:-32px 0px; right:5px; top:5px; }
+.map .container .panRight { background-position:-32px -16px; right:5px; }
+.map .container .panLowerRight { background-position:-32px -32px; right:5px; bottom:5px; }
+.map .container .panDown { background-position:-16px -32px; bottom:5px; }
+.map .container .panLowerLeft { background-position:-47px -32px; left:5px; bottom:5px; }
+.map .container .panLeft { background-position:-47px -16px; left:5px; }
+.map .container .panUpperLeft { background-position:-47px 0px; left:5px; top:5px; }
