@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>Dojo</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style type="text/css">
+            @import "lib/dojo/resources/dojo.css";
+            @import "lib/dijit/themes/tundra/tundra.css";
+        </style>
+        <script type="text/javascript">
+            djConfig = {
+                modulePaths: {
+                    "com.test": "../../com/test"
+                },
+                parseOnLoad: true
+            };
+        </script>
+        <script type="text/javascript" src="lib/dojo/dojo.js"></script>
+        <script type="text/javascript">
+            // 注册外面模块(包)还可以通过registerModulePath来完成
+            // dojo.registerModulePath("com.test", "../../com/test");
+            dojo.require("com.test.Test");
+            var t = new com.test.Test("Do囧");
+            t.t();
+
+            // 自带dijit
+            dojo.require("dijit.form.Button");
+            // 自定义dijit
+            dojo.require("com.test.dijit.a.Adijit");
+        </script>
+    </head>
+    <body class="tundra">
+        <ol>
+            <li>例子帮助理解Dojo实现的JavaScript包(package), 类(class)的概念</li>
+            <li>简单的实现了Dojo Widget(dijit)</li>
+        </ol>
+        <div dojoType="com.test.dijit.a.Adijit" p="设置值"></div>
+        <button dojoType="dijit.form.Button" type="button">dijit.form.Button</button>
+    </body>
+</html>
