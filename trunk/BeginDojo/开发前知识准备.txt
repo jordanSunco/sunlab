@@ -1,0 +1,28 @@
+环境准备
+1. 开发工具
+    首选Aptana 2.0, 支持常用JavaScript库的代码自动完成
+2. 下载Dojo库
+3. 测试Dojo开发环境搭建是否成功
+
+开发知识点
+1. 理解Dojo库JavaScript类, 包的概念
+    面对JavaScript, 你会说"我连定义一个类的语法都不知道"
+    由于JavaScript没有class的概念, 第3方库对其扩展包装出class概念.
+    参考:
+    Understanding dojo.declare, dojo.require, and dojo.provide
+    http://dojocampus.org/content/2008/06/03/understanding-dojodeclare-dojorequire-and-dojoprovide/
+
+    Dojo Module Packaging and Loading
+    http://dojocampus.org/content/2008/10/09/dojo-module-packaging-and-loading/
+
+    Configuring Dojo with djConfig
+    http://dojotoolkit.org/reference-guide/djConfig.html
+
+    Maps a module name to a path
+    http://dojotoolkit.org/reference-guide/dojo/registerModulePath.html
+2. 看Dojo官方网站的一些例子
+    参考:
+    Dojo 技术专题
+    http://www.ibm.com/developerworks/cn/web/wa-dojotoolkit/
+    用 Dojo 1.x 开发小部件
+    http://www.ibm.com/developerworks/cn/web/wa-aj-dojotool/
