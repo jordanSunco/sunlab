@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+     xmlns:components="components.*"
+     creationComplete="popWindow()">
+    <mx:Style source="assets/main.css" />
+    <mx:Script>
+        <![CDATA[
+            import components.LoginWindow;
+            import components.AlertEx;
+            import mx.core.IFlexDisplayObject;
+            import mx.managers.PopUpManager;
+
+            private function popWindow():void {
+                var popUp:IFlexDisplayObject = PopUpManager.createPopUp(this, LoginWindow);
+                PopUpManager.centerPopUp(popUp);
+                AlertEx.show("Text goes here", "Title goes here");
+            }
+        ]]>
+    </mx:Script>
+    <components:PanelEx width="400" height="300" title="Title goes here">
+        <mx:Label text="Text goes here"/>
+    </components:PanelEx>
+</mx:Application>

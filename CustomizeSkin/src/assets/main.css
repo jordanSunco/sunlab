@@ -1,0 +1,53 @@
+Application
+{
+	fontSize:12; 
+	color:#474747;
+	backgroundGradientColors: #FFFFFF,#FFFFFF;
+}
+
+PanelEx
+{
+	borderAlpha: 1;
+	borderColor: #D1D1D1;
+	borderStyle: solid;
+	borderThickness: 1;
+	cornerRadius: 5;
+	headerCapColor: #990000;
+	headerCapHeight: 4;
+	headerColors: #ECECEC, #FFFFFF;
+	headerHeight: 26;
+	roundedBottomCorners: true;
+	dropShadowEnabled: false;
+	titleBackgroundSkin: ClassReference("skins.TitleBackgroundEx");
+}
+
+TitleWindowEx
+{
+	headerCapColor: #009900;
+	headerCapHeight: 6;
+	closeButtonDisabledSkin: Embed(source="assets/Panel_closeButtonDisabledSkin.png");
+	closeButtonDownSkin: Embed(source="assets/Panel_closeButtonDownSkin.png");
+	closeButtonOverSkin: Embed(source="assets/Panel_closeButtonOverSkin.png");
+	closeButtonUpSkin: Embed(source="assets/Panel_closeButtonUpSkin.png");
+}
+
+AlertEx
+{
+	headerCapColor: #000099;
+	headerCapHeight: 8;
+    titleStyleName:"alertTitle"; 
+    messageStyleName:"messageStyle"; 
+} 
+
+.alertTitle 
+{ 
+    fontFamily:Arial;  
+    fontWeight:bold;
+} 
+
+
+.messageStyle 
+{ 
+    textAlign:left; 
+    fontFamily:Arial; 
+} 
