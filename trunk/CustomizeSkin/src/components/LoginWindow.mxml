@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:TitleWindowEx
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:components="components.*"
+	title="Login In"
+	showCloseButton="true">
+	<mx:Form>
+		<mx:FormItem label="User Name:">
+			<mx:TextInput/>
+		</mx:FormItem>
+		<mx:FormItem label="Password:">
+			<mx:TextInput/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="center">
+		<mx:Button label="Submit"/>
+		<mx:Button label="Cancle"/>
+	</mx:ControlBar>
+</components:TitleWindowEx>
