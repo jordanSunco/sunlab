@@ -1,0 +1,12 @@
+.InfoCloseButton {
+    disabledSkin: Embed(source="assets/callout_icons.swf",symbol="Callout_closeButtonDisabledSkin");
+    downSkin: Embed(source="assets/callout_icons.swf",symbol="Callout_closeButtonDownSkin");
+    overSkin: Embed(source="assets/callout_icons.swf",symbol="Callout_closeButtonOverSkin");
+    upSkin: Embed(source="assets/callout_icons.swf",symbol="Callout_closeButtonUpSkin");
+}
+.InfoExpandButton {
+    disabledSkin: Embed(source="assets/callout_icons.swf",symbol="Callout_expandButtonDisabledSkin");
+    downSkin: Embed(source="assets/callout_icons.swf",symbol="Callout_expandButtonDownSkin");
+    overSkin: Embed(source="assets/callout_icons.swf",symbol="Callout_expandButtonOverSkin");
+    upSkin: Embed(source="assets/callout_icons.swf",symbol="Callout_expandButtonUpSkin");
+}

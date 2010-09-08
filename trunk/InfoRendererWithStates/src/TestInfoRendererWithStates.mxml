@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        creationComplete="init()">
+    <mx:Style>
+        InfoSymbolContainer {
+            infoPlacementMode: none;
+            infoOffsetX: 12;
+            infoOffsetY: 12;
+            infoOffsetW: 6;
+            borderThickness: 2;
+        }
+    </mx:Style>
+    <mx:Script>
+        <![CDATA[
+            import com.amcharts.AmPieChart;
+            import mx.charts.series.PieSeries;
+            import mx.charts.PieChart;
+            import graphic.InfoSymbolGraphic;
+            import symbol.renderer.InfoRendererWithStates;
+            import mx.controls.Label;
+            import mx.controls.Image;
+            import mx.controls.TextInput;
+            import mx.controls.Button;
+            import mx.core.UIComponent;
+            import com.esri.ags.symbol.Symbol;
+            import mx.controls.ComboBox;
+            import mx.containers.Panel;
+            import com.esri.ags.symbol.InfoSymbol;
+            import com.esri.ags.geometry.MapPoint;
+            import com.esri.ags.Graphic;
+
+            private var g:Graphic;
+            private var infoSymbol:InfoSymbol;
+
+            private function init():void {
+                infoSymbol = new InfoSymbol();
+                infoSymbol.infoRenderer = new ClassFactory(symbol.renderer.InfoRendererWithStates);
+
+                g = new Graphic(new MapPoint(-150.1426305828385, 65.192539151385304));
+                g.symbol = infoSymbol;
+
+                graphicsLayer.add(g);
+            }
+
+            private function testGraphicOnlyHasPreviewDisplayObjectAttribute():void {
+                g.attributes = new Object();
+                g.attributes["previewDisplayObject"] = new ComboBox();
+
+                reAddGraphic();
+            }
+
+            private function testGraphicOnlyHasTitleLabelTextAttribute():void {
+                g.attributes = new Object();
+                g.attributes["titleLabelText"] = "哈哈";
+
+                reAddGraphic();
+            }
+
+            private function testGraphicHasAllAttribute():void {
+                g.attributes = new Object();
+                var previewDisplayObject:Label = new Label();
+                previewDisplayObject.text = "预览"
+
+                g.attributes["previewDisplayObject"] = previewDisplayObject;
+//                g.attributes["previewDisplayObjectWith"] = 30;
+//                g.attributes["previewDisplayObjectHeight"] = 18;
+
+                g.attributes["titleLabelText"] = "标题";
+
+                var detailContent:Button = new Button();
+                detailContent.label = "详细内容";
+                g.attributes["detailContent"] = detailContent;
+
+                reAddGraphic();
+            }
+
+            private function testGraphicOnlyHasDetailContentAttribute():void {
+                var b:Button = new Button();
+                b.label = "Button"
+
+                g.attributes = new Object();
+                g.attributes["detailContent"] = b;
+
+                reAddGraphic();
+            }
+
+            private function testInfoSymbolGraphic():void {
+                var p:PieChart = new PieChart();
+                p.width = 150;
+                p.height = 150;
+                var ps:PieSeries = new PieSeries();
+                ps.field = "VALUE";
+                ps.nameField = "AGE";
+                ps.setStyle("labelPosition", "callout");
+                p.series = [ps];
+                p.dataProvider = [{
+                    VALUE: 1000,
+                    AGE: "A"
+                }, {
+                    VALUE: 400,
+                    AGE: "B"
+                }, {
+                    VALUE: 300,
+                    AGE: "C"
+                }];
+
+                var ig:InfoSymbolGraphic = new InfoSymbolGraphic(
+                    new MapPoint(-100.1426305828385, 65.192539151385304), null,
+                    null, "标题", p, 50, 50
+                );
+
+                graphicsLayer.add(ig);
+
+//                setTimeout(function ():void {
+//                    ig.previewDisplayObject = new TextInput();
+//                }, 3000);
+//                setTimeout(function ():void {
+//                    ig.titleLabelText = "改变标题";
+//                }, 6000);
+                setTimeout(function ():void {
+                    ig.detailContent = new ComboBox();
+                    ig.previewDisplayObjectWith = 0;
+                    ig.previewDisplayObjectHeight = 0;
+                }, 3000);
+            }
+            
+            private function testInfoSymbolGraphicChart():void {
+                var p:AmPieChart = new AmPieChart();
+                p.width = 160;
+                p.height = 120;
+                p.titleField = "AGE";
+                p.valueField = "VALUE";
+                p.setStyle("labelsEnabled", false);
+                p.dataProvider = [{
+                    VALUE: 1000,
+                    AGE: "A"
+                }, {
+                    VALUE: 400,
+                    AGE: "B"
+                }, {
+                    VALUE: 300,
+                    AGE: "C"
+                }];
+
+                var ig:InfoSymbolGraphic = new InfoSymbolGraphic(
+                    new MapPoint(-40.1426305828385, 65.192539151385304), null,
+                    null, "标题", p
+                );
+
+                graphicsLayer.add(ig);
+            }
+
+            private function reAddGraphic():void {
+                graphicsLayer.remove(g);
+                graphicsLayer.add(g);
+            }
+        ]]>
+    </mx:Script>
+    <esri:Map id="myMap">
+        <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer"/>
+        <esri:GraphicsLayer id="graphicsLayer" />
+    </esri:Map>
+    <mx:Button label="testGraphicOnlyHasPreviewDisplayObjectAttribute" click="testGraphicOnlyHasPreviewDisplayObjectAttribute()" />
+    <mx:Button label="testGraphicOnlyHasTitleLabelTextAttribute" click="testGraphicOnlyHasTitleLabelTextAttribute()" />
+    <mx:Button label="testGraphicHasAllAttribute" click="testGraphicHasAllAttribute()" />
+    <mx:Button label="testGraphicOnlyHasDetailContentAttribute" click="testGraphicOnlyHasDetailContentAttribute()" />
+    <mx:Button label="testInfoSymbolGraphic" click="testInfoSymbolGraphic()" />
+    <mx:Button label="testInfoSymbolGraphicChart" click="testInfoSymbolGraphicChart()" />
+</mx:Application>
