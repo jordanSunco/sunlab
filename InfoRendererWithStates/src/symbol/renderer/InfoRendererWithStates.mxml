@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init()">
+    <mx:Style source="InfoRendererWithStatesStyle.css" />
+    <mx:Script source="InfoRendererWithStatesLogic.as" />
+    <mx:HBox id="titleBar" width="100%" horizontalScrollPolicy="off"
+        verticalScrollPolicy="off" />
+    <mx:states>
+        <mx:State name="titleState">
+            <mx:AddChild relativeTo="{titleBar}" position="lastChild">
+                <mx:Label id="titleLabel" text="{titleLabelText}" fontWeight="bold" />
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{titleBar}" position="lastChild">
+                <mx:Button id="expandButton" styleName="InfoExpandButton" height="18"
+                    width="18" click="currentState = 'detailState';" />
+            </mx:AddChild>
+        </mx:State>
+        <mx:State id="detailState" name="detailState" basedOn="titleState">
+            <mx:RemoveChild target="{expandButton}" />
+            <mx:AddChild relativeTo="{titleBar}" position="lastChild">
+                <mx:Spacer width="100%"/>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{titleBar}" position="lastChild">
+                <mx:Button id="closeButton" styleName="InfoCloseButton" height="18"
+                    width="18" click="currentState = null;" />
+            </mx:AddChild>
+            <!-- detail content will be added to here -->
+        </mx:State>
+    </mx:states>
+    <mx:transitions>
+        <mx:Transition fromState="*" toState="titleState">
+            <mx:Sequence targets="{[titleLabel, expandButton]}">
+                <mx:Resize target="{this}" duration="250" />
+                <mx:AddChildAction />
+            </mx:Sequence>
+        </mx:Transition>
+        <mx:Transition fromState="*" toState="detailState">
+            <mx:Sequence>
+                <mx:Resize target="{this}" duration="250" />
+                <mx:AddChildAction />
+            </mx:Sequence>
+        </mx:Transition>
+        <mx:Transition fromState="titleState" toState="detailState">
+            <mx:Sequence targets="{[detailContent, closeButton]}">
+                <mx:Resize target="{this}" duration="250" />
+                <mx:AddChildAction />
+            </mx:Sequence>
+        </mx:Transition>
+        <mx:Transition fromState="detailState" toState="*">
+            <mx:Resize target="{this}" duration="250" />
+        </mx:Transition>
+        <mx:Transition fromState="titleState" toState="*">
+            <mx:Resize target="{this}" duration="250" />
+        </mx:Transition>
+    </mx:transitions>
+</mx:VBox>
