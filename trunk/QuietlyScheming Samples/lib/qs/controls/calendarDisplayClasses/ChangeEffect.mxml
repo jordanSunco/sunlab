@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sequence xmlns="http://www.adobe.com/2006/mxml" xmlns:qse="qs.effects.*">
+	<Script>
+		<![CDATA[
+			public var changeData:Function;
+		]]>
+	</Script>
+	<qse:AnimateColorProperty property="color" isStyle="true" fromValue="#000000"  toValue="#FFFFFF"/>
+	<qse:AnimateColorProperty effectStart="changeData();" property="color" isStyle="true" fromValue="#FFFFFF" toValue="#000000"/>	
+</Sequence>
