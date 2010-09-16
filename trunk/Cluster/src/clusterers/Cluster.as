@@ -12,8 +12,6 @@ package clusterers {
 		[ArrayElementType("com.esri.ags.Graphic")]
 		private var _mapPointGraphics:Array;
 
-		private var _merged:Boolean = false;
-
 		public function Cluster(x:Number, y:Number, cx:int, cy:int) {
 			super(x, y);
 			this.cx = cx;
