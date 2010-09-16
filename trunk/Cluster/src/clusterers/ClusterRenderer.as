@@ -1,3 +1,7 @@
+/*
+ * Copyright
+ */
+
 package clusterers {
     import com.esri.ags.Graphic;
     import com.esri.ags.Map;
@@ -27,6 +31,9 @@ package clusterers {
      * 1. 重构
      * 2. 增加分级配置功能
      * 3. 增加默认递增聚合效果
+     * 
+     * @author Sun
+     * @version 2010-09-16
      */
     public class ClusterRenderer {
         /**
