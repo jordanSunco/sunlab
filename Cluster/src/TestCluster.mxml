@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        xmlns:clusterers="clusterers.*"
+        creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import clusterers.ClusterRenderer;
+            import mx.collections.ArrayCollection;
+            import com.esri.ags.Graphic;
+            import com.esri.ags.events.QueryEvent;
+            import com.esri.ags.tasks.FeatureSet;
+
+//            private var clusterRenderer:ClusterRenderer;
+
+            private function init():void {
+                queryTask.execute(q);
+
+//                clusterRenderer = new ClusterRenderer(map, graphicsLayer);
+            }
+
+            private function handleQueryResult(event:QueryEvent):void {
+                var source:ArrayCollection = new ArrayCollection(
+                    event.featureSet.features);
+                clusterRenderer.mapPointGraphicSource = source;
+            }
+        ]]>
+    </mx:Script>
+    <esri:Map id="map">
+        <esri:ArcGISTiledMapServiceLayer url="http://192.168.200.58:8399/arcgis/rest/services/hnjichu/MapServer" />
+        <esri:GraphicsLayer id="graphicsLayer" />
+    </esri:Map>
+    <esri:Query id="q" returnGeometry="true" outFields="{['*']}" where="1=1" />
+    <esri:QueryTask id="queryTask" url="http://192.168.200.58:8399/arcgis/rest/services/hnqudao/MapServer/3"
+        executeComplete="handleQueryResult(event)"/>
+        
+    <clusterers:ClusterRenderer id="clusterRenderer" renderLayer="{graphicsLayer}"
+            map="{map}" radius="40">
+        <!--<mx:Array>-->
+            <esri:ClassBreakInfo maxValue="10">
+                <esri:symbol>
+                    <esri:SimpleMarkerSymbol color="0x76D100" size="20" alpha="0.75" />
+                </esri:symbol>
+            </esri:ClassBreakInfo>
+            <esri:ClassBreakInfo minValue="11" maxValue="30">
+                <esri:symbol>
+                    <esri:SimpleMarkerSymbol color="0xFF9F00" size="40" alpha="0.75" />
+                </esri:symbol>
+            </esri:ClassBreakInfo>
+            <esri:ClassBreakInfo minValue="31">
+                <esri:symbol>
+                    <esri:CompositeSymbol>
+                        <esri:SimpleMarkerSymbol color="0xFF0F00" size="60" alpha="0.25" />
+                        <esri:SimpleMarkerSymbol color="0xFF0F00" size="40" alpha="0.75" />
+                    </esri:CompositeSymbol>
+                </esri:symbol>
+            </esri:ClassBreakInfo>
+        <!--</mx:Array>-->
+    </clusterers:ClusterRenderer>
+</mx:Application>
