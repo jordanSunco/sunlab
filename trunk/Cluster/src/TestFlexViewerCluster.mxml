@@ -21,7 +21,7 @@
         ]]>
     </mx:Script>
     <esri:Map id="map">
-        <esri:ArcGISTiledMapServiceLayer url="http://192.168.200.58:8399/arcgis/rest/services/hnjichu/MapServer" />
+        <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer" />
         <esri:GraphicsLayer id="graphicsLayer" graphicProvider="{clusterManager.source}">
             <esri:symbol>
                 <clusterers:ClusterSymbol radius="30"/>
@@ -29,7 +29,7 @@
         </esri:GraphicsLayer>
     </esri:Map>
     <esri:Query id="q" returnGeometry="true" outFields="{['*']}" where="1=1" />
-    <esri:QueryTask id="queryTask" url="http://192.168.200.58:8399/arcgis/rest/services/hnqudao/MapServer/3"
+    <esri:QueryTask id="queryTask" url="http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/0"
         executeComplete="handleQueryResult(event)"/>
     <clusterers:ClusterManager id="clusterManager" map="{map}" radius="40" />
 </mx:Application>
