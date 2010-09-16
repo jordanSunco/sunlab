@@ -1,32 +1,42 @@
+/*
+ * Copyright
+ */
+
 package clusterers {
-	import com.esri.ags.Graphic;
-	import com.esri.ags.geometry.MapPoint;
+    import com.esri.ags.Graphic;
+    import com.esri.ags.geometry.MapPoint;
 
-	public class Cluster extends MapPoint {
-	    // Centroid x value
-		private var _cx:int;
-		// Centroid y value
-		private var _cy:int;
+    /**
+     * 聚合点要素
+     * 
+     * @author Sun
+     * @version 2010-09-16
+     */
+    public class Cluster extends MapPoint {
+        // Centroid x value
+        private var _cx:int;
+        // Centroid y value
+        private var _cy:int;
 
-		// Number of map points in the cluster
-		[ArrayElementType("com.esri.ags.Graphic")]
-		private var _mapPointGraphics:Array;
+        // Number of map points in the cluster
+        [ArrayElementType("com.esri.ags.Graphic")]
+        private var _mapPointGraphics:Array;
 
-		public function Cluster(x:Number, y:Number, cx:int, cy:int) {
-			super(x, y);
-			this.cx = cx;
-			this.cy = cy;
+        public function Cluster(x:Number, y:Number, cx:int, cy:int) {
+            super(x, y);
+            this.cx = cx;
+            this.cy = cy;
 
-			_mapPointGraphics = new Array();
-		}
+            _mapPointGraphics = new Array();
+        }
 
-		public function addMapPointGraphic(mapPointGraphic:Graphic):void {
-		    mapPointGraphics.push(mapPointGraphic);
-		}
+        public function addMapPointGraphic(mapPointGraphic:Graphic):void {
+            mapPointGraphics.push(mapPointGraphic);
+        }
 
-		public function getMapPointCount():uint {
-		    return mapPointGraphics.length;
-		}
+        public function getMapPointCount():uint {
+            return mapPointGraphics.length;
+        }
 
         /**
          * Adjust centroid weighted by the number of map points in the cluster.
@@ -68,5 +78,5 @@ package clusterers {
         public function get mapPointGraphics():Array {
             return this._mapPointGraphics;
         }
-	}
+    }
 }
