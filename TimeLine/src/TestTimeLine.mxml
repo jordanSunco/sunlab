@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*">
+    <mx:Script>
+        <![CDATA[
+            import mx.events.CalendarLayoutChangeEvent;
+            import events.DateListEvent;
+
+            [Bindable]
+            private var date:Date = new Date(2010, 8);
+
+            private function traceSelectedDates(event:DateListEvent):void {
+                log.text += event.formattedDates + "\n";
+            }
+
+            private function handleDateFieldChange(event:CalendarLayoutChangeEvent):void {
+                monthLine.date = event.newDate;
+                monthLine.init();
+
+                dateLine.date = event.newDate;
+                dateLine.init();
+            }
+
+            private function toggleTimeLine():void {
+                if (monthLine.dateType == "month") {
+                    monthLine.dateType = "date";
+                } else {
+                    monthLine.dateType = "month";
+                }
+
+                monthLine.init();
+            }
+        ]]>
+    </mx:Script>
+    <mx:DateField change="handleDateFieldChange(event)" />
+    <local:TimeLine id="monthLine" dateType="month" date="{date}"
+        dateListChange="traceSelectedDates(event)" />
+    <local:TimeLine id="dateLine" dateType="date"
+        dateListChange="traceSelectedDates(event)" />
+    <mx:TextArea id="log" width="440" height="150" />
+    <mx:Button label="Toggle Time Line" click="toggleTimeLine()" />
+</mx:Application>
