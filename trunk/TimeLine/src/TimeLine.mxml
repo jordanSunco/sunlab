@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*"
+        horizontalGap="0" creationComplete="init()">
+    <mx:Metadata>
+        [Event(name="dateListChange", type="events.DateListEvent")] 
+    </mx:Metadata>
+    <mx:Script>
+        <![CDATA[
+            import events.DateListEvent;
+
+            private var _date:Date = new Date();
+
+            private var _dateType:String = "month";
+
+            public function init():void {
+                dateList.dateFieldName = _dateType;
+
+                switch (_dateType) {
+                    case "month":
+                        dateList.groupDateFieldName = "fullYear";
+                        break;
+                    case "date":
+                        dateList.groupDateFieldName = "month";
+                        break;
+                    default:
+                        trace("default");
+                }
+
+                dateList.init(_date);
+            }
+
+            private function previous():void {
+                _date[_dateType]--;
+                dateList.init(_date);
+            }
+
+            private function next():void {
+                _date[_dateType]++;
+                dateList.init(_date);
+            }
+
+            public function set date(value:Date):void {
+                this._date = value;
+            }
+
+            public function get dateType():String {
+                return this._dateType;
+            }
+
+            public function set dateType(value:String):void {
+                this._dateType = value;
+            }
+        ]]>
+    </mx:Script>
+    <mx:Button label="&lt;" height="100%" click="previous()" />
+    <local:DateList id="dateList" />
+    <mx:Button label="&gt;" height="100%" click="next()" />
+</mx:HBox>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+        creationComplete="init(new Date())">
+    <mx:Style>
+        .dateLabel {
+            backgroundColor: #FFFFFF;
+        }
+
+        .dateTileList {
+            backgroundColor: #E9EEF2;
+        }
+    </mx:Style>
+    <mx:Metadata>
+        [Event(name="dateListChange", type="events.DateListEvent")] 
+    </mx:Metadata>
+    <mx:Script>
+        <![CDATA[
+            import mx.formatters.DateFormatter;
+            import events.DateListEvent;
+            import util.DateUtils;
+            import mx.controls.Label;
+
+            private var currentDate:Date;
+            private var n:uint = 10;
+
+            private var _dateFieldName:String = "month";
+            private var _groupDateFieldName:String = "fullYear";
+
+            private var dateFormatter:DateFormatter = new DateFormatter();
+
+            [Bindable]
+            private var dateLabelHeight:Number = 18;
+
+            [Bindable]
+            private var columnCount:int = 12;
+
+            [Bindable]
+            private var columnWidth:int = 30;
+
+            public function init(date:Date):void {
+                currentDate = date || new Date();
+
+                var backDate:Date = DateUtils.getBackDate(currentDate, n, _dateFieldName);
+                var dateArray:Array = DateUtils.getIncreaseDateArray(backDate, columnCount, _dateFieldName);
+                var dateGroup:Array = DateUtils.groupDate(dateArray, _groupDateFieldName);
+
+                initDateTileListData(dateArray);
+                initDateLabel(dateGroup);
+            }
+
+            private function initDateTileListData(dateArray:Array):void {
+                dateTileList.dataProvider = dateArray;
+            }
+
+            private function getDateItemLabel(item:Object):String {
+                initDateFormatter();
+                return dateFormatter.format(item);
+            }
+
+            protected function initDateFormatter():void {
+                switch (_dateFieldName) {
+                    case "month":
+                        dateFormatter.formatString = "M";
+                        break;
+                    case "date":
+                        dateFormatter.formatString = "D";
+                        break;
+                    default:
+                        trace("default");
+                }
+            }
+
+            private function initDateLabel(dateGroup:Array):void {
+                dateLabels.removeAllChildren();
+
+                var leftOffset:Number = 0;
+                for (var i:uint = 0, length:uint = dateGroup.length; i < length; i++) {
+                    var group:Array = dateGroup[i];
+                    var groupName:String = group[0];
+                    var groupSize:uint = group[1];
+
+                    var canvasWidth:Number = groupSize * columnWidth;
+
+                    var canvas:Canvas = createDateLabel(groupName);
+                    canvas.width = canvasWidth;
+
+                    if (i != 0) {
+                        // 向左偏移到对应的分组位置
+                        canvas.setStyle("left", leftOffset);
+                    }
+                    // 分组之间留出空隙
+                    leftOffset += canvasWidth + 1;
+
+                    dateLabels.addChild(canvas);
+                }
+            }
+
+            private function createDateLabel(string:String):Canvas {
+                var canvas:Canvas = new Canvas();
+                canvas.height = dateLabelHeight;
+                canvas.styleName = "dateLabel";
+
+                var label:Label = new Label();
+                label.text = string;
+
+                canvas.addChild(label);
+                return canvas;
+            }
+
+            private function handleDateChange():void {
+                var dateListEvent:DateListEvent = new DateListEvent(
+                    DateListEvent.DATE_LIST_CHANGE, true, false,
+                    dateTileList.selectedItems, _dateFieldName);
+                dispatchEvent(dateListEvent);
+            }
+
+            public function get dateFieldName():String {
+                return this._dateFieldName;
+            }
+
+            public function set dateFieldName(value:String):void {
+                this._dateFieldName = value;
+            }
+
+            public function get groupDateFieldName():String {
+                return this._groupDateFieldName;
+            }
+
+            public function set groupDateFieldName(value:String):void {
+                this._groupDateFieldName = value;
+            }
+        ]]>
+    </mx:Script>
+    <mx:Canvas id="dateLabels" />
+    <mx:TileList id="dateTileList" top="{dateLabelHeight}" height="{columnWidth}"
+        columnCount="{columnCount}" columnWidth="{columnWidth}"
+        allowMultipleSelection="true" styleName="dateTileList"
+        labelFunction="getDateItemLabel" change="handleDateChange()" />
+    <!--
+    <mx:Canvas width="60" height="18" styleName="dateLabel">
+        <mx:Label text="2009" />
+    </mx:Canvas>
+    <mx:Canvas left="61" width="150" height="18" styleName="dateLabel">
+        <mx:Label text="2010" />
+    </mx:Canvas>
+    <mx:TileList top="18" height="30" columnCount="7" columnWidth="30"
+        allowMultipleSelection="true" dataProvider="{[11,12,1,2,3,4,5]}"
+        styleName="dateTileList" />
+    -->
+</mx:Canvas>
