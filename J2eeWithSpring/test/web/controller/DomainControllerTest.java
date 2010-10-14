@@ -16,7 +16,8 @@ import org.springframework.ui.ExtendedModelMap;
  * @author Sun
  * @version DomainControllerTest.java 2010-9-21 上午10:30:23
  */
-@ContextConfiguration(locations = { "classpath:applicationContext.xml" })
+@ContextConfiguration(locations = { "classpath:applicationContext.xml",
+        "classpath:spring-mvc-servlet.xml" })
 public class DomainControllerTest extends
         AbstractTransactionalJUnit4SpringContextTests {
     @Autowired
