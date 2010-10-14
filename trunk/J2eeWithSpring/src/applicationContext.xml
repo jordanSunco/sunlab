@@ -7,7 +7,7 @@
         default-lazy-init="true">
     <description>Spring iBATIS</description>
     <context:property-placeholder location="classpath:application.properties"/>
-    <context:component-scan base-package="dao.impl.ibatis2,service.impl,web.controller" />
+    <context:component-scan base-package="dao.impl.ibatis2,service.impl" />
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${jdbc.driver}" />
         <property name="url" value="${jdbc.url}" />
