@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <display-name>SpringBlazeDSIntegration</display-name>
+    <description>Spring BlazeDS Integration Application</description>
+
+    <!-- Http Flex Session attribute and binding listener support -->
+    <listener>
+        <listener-class>flex.messaging.HttpFlexSession</listener-class>
+    </listener>
+    
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring/applicationContext*.xml</param-value>
+    </context-param>
+    
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    
+    <!-- The front controller of this Spring Web application, responsible for handling all application requests -->
+    <servlet>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring/spring-flex.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- Map all /messagbroker requests to the DispatcherServlet for handling -->
+    <servlet-mapping>
+        <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
+        <url-pattern>/messagebroker/*</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <!-- for WebSphere deployment, please uncomment -->
+    <!--
+    <resource-ref>
+        <description>Flex Messaging WorkManager</description>
+        <res-ref-name>wm/MessagingWorkManager</res-ref-name>
+        <res-type>com.ibm.websphere.asynchbeans.WorkManager</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+    -->
+</web-app>
