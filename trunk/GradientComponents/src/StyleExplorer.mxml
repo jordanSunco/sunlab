@@ -1,0 +1,735 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:grad="com.gradientcomponents.*" 
+	xmlns:com="com.*"
+	layout="vertical" 
+	creationComplete="completedApp();">
+	
+	<mx:Style source="/assets/styles.css" />
+	
+	<mx:Script>
+		<![CDATA[
+			import com.Style_Background;
+			import com.gradientcomponents.*;
+			import mx.containers.HBox;
+			import mx.containers.VBox;
+			import mx.controls.Label;
+			import mx.controls.TextInput;
+			import mx.events.FlexEvent;
+			import flash.events.Event;
+
+			
+			[Bindable]
+			[Embed(source="/assets/HP-Firefox-Dock-512.png")]
+			public var tlimg1:Class;
+
+			[Bindable]
+			[Embed(source="/assets/HP-Monitor-Dock-512.png")]
+			public var tlimg2:Class;
+
+			[Bindable]
+			[Embed(source="/assets/Laptop.png")]
+			public var tlimg3:Class;
+
+			[Bindable]
+			[Embed(source="/assets/MyComputer.png")]
+			public var tlimg4:Class;
+
+			[Bindable]
+			private  var mxmlcode:String = "<com:GradientCanvas \>";
+			[Bindable]
+			private  var csscode:String = "GradientCanvas \n	{\n	}";
+			[Bindable]
+			private var mygradcompfilters:Array = new Array();
+			
+			private var mydropfilter:DropShadowFilter = new DropShadowFilter();
+			
+			private var mygradcomp:* = new GradientCanvas();;
+			
+			
+			private function completedApp() :void
+			{
+				Gradient1.addEventListener(Event.CHANGE, changeHandler);
+				gradientTabNavigator.getChildAt(0).dispatchEvent( new Event('change'));
+				
+				bThickness.addEventListener(Event.CHANGE, changeHandler);
+				cornerStyle.addEventListener(Event.CHANGE, changeHandler);
+				bordercolorStyle.addEventListener(Event.CHANGE, changeHandler);
+				borderorientationStyle.addEventListener(Event.CHANGE, changeHandler);
+				borderoptionsStyle.addEventListener(Event.CHANGE, changeHandler);
+				
+				// add the DropShadowFilter to this array to be used as filter properties in examples
+				mygradcompfilters.push(mydropfilter);
+				GCexample1.filters = mygradcompfilters;
+				GCexample2.filters = mygradcompfilters;
+				
+				addGradientComponent();
+			}
+			
+			
+			[Bindable]
+			private var componentList:Array = [ 'GradientCanvas', 'GradientHBox',
+				'GradientHDividedBox', 'GradientVBox',
+				'GradientVDividedBox', 'GradientPanel',
+				'GradientAccordion', 'GradientTileList',
+				'GradientTextArea', 'GradientRichTextEditor' ];
+			
+			
+			/*
+			 * Add the GradientComponent into the demoPanel
+			 */
+			private function addGradientComponent():void
+			{
+				// clean the demo Panel before rebuilding a new GradientComponent
+				demoPanel.removeAllChildren();
+				demoPanel.title = "GradientComponent: " + gradientSelector.selectedLabel;
+				
+				var gtype:String = gradientSelector.selectedLabel;
+				switch (gtype)
+				{
+					case 'GradientCanvas':
+						mygradcomp = new GradientCanvas();
+						addGradientComponentContent();
+						break;
+						
+					case 'GradientHBox':
+						mygradcomp = new GradientHBox();
+						addGradientComponentContent();
+						break;
+						
+					case 'GradientHDividedBox':
+						mygradcomp = new GradientHDividedBox();
+						addGradientComponentContent();
+						break;
+						
+					case 'GradientVBox':
+						mygradcomp = new GradientVBox();
+						addGradientComponentContent();
+						addGradientComponentContent();
+						break;
+						
+					case 'GradientVDividedBox':
+						mygradcomp = new GradientVDividedBox();
+						addGradientComponentContent();
+						addGradientComponentContent();
+						break;
+						
+					case 'GradientPanel':
+						mygradcomp = new GradientPanel();
+						mygradcomp.title = 'A Panel';
+						addGradientComponentContent();
+						break;
+						
+					case 'GradientAccordion':
+						mygradcomp = new GradientAccordion();
+						addGradientComponentContent();
+						addGradientComponentContent();
+						mygradcomp.getChildAt(0).label = "For accordions,";
+						mygradcomp.getChildAt(1).label = "set backgroundAlpha to 0";
+						mygradcomp.setStyle( 'backgroundAlpha', 0 );
+						break;
+						
+					case 'GradientTileList':
+						mygradcomp = new GradientTileList();
+						mygradcomp.dataProvider = [ { label:' For a', icon:tlimg1 }, { label:'TileList', icon:tlimg2 }, { label:'set backgroundAlpha', icon:tlimg3 }, { label:'to 0', icon:tlimg4 } ];
+						mygradcomp.maxColumns = 2;
+						mygradcomp.setStyle( 'backgroundAlpha', 0 );
+						break;
+						
+					case 'GradientTextArea':
+						mygradcomp = new GradientTextArea();
+						break;
+						
+					case 'GradientRichTextEditor':
+						mygradcomp = new GradientRichTextEditor();
+						break;
+				}
+				
+				// use a listerner to get default styles when the component is added to stage
+				mygradcomp.addEventListener( FlexEvent.CREATION_COMPLETE, function():void
+					{
+						changeHandler();
+						bThickness.maximum = mygradcomp.width / 2;
+					});
+				
+				mygradcomp.id = 'mygradcomp';
+				mygradcomp.width = 220;
+				mygradcomp.height = 220;
+				mygradcomp.horizontalScrollPolicy = "off";
+				mygradcomp.verticalScrollPolicy = "off";
+				
+				demoPanel.addChild( mygradcomp );
+			}
+			
+			
+			/*
+			 * Build the content of the GradientComponent
+			 */
+			private function addGradientComponentContent() :void
+			{
+				var demoHBox:HBox = new HBox();
+				demoHBox.setStyle( 'paddingTop', 5 );
+				
+				var demoLabel:Label = new Label();
+				demoLabel.text = "a label";
+				var demoTextInput:TextInput = new TextInput();
+				demoTextInput.percentWidth = 50;
+				
+				demoHBox.addChild( demoLabel );
+				demoHBox.addChild( demoTextInput );
+				
+				var demoVBox:VBox = new VBox();
+				demoVBox.setStyle( 'horizontalAlign', 'center' );
+				demoVBox.x = 21.5;
+				demoVBox.y = 74;
+				
+				demoVBox.addChild( demoHBox );
+				
+				mygradcomp.addChild( demoVBox );
+			}
+			
+			
+			private function changeHandler( e:Event=null ) : void
+			{
+				setAllStyles();
+				updateColorConfiguration();
+				generateCodes();
+			}
+
+			
+			// Generate CSS and MXML code
+			private function generateCodes() : void
+			{
+				var styleString:String;
+				
+				styleString = String(mygradcomp.colorsConfiguration);
+				
+				csscode =
+				mygradcomp.className + " \n{\n" +
+				"		colorsConfiguration: " + styleString + ";\n";
+				mxmlcode = 
+				"<com:" + mygradcomp.className + " \n" +
+				"		colorsConfiguration = \"[" + styleString + "]\"\n";
+				
+				styleString = String(positioning.value);
+				if (styleString != GradientCanvas.DEFAULT_POSITIONING)
+				{
+					//styleString = String(positioning.value);
+					csscode += "		positioning: " + styleString + ";\n";
+					mxmlcode += "		positioning = \"" + styleString + "\"\n";
+				}
+				styleString = String(concatColorStyles('type'));
+				if (styleString != GradientCanvas.DEFAULT_GRADIENTTYPE)
+				{
+					csscode += "		gradientType: " + styleString + ";\n";
+					mxmlcode += "		gradientType = \"" + styleString + "\"\n";
+				}
+				if (concatColorStyles('csscolors').toString().slice(1) != GradientCanvas.DEFAULT_FILLCOLORS.slice(2))
+				{
+					styleString = String(concatColorStyles('csscolors'));
+					csscode += "		fillColors: " + styleString + ";\n";
+					mxmlcode += "		fillColors = \"[" + styleString + "]\"\n";
+				}
+				if (concatColorStyles('alphas').toString() != GradientCanvas.DEFAULT_FILLALPHAS)
+				{
+					styleString = String(concatColorStyles('alphas'));
+					csscode += "		fillAlphas:  " + styleString + ";\n";
+					mxmlcode += "		fillAlphas = \"[" + styleString + "]\"\n";
+				}
+				if (concatColorStyles('ratio').toString() != GradientCanvas.DEFAULT_GRADIENTRATIO)
+				{
+					styleString = String(concatColorStyles('ratio'));
+					csscode += "		gradientRatio: " + styleString + ";\n";
+					mxmlcode += "		gradientRatio = \"[" + styleString + "]\"\n";
+				}
+				if (concatOrientationStyles('angle').toString() != GradientCanvas.DEFAULT_ANGLE)
+				{
+					styleString = String(concatOrientationStyles('angle'));
+					csscode += "		angle: " + styleString + ";\n";
+					mxmlcode += "		angle = \"" + styleString + "\"\n";
+				}
+				if (concatOrientationStyles('offsetx').toString() != GradientCanvas.DEFAULT_OFFSETX)
+				{
+					styleString = String(concatOrientationStyles('offsetx'));
+					csscode += "		offsetX: " + styleString + ";\n";
+					mxmlcode += "		offsetX = \"" + styleString + "\"\n";
+				}
+				if (concatOrientationStyles('offsety').toString() != GradientCanvas.DEFAULT_OFFSETY)
+				{
+					styleString = String(concatOrientationStyles('offsety'));
+					csscode += "		offsetY: " + styleString + ";\n";
+					mxmlcode += "		offsetY = \"" + styleString + "\"\n";
+				}
+				if (concatOptionStyles('spm').toString() != GradientCanvas.DEFAULT_SPREADMETHOD)
+				{
+					styleString = String(concatOptionStyles('spm'));
+					csscode += "		spreadMethod: " + styleString + ";\n";
+					mxmlcode += "		spreadMethod = \"" + styleString + "\"\n";
+				}
+				if (concatOptionStyles('ipm').toString() != GradientCanvas.DEFAULT_INTERPOLATIONMETHOD)
+				{
+					styleString = String(concatOptionStyles('ipm'));
+					csscode += "		interpolationMethod: " + styleString + ";\n";
+					mxmlcode += "		interpolationMethod = \"" + styleString + "\"\n";
+				}
+				if (concatOptionStyles('fpr').toString() != GradientCanvas.DEFAULT_FOCALPOINTRATIO)
+				{
+					styleString = String(concatOptionStyles('fpr'));
+					csscode += "		focalPointRatio: " + styleString + ";\n";
+					mxmlcode += "		focalPointRatio = \"" + styleString + "\"\n";
+				}
+				if (cornerStyle.allcorner.selected)
+				{
+					if (cornerStyle.globalcorner.value != GradientCanvas.DEFAULT_CORNERRADIUS)
+					{
+						styleString = String(cornerStyle.globalcorner.value);
+						csscode += "		cornerRadius: " + styleString + ";\n";
+						mxmlcode += "		cornerRadius = \"" + styleString + "\"\n";
+					}
+				}
+				else {
+					if (cornerStyle.tlcorner.value != GradientCanvas.DEFAULT_TOPLEFTRADIUS)
+					{
+						styleString = String(cornerStyle.tlcorner.value);
+						csscode += "		topLeftRadius: " + styleString + ";\n";
+						mxmlcode += "		topLeftRadius = \"" + styleString + "\"\n";
+					}
+					if (cornerStyle.trcorner.value != GradientCanvas.DEFAULT_TOPRIGHTRADIUS)
+					{
+						styleString = String(cornerStyle.trcorner.value);
+						csscode += "		topRightRadius: " + styleString + ";\n";
+						mxmlcode += "		topRightRadius = \"" + styleString + "\"\n";
+					}
+					if (cornerStyle.blcorner.value != GradientCanvas.DEFAULT_BOTTOMLEFTRADIUS)
+					{
+						styleString = String(cornerStyle.blcorner.value);
+						csscode += "		bottomLeftRadius: " + styleString + ";\n";
+						mxmlcode += "		bottomLeftRadius = \"" + styleString + "\"\n";
+					}
+					if (cornerStyle.brcorner.value != GradientCanvas.DEFAULT_BOTTOMRIGHTRADIUS)
+					{
+						styleString = String(cornerStyle.brcorner.value);
+						csscode += "		bottomRightRadius: " + styleString + ";\n";
+						mxmlcode += "		bottomRightRadius = \"" + styleString + "\"\n";
+					}
+				}
+				if (bThickness.value != GradientCanvas.DEFAULT_BORDERTHICKNESS)
+				{
+					styleString = String(bThickness.value);
+					csscode += "		borderThickness: " + styleString + ";\n";
+					mxmlcode += "		borderThickness = \"" + styleString + "\"\n";
+				}
+				if (bordercolorStyle.typeGroup.selectedValue != GradientCanvas.DEFAULT_GRADIENTTYPE)
+				{
+					styleString = String(bordercolorStyle.typeGroup.selectedValue);
+					csscode += "		bordergradientType: " + styleString + ";\n";
+					mxmlcode += "		bordergradientType = \"" + styleString + "\"\n";
+				}
+				if (bordercolorStyle.csscolorcode.slice(1) != GradientCanvas.DEFAULT_FILLCOLORS.slice(2))
+				{
+					styleString = String(bordercolorStyle.csscolorcode);
+					csscode += "		borderColors: " + styleString + ";\n";
+					mxmlcode += "		borderColors = \"[" + styleString + "]\"\n";
+				}
+				if (bordercolorStyle.fillalphaarr.toString() != GradientCanvas.DEFAULT_FILLALPHAS)
+				{
+					styleString = String(bordercolorStyle.fillalphaarr);
+					csscode += "		borderAlphas: " + styleString + ";\n";
+					mxmlcode += "		borderAlphas = \"[" + styleString + "]\"\n";
+				}
+				if (bordercolorStyle.ratioHS.values.toString() != GradientCanvas.DEFAULT_GRADIENTRATIO)
+				{
+					styleString = String(bordercolorStyle.ratioHS.values);
+					csscode += "		bordergradientRatio: " + styleString + ";\n";
+					mxmlcode += "		bordergradientRatio = \"[" + styleString + "]\"\n";
+				}
+				if (borderorientationStyle.angle.value != GradientCanvas.DEFAULT_ANGLE)
+				{
+					styleString = String(borderorientationStyle.angle.value);
+					csscode += "		borderAngle: " + styleString + ";\n";
+					mxmlcode += "		borderAngle = \"" + styleString + "\"\n";
+				}
+				if (borderorientationStyle.offsetx.value != GradientCanvas.DEFAULT_OFFSETX)
+				{
+					styleString = String(borderorientationStyle.offsetx.value);
+					csscode += "		borderOffsetX: " + styleString + ";\n";
+					mxmlcode += "		borderOffsetX = \"" + styleString + "\"\n";
+				}
+				if (borderorientationStyle.offsety.value != GradientCanvas.DEFAULT_OFFSETY)
+				{
+					styleString = String(borderorientationStyle.offsety.value);
+					csscode += "		borderOffsetY: " + styleString + ";\n";
+					mxmlcode += "		borderOffsetY = \"" + styleString + "\"\n";
+				}
+				if (borderoptionsStyle.spreadgroup.selectedValue != GradientCanvas.DEFAULT_SPREADMETHOD)
+				{
+					styleString = String(borderoptionsStyle.spreadgroup.selectedValue);
+					csscode += "		borderSpreadMethod: " + styleString + ";\n";
+					mxmlcode += "		borderSpreadMethod = \"" + styleString + "\"\n";
+				}
+				if (borderoptionsStyle.interpolgroup.selectedValue != GradientCanvas.DEFAULT_INTERPOLATIONMETHOD)
+				{
+					styleString = String(borderoptionsStyle.interpolgroup.selectedValue);
+					csscode += "		borderInterpolationMethod: " + styleString + ";\n";
+					mxmlcode += "		borderInterpolationMethod = \"" + styleString + "\"\n";
+				}
+				if (borderoptionsStyle.fpr.value != GradientCanvas.DEFAULT_FOCALPOINTRATIO)
+				{
+					styleString = String(borderoptionsStyle.fpr.value);
+					csscode += "		borderfocalPointRatio: " + styleString + ";\n";
+					mxmlcode += "		borderfocalPointRatio = \"" + styleString + "\"\n";
+				}
+				
+				// End of the code
+				csscode += "}";
+				mxmlcode += "/>";
+			}
+			
+			
+			private function concatColorStyles(option:String) :Array
+			{
+				var mystyle:Array = new Array();
+				for (var i : Number = 0 ; i < mygradcomp.numberGradients ; i++)
+				{
+					var currentgrad : Style_Background = gradientTabNavigator.getChildAt(i)  as Style_Background;
+					switch (option)
+					{
+						case "type":
+							mystyle.push(currentgrad.colorStyle.typeGroup.selectedValue);
+							break;
+						case "csscolors":
+							mystyle.push(currentgrad.colorStyle.csscolorcode);
+							break;
+						case "mxmlcolors":
+							mystyle.push(currentgrad.colorStyle.mxmlcolorcode);
+							break;
+						case "uintcolors":
+							mystyle.push(currentgrad.colorStyle.fillcolorarr.toString());
+							break;
+						case "alphas":
+							mystyle.push(currentgrad.colorStyle.fillalphaarr);
+							break;
+						case "ratio":
+							mystyle.push(currentgrad.colorStyle.ratioHS.values);
+							break;
+					}
+				}
+				return mystyle;
+			}
+			
+			
+			private function concatOrientationStyles(option:String) :Array
+			{
+				var mystyle:Array = new Array();
+				for (var i : Number = 0 ; i < mygradcomp.numberGradients ; i++)
+				{
+					var currentgrad:Style_Background = gradientTabNavigator.getChildAt(i) as Style_Background;
+					switch (option)
+					{
+						case "angle":
+							mystyle.push(currentgrad.orientationStyle.angle.value);
+							break;
+						case "offsetx":
+							mystyle.push(currentgrad.orientationStyle.offsetx.value);
+							break;
+						case "offsety":
+							mystyle.push(currentgrad.orientationStyle.offsety.value);
+							break;
+					}
+				}
+				return mystyle;
+			}
+			
+			
+			private function concatOptionStyles(option:String) :Array
+			{
+				var mystyle:Array = new Array();
+				for (var i : Number = 0 ; i < mygradcomp.numberGradients ; i++)
+				{
+					var currentgrad : Style_Background = gradientTabNavigator.getChildAt(i)  as Style_Background;
+					switch (option)
+					{
+						case "spm":
+							mystyle.push(currentgrad.optionsStyle.spreadgroup.selectedValue);
+							break;
+						case "ipm":
+							mystyle.push(currentgrad.optionsStyle.interpolgroup.selectedValue);
+							break;
+						case "fpr":
+							mystyle.push(currentgrad.optionsStyle.fpr.value);
+							break;
+					}
+				}
+				return mystyle;
+			}
+			
+			
+			/*
+			* A part of the styles of the GradientCanvas is set here to test / give example of the use of setStyle function   
+			*/
+			private function setAllStyles() :void
+			{
+				mygradcomp.setStyle('gradientType', concatColorStyles('type'));
+				mygradcomp.setStyle('fillColors', concatColorStyles('uintcolors'));
+				mygradcomp.setStyle('fillAlphas', concatColorStyles('alphas'));
+				mygradcomp.setStyle('gradientRatio', concatColorStyles('ratio'));
+				mygradcomp.setStyle('angle', concatOrientationStyles('angle'));
+				mygradcomp.setStyle('offsetX', concatOrientationStyles('offsetx'));
+				mygradcomp.setStyle('offsetY', concatOrientationStyles('offsety')); 
+				mygradcomp.setStyle('positioning', String(positioning.value)); 
+				mygradcomp.setStyle('spreadMethod', concatOptionStyles('spm'));
+				mygradcomp.setStyle('interpolationMethod', concatOptionStyles('ipm'));
+				mygradcomp.setStyle('focalPointRatio', concatOptionStyles('fpr'));
+				mygradcomp.setStyle('cornerRadius', cornerStyle.globalcorner.value);
+				mygradcomp.setStyle('topLeftRadius', cornerStyle.tlcorner.value);
+				mygradcomp.setStyle('topRightRadius', cornerStyle.trcorner.value);
+				mygradcomp.setStyle('bottomLeftRadius', cornerStyle.blcorner.value);
+				mygradcomp.setStyle('bottomRightRadius', cornerStyle.brcorner.value);
+				mygradcomp.setStyle('borderThickness', bThickness.value);
+				mygradcomp.setStyle('bordergradientType', bordercolorStyle.typeGroup.selectedValue);
+				mygradcomp.setStyle('borderColors', bordercolorStyle.fillcolorarr);
+				mygradcomp.setStyle('borderAlphas', bordercolorStyle.fillalphaarr);
+				mygradcomp.setStyle('bordergradientRatio', bordercolorStyle.fillratio);
+				mygradcomp.setStyle('borderAngle', borderorientationStyle.angle.value);
+				mygradcomp.setStyle('borderOffsetX', borderorientationStyle.offsetx.value);
+				mygradcomp.setStyle('borderOffsetY', borderorientationStyle.offsety.value);
+				mygradcomp.setStyle('borderSpreadMethod', borderoptionsStyle.spreadgroup.selectedValue);
+				mygradcomp.setStyle('borderInterpolationMethod', borderoptionsStyle.interpolgroup.selectedValue);
+				mygradcomp.setStyle('borderfocalPointRatio', borderoptionsStyle.fpr.value);
+			}
+			
+			
+			// Maintain the property colorsconfiguration of the Gradient Canvas by getting the number of colors in each gradient tab
+			private function updateColorConfiguration() :void
+			{
+				for (var i :Number = 0; i <  gradientTabNavigator.getChildren().length ; i++)
+				{
+					var SB : Style_Background = gradientTabNavigator.getChildAt(i)  as Style_Background;
+					mygradcomp.colorsConfiguration[i] = SB.colorStyle.colorRep.dataProvider.length;
+				}
+			}
+			
+			
+			/*
+			 * Add a new gradient to the bakcground of the component
+			 */
+			private function addGradient() :void
+			{
+				if ( gradientTabNavigator.getChildren().length < 3 )
+				{
+					var newtab:Style_Background = new Style_Background();
+					newtab.id = "Gradient" + (mygradcomp.numberGradients + 1);
+					newtab.label = "Gradient " + (mygradcomp.numberGradients + 1);
+					newtab.addEventListener(Event.CHANGE, changeHandler);
+					gradientTabNavigator.addChild(newtab as DisplayObject);
+				}
+				
+				updateColorConfiguration();
+				gradientTabNavigator.selectedIndex = mygradcomp.numberGradients-1;
+			}
+			
+			
+			/*
+			 * Remove the last gradient of the component
+			 */
+			private function removeGradient() :void
+			{
+				if (gradientTabNavigator.getChildren().length > 1)
+				{
+					gradientTabNavigator.removeChildAt(mygradcomp.numberGradients - 1);
+					mygradcomp.colorsConfiguration.pop();
+				}
+				
+				updateColorConfiguration();
+				gradientTabNavigator.getChildAt(mygradcomp.numberGradients - 1).dispatchEvent(new Event('change'));
+			}
+			
+			
+			// Used by the positioning ComboBox
+			private var _posAbs:String = GradientCanvas.POSITIONING_ABSOLUTE.valueOf();
+			private var _posPer:String = GradientCanvas.POSITIONING_PERCENT.valueOf();
+			private var _posDP:Array = [ _posAbs, _posPer ];
+			
+		]]>
+	</mx:Script>
+	
+	<mx:ApplicationControlBar width="100%" paddingBottom="10" paddingTop="10">
+		<mx:Label text="GradientComponents Style Explorer" fontSize="12" fontWeight="bold" />
+		<mx:ComboBox id="gradientSelector" dataProvider="{componentList}" change="addGradientComponent();" />
+	</mx:ApplicationControlBar>
+	
+	
+	<mx:HBox height="100%" paddingTop="10">
+		<mx:Panel title="GradientCanvas configuration" height="100%">
+			
+		<mx:Form paddingTop="0">
+			<mx:FormItem label="positioning">
+				<mx:ComboBox id="positioning" dataProvider="{_posDP}" selectedItem="{_posAbs}"
+					change="changeHandler(event);" />
+			</mx:FormItem>
+		</mx:Form>			
+			
+		<mx:TabNavigator id="fillTabNav" width="100%" height="100%" creationPolicy="all">
+
+			<mx:VBox label="Gradients" horizontalScrollPolicy="off">
+			
+			<mx:HBox width="100%" horizontalAlign="right" horizontalGap="12" paddingRight="12">
+				<mx:Image id="addGrad" source="@Embed(source='assets/gradient_add.png')" toolTip="Add a Gradient" click="addGradient();" buttonMode="true"/>
+				<mx:Image id="removeGrad" source="@Embed(source='assets/gradient_delete.png')" toolTip="Remove a Gradient" click="removeGradient();" buttonMode="true"/>
+			</mx:HBox>
+			
+			<mx:TabNavigator id="gradientTabNavigator" width="100%" height="100%" borderThickness="0">
+				<com:Style_Background id="Gradient1" label="Gradient 1"/>
+			</mx:TabNavigator>
+					
+			</mx:VBox>
+			
+			<!--
+			Second tab : Borders
+			-->
+			<mx:VBox label="Borders" width="100%" height="100%" horizontalScrollPolicy="off">
+				<mx:Form paddingTop="0">
+				
+					<mx:HBox>
+						<mx:Label text="Border thickness"/>
+						<mx:NumericStepper id="bThickness" minimum="0"/>
+					</mx:HBox>
+				
+					<mx:FormHeading label="Corners" textAlign="left" width="100%"/>
+					<com:Style_Corners id="cornerStyle" />
+					
+					<mx:FormHeading label="Colors" textAlign="left" width="100%"/>
+					<com:Style_Colors id="bordercolorStyle" />
+					
+					<mx:FormHeading label="Orientation / Position" textAlign="left" width="100%"/>
+					<com:Style_Orientation id="borderorientationStyle" />
+					
+					<mx:FormHeading label="Options" textAlign="left" width="100%"/>
+					<com:Style_Options id="borderoptionsStyle" />
+				</mx:Form>
+			</mx:VBox>
+			
+		</mx:TabNavigator>
+		</mx:Panel>
+		
+		<mx:VBox horizontalAlign="center" verticalAlign="middle">
+			<!--
+			Panel for GradientCanvas demo
+			-->
+			<mx:Panel id="demoPanel" title="GradientComponent" backgroundColor="#E2E2E2" backgroundAlpha="0.4" />
+
+			<!--
+			Examples
+			-->
+			<mx:Label text="EXAMPLES :" paddingTop="20" fontWeight="bold"/>
+			<mx:Accordion width="250" creationPolicy="all">
+				<mx:HBox label="Soft (2 gradients) + dropshadow" styleName="hboxaccordion" width="100%" height="100%">
+					<grad:GradientCanvas id="GCexample1" width="200" height="200" styleName="css2grad" colorsConfiguration="[3,2]" dropShadowEnabled="true">
+						<mx:VBox width="177" horizontalAlign="center" x="21.5" y="74">
+					    	<mx:HBox width="100%">
+						    	<mx:Label text="a label"/>
+						    	<mx:TextInput width="50%"/>
+					    	</mx:HBox>
+					    	<mx:Button label="a button"/>
+				    	</mx:VBox>
+			    	</grad:GradientCanvas>
+				</mx:HBox>
+				
+				<mx:HBox label="Blu(e-g)ray (3 gradients)" styleName="hboxaccordion" width="100%" height="100%">
+					<!--
+					Built from a copy / paste from the Style Explorer
+					Some default values have been deleted
+					-->
+					<grad:GradientCanvas id="GCexample4" width="200" height="200" 
+						colorsConfiguration = "[2,2,2]"
+						gradientType = "radial,linear,radial"
+						fillColors = "[0xBBD1D8, 0xF8FFFF,0xFFFFFF, 0xBBD1D8,0x948B8B, 0xFFFFFF]"
+						fillAlphas = "[1,1,0.15,1,0.4,0]"
+						gradientRatio = "[128,255,141,255,36,255]"
+						angle = "0,90,0"
+						offsetX = "120,0,-110"
+						offsetY = "110,0,-100"
+						spreadMethod = "pad,pad,pad"
+						interpolationMethod = "linearRGB,rgb,rgb"
+						cornerRadius = "5"
+						borderThickness = "1"
+						bordergradientType = "linear"
+						borderColors = "[0x6B8094, 0xFFFFFF, 0xFFFFFF, 0x6B8094]"
+						borderAlphas = "[1,1,1,1]"
+						bordergradientRatio = "[0,37,216,255]"
+						borderAngle = "45"
+						borderSpreadMethod = "pad"
+						borderInterpolationMethod = "rgb">
+					<mx:VBox width="177" horizontalAlign="center" x="21.5" y="74">
+					    	<mx:HBox width="100%">
+						    	<mx:Label text="a label"/>
+						    	<mx:TextInput width="50%"/>
+					    	</mx:HBox>
+					    	<mx:Button label="a button"/>
+				    	</mx:VBox>
+					</grad:GradientCanvas>
+				</mx:HBox>
+
+				<mx:HBox label="Dream (3 gradients)" styleName="hboxaccordion" width="100%" height="100%">
+					<grad:GradientCanvas id="GCexample5" width="200" height="200" styleName="dream">
+						<mx:VBox width="177" horizontalAlign="center" x="21.5" y="74">
+					    	<mx:HBox width="100%">
+						    	<mx:Label text="a label"/>
+						    	<mx:TextInput width="50%"/>
+					    	</mx:HBox>
+					    	<mx:Button label="a button"/>
+				    	</mx:VBox>
+			    	</grad:GradientCanvas>
+				</mx:HBox>
+				
+				<mx:HBox label="Ball (2 gradients) + dropShadow" styleName="hboxaccordion" width="100%" height="100%">
+					<grad:GradientCanvas id="GCexample2" width="200" height="200" styleName="cssexample2" dropShadowEnabled="true">
+						<mx:VBox width="177" horizontalAlign="center" x="21.5" y="74">
+					    	<mx:HBox width="100%">
+						    	<mx:Label text="a label"/>
+						    	<mx:TextInput width="50%"/>
+					    	</mx:HBox>
+					    	<mx:Button label="a button"/>
+				    	</mx:VBox>
+			    	</grad:GradientCanvas>
+				</mx:HBox>
+				
+				<mx:HBox label="Strange" styleName="hboxaccordion" width="100%" height="100%">
+					<grad:GradientCanvas id="GCexample3" width="200" height="200" styleName="cssexample3">
+						<mx:VBox width="177" horizontalAlign="center" x="21.5" y="74">
+					    	<mx:HBox width="100%">
+						    	<mx:Label text="a label"/>
+						    	<mx:TextInput width="50%"/>
+					    	</mx:HBox>
+					    	<mx:Button label="a button"/>
+				    	</mx:VBox>
+			    	</grad:GradientCanvas>
+				</mx:HBox>
+			</mx:Accordion>
+		
+		</mx:VBox>
+		
+		<!--
+		Panel for generated code
+		-->
+		<mx:Panel title="Generated styles" width="350" height="100%">
+			<mx:VBox width="100%" height="100%">
+				<mx:VBox width="100%" height="50%">
+					<mx:HBox width="100%">
+						<mx:Label text="CSS styles" fontWeight="bold" width="90%"/>
+						<mx:Image source="@Embed(source='assets/paste_plain.png')" click="System.setClipboard(code1.text);" buttonMode="true" toolTip="Copy to clipboard"/>
+					</mx:HBox>
+					<mx:TextArea id="code1" text="{csscode}" width="100%" height="100%" borderStyle="none"/>
+				</mx:VBox>
+				<mx:VBox width="100%" height="50%">
+					<mx:HBox width="100%">
+						<mx:Label text="MXML tags" fontWeight="bold" width="90%"/>
+						<mx:Image source="@Embed(source='assets/paste_plain.png')" click="System.setClipboard(code2.text);" buttonMode="true" toolTip="Copy to clipboard"/>
+					</mx:HBox>
+					<mx:TextArea id="code2" text="{mxmlcode}" width="100%" height="100%" borderStyle="none"/>
+				</mx:VBox>
+			</mx:VBox>
+		</mx:Panel>
+	    
+	</mx:HBox>
+	
+</mx:Application>

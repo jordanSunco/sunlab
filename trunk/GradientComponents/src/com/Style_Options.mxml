@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:com="com.*" horizontalAlign="center">
+	
+	<mx:Metadata>
+		[Event(name="change", type="flash.events.Event")]
+	</mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import com.gradientcomponents.*;
+			
+			
+			private function changeHandler() : void
+			{
+				// dispatch the change Event that an be captured
+				dispatchEvent (new Event("change"));
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Form paddingTop="0">
+	
+			<mx:FormItem label="Spread">
+				<mx:RadioButtonGroup id="spreadgroup" selectedValue="{GradientCanvas.DEFAULT_SPREADMETHOD}" change="changeHandler();"/>
+				<mx:HBox>
+					<mx:RadioButton groupName="spreadgroup" id="padspreadbutton" label="pad" value="pad"/>
+					<mx:RadioButton groupName="spreadgroup" id="reflectspreadbutton" label="reflect" value="reflect"/>
+					<mx:RadioButton groupName="spreadgroup" id="repeatspreadbutton" label="repeat" value="repeat"/>
+				</mx:HBox>
+			</mx:FormItem>
+			
+			<mx:FormItem label="Interpolation">
+				<mx:RadioButtonGroup id="interpolgroup" selectedValue="{GradientCanvas.DEFAULT_INTERPOLATIONMETHOD}" change="changeHandler();"/>
+				<mx:HBox>
+					<mx:RadioButton groupName="interpolgroup" id="linearinterpolbutton" label="linearRGB" value="linearRGB"/>
+					<mx:RadioButton groupName="interpolgroup" id="rgbinterpolbutton" label="RGB" value="rgb"/>
+				</mx:HBox>
+			</mx:FormItem>
+			
+			<mx:FormItem label="Focal point ratio">
+				<mx:HSlider id="fpr" value="{GradientCanvas.DEFAULT_FOCALPOINTRATIO}" minimum="-1" maximum="1" snapInterval="0.01" dataTipPlacement="top" width="100" change="changeHandler();"/>
+			</mx:FormItem>
+		
+	</mx:Form>
+	
+</mx:VBox>

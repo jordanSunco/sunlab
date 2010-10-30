@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:com="com.*" xmlns:yahoo="http://www.yahoo.com/astra/2006/mxml" horizontalAlign="center">
+	
+	<mx:Metadata>
+		[Event(name="change", type="flash.events.Event")]
+	</mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import com.gradientcomponents.*;
+		
+			[Bindable]
+			private var dpColor:Array = new Array("1");
+			[Bindable]
+			public  var fillcolorarr:Array = new Array(GradientCanvas.DEFAULT_FILLCOLORS);
+			[Bindable]
+			public var fillalphaarr:Array = new Array(GradientCanvas.DEFAULT_FILLALPHAS.toString());
+			[Bindable]
+			public var fillratio:Array = new Array(GradientCanvas.DEFAULT_GRADIENTRATIO.toString());
+			
+			private  var _mxmlcolorcode:String;
+			public function get mxmlcolorcode():String
+			{
+				_mxmlcolorcode = new String();
+				
+				for (var i:Number = 0; i < fillcolorarr.length; i++)
+				{
+					_mxmlcolorcode += "0x" + uint(fillcolorarr[i]).toString(16).toUpperCase() + ", ";
+				}
+				// cut the last ", "
+				_mxmlcolorcode = _mxmlcolorcode.substr(0, _mxmlcolorcode.length-2);
+				
+				return _mxmlcolorcode;
+			}
+			
+			private  var _csscolorcode:String;
+			public function get csscolorcode():String
+			{
+				_csscolorcode = new String();
+				for (var i:Number = 0; i < fillcolorarr.length; i++)
+				{
+					_csscolorcode += "#" + uint(fillcolorarr[i]).toString(16).toUpperCase() + ", ";
+				}
+				// cut the last ", "
+				_csscolorcode = _csscolorcode.substr(0, _csscolorcode.length-2);
+				
+				return _csscolorcode;
+			}
+			
+			/**
+			 * @private
+			 * Called when a color is added or removed by the user
+			 * The DP of the repeater is rebuilt
+			 * The ratio is regenerated
+			 * The change event is called
+			 */
+			private function addremoveColor() : void
+			{
+				dpColor = new Array(nColors.value);
+				fillratio = generateDefaultRatio (nColors.value);
+				changeHandler();
+			}
+			
+			/**
+			 * @private
+			 * Returns an array containing a homogeneous gradient of colors.
+			 * 
+			 * @param n:Number The number of colors in the gradient 
+			 */
+			private function generateDefaultRatio (n:Number) :Array
+			{
+				var avg:Number = 255 / (n -1);
+				var arr:Array = new Array();
+				
+				for (var i:Number = 0; i < n; i++)
+				{
+					var currentratio:Number = 255 - avg * i;
+					arr.push (currentratio);
+					arr.sort (Array.NUMERIC);
+				}
+				
+				return arr;
+			}
+			
+			private function changeHandler() : void
+			{
+				var arr:Array = new Array();
+				fillalphaarr = new Array();
+				
+				// rebuild array of colors and alphas
+				for (var i:Number = 0; i < nColors.value; i++)
+				{
+					arr.push(fillcolorCP[i].selectedColor);
+					fillalphaarr.push(fillalphaHS[i].value);
+				}
+				fillcolorarr = arr;
+				
+				// dispatch the change Event that an be captured
+				dispatchEvent (new Event("change"));
+			}
+			
+			// Called to set default values when a new color is added
+			private function setDefaultColorValue() :void
+			{
+				fillalphaHS[fillalphaarr.length-1].value = GradientCanvas.DEFAULT_FILLALPHAS;
+				fillcolorCP[fillalphaarr.length-1].selectedColor = GradientCanvas.DEFAULT_FILLCOLORS;
+				changeHandler();
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Form paddingTop="0">
+	
+		<mx:FormItem label="type">
+			<mx:RadioButtonGroup id="typeGroup" selectedValue="{GradientCanvas.DEFAULT_GRADIENTTYPE}" change="changeHandler();"/>
+			<mx:HBox>
+				<mx:RadioButton groupName="typeGroup" id="linearradiobutton" label="linear" value="linear"/>
+				<mx:RadioButton groupName="typeGroup" id="radialradiobutton" label="radial" value="radial"/>
+			</mx:HBox>
+		</mx:FormItem>
+		
+		<mx:FormItem label="Number of colors">
+			<mx:NumericStepper id="nColors" minimum="1" maximum="15" click="addremoveColor();"/>
+		</mx:FormItem>
+		
+		<mx:Repeater id="colorRep" dataProvider="{dpColor}" recycleChildren="true" >
+			<mx:FormItem label="{'fillColor '+ (colorRep.currentIndex+1)}" creationComplete="setDefaultColorValue();">
+				<mx:HBox>
+					<yahoo:DropDownColorPicker  id="fillcolorCP" pickerRenderer="com.yahoo.astra.mx.controls.colorPickerClasses.AdvancedColorPickerDropDown" change="changeHandler();"/>
+					<mx:HSlider id="fillalphaHS"  minimum="0" maximum="1" snapInterval="0.01" width="100" dataTipPlacement="top" change="changeHandler();"/>
+				</mx:HBox>
+			</mx:FormItem>			
+		</mx:Repeater>
+			
+		<mx:FormItem label="Proportions">
+			<mx:HSlider id="ratioHS" values="{fillratio}" thumbCount="{nColors.value}" minimum="0" maximum="255" snapInterval="1" dataTipPlacement="top" change="changeHandler();"/>
+		</mx:FormItem>
+		
+	</mx:Form>
+	
+</mx:VBox>

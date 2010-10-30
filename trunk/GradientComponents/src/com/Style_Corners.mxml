@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:com="com.*" horizontalAlign="center">
+	
+	<mx:Metadata>
+		[Event(name="change", type="flash.events.Event")]
+	</mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			import com.gradientcomponents.*;
+			
+			
+			private var maxcorner:Number = 220;
+			
+			private function changeHandler() : void
+			{
+				// dispatch the change Event that an be captured
+				dispatchEvent (new Event("change"));
+			}
+			
+			private function cornersHandler():void
+			{
+				tlcorner.value = tlcorner.value * Number(!allcorner.selected);
+				trcorner.value = trcorner.value * Number(!allcorner.selected);
+				blcorner.value = blcorner.value * Number(!allcorner.selected);
+				brcorner.value = brcorner.value * Number(!allcorner.selected);
+				
+				globalcorner.value = globalcorner.value * Number(allcorner.selected);
+				
+				// Update generated code
+				changeHandler();
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Form paddingTop="0">
+	
+			<mx:FormItem label="cornerRadius">
+				<mx:NumericStepper id="globalcorner" value="{GradientCanvas.DEFAULT_CORNERRADIUS}" minimum="0" maximum="{maxcorner}" enabled="{allcorner.selected}" change="changeHandler();"/>
+				<mx:CheckBox id="allcorner" selected="true" label="Apply to all corners" click="cornersHandler();"/>
+			</mx:FormItem>
+			
+			<mx:FormItem>
+				<mx:HBox>
+					<mx:VBox>
+						<mx:NumericStepper id="tlcorner" value="{GradientCanvas.DEFAULT_TOPLEFTRADIUS}" minimum="0" maximum="{maxcorner}" change="changeHandler();" enabled="{!allcorner.selected}"/>
+						<mx:NumericStepper id="blcorner" value="{GradientCanvas.DEFAULT_BOTTOMLEFTRADIUS}" minimum="0" maximum="{maxcorner}" change="changeHandler();" enabled="{!allcorner.selected}"/>
+					</mx:VBox>
+					
+					<mx:VBox>
+						<mx:NumericStepper id="trcorner" value="{GradientCanvas.DEFAULT_TOPRIGHTRADIUS}" minimum="0" maximum="{maxcorner}" change="changeHandler();" enabled="{!allcorner.selected}"/>
+						<mx:NumericStepper id="brcorner" value="{GradientCanvas.DEFAULT_BOTTOMRIGHTRADIUS}" minimum="0" maximum="{maxcorner}" change="changeHandler();" enabled="{!allcorner.selected}"/>
+					</mx:VBox>
+				</mx:HBox>
+			</mx:FormItem>
+		
+	</mx:Form>
+	
+</mx:VBox>

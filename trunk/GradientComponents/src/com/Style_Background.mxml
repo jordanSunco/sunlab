@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:com="com.*" horizontalScrollPolicy="off">
+
+	<mx:Metadata>
+		[Event(name="change", type="flash.events.Event")]
+	</mx:Metadata>
+
+	<mx:Form paddingTop="0">
+	
+		<mx:FormHeading label="Colors" textAlign="left" width="100%"/>
+		<com:Style_Colors id="colorStyle" change="dispatchEvent(new Event('change'));"/>
+		
+		<mx:FormHeading label="Orientation / Position" textAlign="left" width="100%"/>
+		<com:Style_Orientation id="orientationStyle" change="dispatchEvent(new Event('change'));"/>
+		
+		<mx:FormHeading label="Options" textAlign="left" width="100%"/>
+		<com:Style_Options id="optionsStyle" change="dispatchEvent(new Event('change'));"/>
+		
+	</mx:Form>
+	
+</mx:Canvas>
