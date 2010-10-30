@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
+    <mx:Style>
+        .gradient {
+            border-style: solid;
+            border-thickness: 0;
+            border-skin: ClassReference("GradientBorder");
+            fill-colors: #0099FF, #000099;
+            corner-radius: 10;
+            drop-shadow-enabled: true;
+            vertical-align: middle;
+            horizontal-align: center;
+        }
+    </mx:Style>
+    <mx:Script>
+        <![CDATA[
+            private function changeStyle():void {
+                box.setStyle("fillColors", [col1.value, col2.value]);
+                box.setStyle("cornerRadius", corner.value);
+            }
+        ]]>
+    </mx:Script>
+    <mx:VBox id="box" styleName="gradient" width="400" height="300">
+        <mx:FormItem label="Color 1:">
+            <mx:ColorPicker id="col1" change="changeStyle()" selectedColor="0x0099FF" />
+        </mx:FormItem>
+        <mx:FormItem label="Color 2:">
+            <mx:ColorPicker id="col2" change="changeStyle()" selectedColor="0x000099" />
+        </mx:FormItem>
+        <mx:FormItem label="Corner radius:">
+            <mx:HSlider id="corner" value="10" minimum="0" maximum="100"
+                liveDragging="true" change="changeStyle()" />
+        </mx:FormItem>
+    </mx:VBox>
+</mx:Application>
