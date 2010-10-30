@@ -1,0 +1,151 @@
+﻿Application
+{
+	paddingTop: 5px;
+}
+
+FormHeading
+{
+	padding-top: 5px;
+	padding-bottom: 2px;
+	color: #6B6B6B;
+	text-align: "left";
+}
+
+TabNavigator
+{
+	backgroundAlpha: 0;
+	borderColor: #ffffff;
+	tabStyleName: "myTabs";
+	firstTabStyleName: "myTabs";
+	lastTabStyleName: "myTabs";
+}
+
+.myTabs
+{
+	borderColor: #ffffff;
+}
+
+TextArea
+{
+	background-alpha: 0.4;	
+}
+
+RadioButton
+{
+	fillAlphas: 1, 1, 0.75, 0.65;
+	fillColors: #ffffff, #ffffff, #ffffff, #ffffff;
+}
+
+Panel
+{
+	background-alpha: 0.4;
+	background-color: #E2E2E2;
+}
+
+Accordion
+{
+	background-alpha: 1;
+}
+
+.hboxaccordion
+{
+	background-color: #FFFFFF;
+	padding-bottom: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 20px;
+}
+
+.css2grad
+{
+	gradientType: linear,radial;
+	fillColors: #C5C9FD, #F2E5FB, #FFFFFF,#E88787, #FFFFFF;
+	fillAlphas:  1,1,1,0.9,0.17;
+	gradientRatio: 0,160,255,0,255;
+	angle: 34,0;
+	offsetX: 0,-60;
+	offsetY: 0,-60;
+	spreadMethod: pad,pad;
+	interpolationMethod: rgb,rgb;
+	cornerRadius: 5;
+	borderThickness: 2;
+	bordergradientType: linear;
+	borderColors: #9FA7D8, #FFFFFF;
+	borderAngle: -45;
+}
+
+.cssexample1
+{
+	gradientType: linear;
+	fillColors: #C5C9FD, #F2E5FB, #FFFFFF;
+	/*fillAlphas: 1,1,1;*/
+	gradientRatio: 0,160,255;
+	angle: 34;
+	cornerRadius: 5;
+}
+
+.cssexample2
+{
+	gradientType: linear,radial;
+	fillColors: #FFFFFF, #752C2C,#FFFFFF, #FFFFFF;
+	colorsConfiguration: 2,2;
+	fillAlphas:  1,1,1,0.3;
+	gradientRatio: 0,255,50,190;
+	angle: 48,-61;
+	offsetX: 7,39;
+	offsetY: -13,-4;
+	spreadMethod: reflect,reflect;
+	interpolationMethod: linearRGB,rgb;
+	focalPointRatio: 0.68,0.75;
+	cornerRadius: 29;
+	borderThickness: 3;
+	borderColors: #D6C6C6, #FFFFFF;
+	borderAlphas: 1,0.49;
+	bordergradientRatio: 0,255;
+	borderAngle: -45;
+}
+
+.cssexample3
+{
+	gradientType: radial;
+	fillColors: #AB2727, #F3F7B6;
+	colorsConfiguration: 2;
+	fillAlphas:  1,0.7;
+	gradientRatio: 48,255;
+	angle: 17;
+	offsetX: -32;
+	offsetY: -50;
+	spreadMethod: reflect;
+	interpolationMethod: linearRGB;
+	focalPointRatio: 0.57;
+	topLeftRadius: 29;
+	topRightRadius: 17;
+	bottomLeftRadius: 90;
+	bottomRightRadius: 13;
+	borderThickness: 9;
+	bordergradientType: radial;
+	borderColors: #AB2727, #F3F7B6;
+	borderAlphas: 1,1;
+	bordergradientRatio: 88,255;
+	borderAngle: 29;
+	borderOffsetX: 11;
+	borderOffsetY: -13;
+	borderSpreadMethod: reflect;
+	borderInterpolationMethod: linearRGB;
+	borderfocalPointRatio: -0.41;
+}
+
+.dream
+{
+	gradientType: linear,linear,radial;
+	fillColors: #7FE6D4, #FFFFFF, #F3DF79, #FFFFFF,#926060, #FFFFFF,#FFFFFF, #FFFFFF;
+	colorsConfiguration: 4,2,2;
+	fillAlphas:  1,1,1,1,0.2,0.65,0.65,0.5;
+	gradientRatio: 0,85,170,255,0,255,98,236;
+	angle: 0,103,0;
+	spreadMethod: pad,pad,reflect;
+	borderThickness: 2;
+	bordergradientType: linear;
+	borderColors: #BCF0E9, #EBD0D0;
+	borderAngle: -45;
+}
