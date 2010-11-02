@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:effects="effects.*" creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import mx.effects.easing.Bounce;
+            import mx.effects.Sequence;
+            import effects.DrawEffect;
+
+            private function init():void {
+                var de:DrawEffect = new DrawEffect(c);
+                de.easingFunction = Bounce.easeOut;
+                de.startValue = 0;
+                de.endValue = 70;
+                de.properties = {
+                    thickness: 5
+                };
+                de.draw = draw;
+
+                var de1:DrawEffect = new DrawEffect(c);
+                de1.startValue = 0;
+                de1.endValue = 40;
+                de1.properties = {
+                    thickness: 10
+                };
+                de1.draw = draw;
+
+                var s:Sequence = new Sequence();
+                s.addChild(de);
+                s.addChild(de1);
+                s.play();
+            }
+
+            private function draw(target:Object, value:Object, properties:Object):void {
+                target.graphics.clear();
+                target.graphics.lineStyle(properties.thickness);
+                target.graphics.drawCircle(100, 200, Number(value));
+            }
+        ]]>
+    </mx:Script>
+    <mx:Button label="芝麻开门" click="e.play()" />
+    <mx:Canvas id="c" borderColor="0xfff" borderStyle="solid" />
+    <effects:DrawEffect id="e" target="{c}" startValue="0" endValue="100"
+        properties="{{thickness: 3}}" draw="{draw}" />
+</mx:Application>
