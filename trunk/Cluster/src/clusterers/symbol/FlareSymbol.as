@@ -79,6 +79,9 @@ package clusterers.symbol {
             node.addEventListener(MouseEvent.CLICK, closure(n));
             flareBrance.addChild(node);
 
+            // 填充透明的实心圆, 这样整个圆都是sprite的有效点击范围, 而不仅限于线框
+            flareBrance.graphics.beginFill(0, 0);
+            flareBrance.graphics.drawCircle(0, 0, radius);
             // 连接圆心的线(圆心到等分点)
             // TODO 定制线的样式
             flareBrance.graphics.lineStyle(1);
