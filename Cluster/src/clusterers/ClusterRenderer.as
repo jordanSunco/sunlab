@@ -3,6 +3,8 @@
  */
 
 package clusterers {
+    import clusterers.symbol.FlareSymbol;
+    
     import com.esri.ags.Graphic;
     import com.esri.ags.Map;
     import com.esri.ags.events.ExtentEvent;
@@ -15,6 +17,7 @@ package clusterers {
     import com.esri.ags.symbol.Symbol;
     import com.esri.ags.symbol.TextSymbol;
     
+    import flash.events.MouseEvent;
     import flash.filters.DropShadowFilter;
     import flash.filters.GlowFilter;
     import flash.geom.Point;
@@ -144,11 +147,35 @@ package clusterers {
 
                 var graphic:Graphic = new Graphic(cluster, createClusterSymobl(cluster));
                 graphic.filters = getGraphicFilters(cluster);
+                addFlareSymbol(graphic);
+
                 clusterGraphics.addItem(graphic);
             }
 
             // TODO 会覆盖图层中原有的Graphic
             this._renderLayer.graphicProvider = clusterGraphics;
+        }
+
+        private function addFlareSymbol(graphic:Graphic):void {
+            var clusterSymobl:Symbol = graphic.symbol;
+            // TODO 写死最多能展开30个点
+            var flareMaxCount:uint = 30;
+
+            // TODO 样式切换会有闪烁的现象, 飘浮不定
+            if ((graphic.geometry as Cluster).getMapPointCount() <= flareMaxCount) {
+                graphic.addEventListener(MouseEvent.ROLL_OVER, function (event:MouseEvent):void {
+//                    event.target.symbol = new SimpleMarkerSymbol("circle", 100, 0xfff);
+                    event.target.symbol = new FlareSymbol();
+//                    setTimeout(function ():void {
+//                        event.target.symbol = clusterSymobl;
+//                    }, 3000);
+                });
+                graphic.addEventListener(MouseEvent.ROLL_OUT, function (event:MouseEvent):void {
+                    // TODO 切换回默认样式后, 还会在地图上出现上一个样式(FlareSymbol)
+                    // 使用SimpleMarkerSymbol的时候就不会有这个问题...
+                    event.target.symbol = clusterSymobl;
+                });
+            }
         }
 
         /**
