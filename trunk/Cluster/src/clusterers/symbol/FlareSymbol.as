@@ -1,6 +1,6 @@
 package clusterers.symbol {
     import clusterers.Cluster;
-    import clusterers.FlareContainer;
+    import flare.FlareContainer;
     
     import com.esri.ags.Map;
     import com.esri.ags.geometry.Geometry;
