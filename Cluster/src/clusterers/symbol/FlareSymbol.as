@@ -1,10 +1,11 @@
 package clusterers.symbol {
     import clusterers.Cluster;
-    import flare.FlareContainer;
     
     import com.esri.ags.Map;
     import com.esri.ags.geometry.Geometry;
     import com.esri.ags.symbol.MarkerSymbol;
+    
+    import flare.TweenFlareContainer;
     
     import flash.display.Sprite;
 
@@ -20,7 +21,7 @@ package clusterers.symbol {
             sprite.y = toScreenY(map, cluster.y);
 
             removeAllChildren(sprite);
-            sprite.addChild(new FlareContainer(cluster.mapPointGraphics));
+            sprite.addChild(new TweenFlareContainer(cluster.mapPointGraphics));
         }
     }
 }
