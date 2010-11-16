@@ -1,4 +1,4 @@
-package clusterers {
+package flare {
     import flash.display.Sprite;
 
     /**
@@ -50,8 +50,13 @@ package clusterers {
          */
         private function addFlareBranceEquably():void {
             for (var i:uint = 0, length:uint = data.length; i < length; i++) {
-                this.addChild(new FlareBrance(radius, length, i, rotationAngle));
+                this.addChild(createFlareBrance(radius, length, i, rotationAngle));
             }
+        }
+
+        protected function createFlareBrance(radius:Number, slice:uint, n:uint,
+                rotation:Number):FlareBrance {
+            return new FlareBrance(radius, slice, n, rotation);
         }
 
         /**
@@ -69,8 +74,8 @@ package clusterers {
                 }
 
                 // 每次将分支添加到显示列表的最底部, 这样长半径分支就不会将短半径分支的顶部节点切成2半, 线会位于顶点的下方
-                this.addChildAt(new FlareBrance(flareBranceRadius, maxBrancePerGroup,
-                    i, flareBranceRotationAngle), 0);
+                this.addChildAt(createFlareBrance(flareBranceRadius,
+                    maxBrancePerGroup, i, flareBranceRotationAngle), 0);
             }
         }
     }

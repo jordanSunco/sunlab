@@ -1,11 +1,15 @@
-package clusterers {
+package flare {
+    import effects.DrawEffect;
+    
     import flash.display.Sprite;
+    
+    import mx.effects.easing.Bounce;
 
     /**
      * 将圆均匀地切分成n份, 连接圆心和等份顶点, 画出其中的一个分支, 形成钟摆的样子
      */
     public class FlareBrance extends Sprite {
-        private var radius:Number;
+        protected var radius:Number;
         private var slice:uint;
         private var n:uint;
 
@@ -32,6 +36,10 @@ package clusterers {
             vertex = new Sprite();
             this.addChild(vertex);
 
+            drawFlareBrance();
+        }
+
+        protected function drawFlareBrance():void {
             computeVertexCoordinate();
 
             clear();
