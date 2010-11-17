@@ -23,6 +23,7 @@ package flare {
 
         private var vertexFillColor:uint = 0x76D100;
         private var vertexSize:Number = 5;
+        private var vertexSizeIncreaseOnRollOver:Number = 2;
 
         public function FlareBrance(radius:Number, slice:uint = 6, n:uint = 0,
                 rotation:Number = 0, data:Object = null) {
@@ -102,6 +103,19 @@ package flare {
                     event.relatedObject, event.ctrlKey,
                     event.altKey, event.shiftKey,
                     event.buttonDown, event.delta, data));
+            });
+
+            // 当鼠标rollOver时, 增加顶点圆的半径大小, 重画顶点, 突出选中的顶点
+            vertex.addEventListener(MouseEvent.ROLL_OVER, function ():void {
+                vertexSize += vertexSizeIncreaseOnRollOver;
+                vertex.graphics.clear();
+                drawVertex();
+            });
+            // 当鼠标rollOut时, 恢复顶点圆的正常大小
+            vertex.addEventListener(MouseEvent.ROLL_OUT, function ():void {
+                vertexSize -= vertexSizeIncreaseOnRollOver;
+                vertex.graphics.clear();
+                drawVertex();
             });
         }
     }
