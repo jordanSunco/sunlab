@@ -1,5 +1,10 @@
 package flare {
+    import flare.events.FlareBranceMouseEvent;
+    
     import flash.display.Sprite;
+    import flash.events.MouseEvent;
+
+    [Event(name="vertexClick", type="flare.events.FlareBranceMouseEvent")]
 
     /**
      * 将圆均匀地切分成n份, 连接圆心和等份顶点, 画出其中的一个分支, 形成钟摆的样子
@@ -31,6 +36,8 @@ package flare {
 
             vertex = new Sprite();
             this.addChild(vertex);
+
+            handleVertexEvent();
 
             drawFlareBrance();
         }
@@ -84,6 +91,18 @@ package flare {
 
             vertex.graphics.drawCircle(vertexX, vertexY, vertexSize);
             vertex.graphics.endFill();
+        }
+
+        private function handleVertexEvent():void {
+            vertex.addEventListener(MouseEvent.CLICK, function (event:MouseEvent):void {
+                // 将事件转化成自定义事件并冒泡上去
+                dispatchEvent(new FlareBranceMouseEvent(
+                    FlareBranceMouseEvent.VERTEX_CLICK, true, true,
+                    event.localX, event.localY,
+                    event.relatedObject, event.ctrlKey,
+                    event.altKey, event.shiftKey,
+                    event.buttonDown, event.delta, data));
+            });
         }
     }
 }
