@@ -1,3 +1,7 @@
+/*
+ * Copyright
+ */
+
 package clusterers.symbol {
     import clusterers.Cluster;
     
@@ -9,6 +13,11 @@ package clusterers.symbol {
     
     import flash.display.Sprite;
 
+    /**
+     * 表现聚合点散开/合拢的Symbol
+     * 
+     * @author Sun
+     */
     public class FlareSymbol extends MarkerSymbol {
         public function FlareSymbol() {
             super();

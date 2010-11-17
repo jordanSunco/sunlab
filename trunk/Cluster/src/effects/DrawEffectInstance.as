@@ -1,8 +1,14 @@
+/*
+ * Copyright
+ */
+
 package effects {
     import mx.effects.effectClasses.TweenEffectInstance;
 
     /**
      * 在做Drawing API时, 可以以动画的形式慢慢画出整个图形.
+     * 
+     * @author Sun
      */
     public class DrawEffectInstance extends TweenEffectInstance {
         public var startValue:Number;

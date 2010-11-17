@@ -1,9 +1,15 @@
+/*
+ * Copyright
+ */
+
 package flare {
     import flash.display.Sprite;
 
     /**
      * 放置FlareBrance的容器, 计算每个分支的半径和旋转角度, 形成一个只有顶点和圆心连线的多边形.
      * 如果分支很多, 则会以分组的形式由内到外展现嵌套的多边形, 为避免多边形的重叠, 每组会递增半径和分支的旋转角度.
+     * 
+     * @author Sun
      */
     public class FlareContainer extends Sprite {
         // TODO 定制属性

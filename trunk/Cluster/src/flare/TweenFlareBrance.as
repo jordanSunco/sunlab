@@ -1,3 +1,7 @@
+/*
+ * Copyright
+ */
+
 package flare {
     import effects.DrawEffect;
     
@@ -7,6 +11,8 @@ package flare {
 
     /**
      * 以缓动效果展开分支/合拢分支
+     * 
+     * @author Sun
      */
     public class TweenFlareBrance extends FlareBrance {
         private var expectRadius:Number;
