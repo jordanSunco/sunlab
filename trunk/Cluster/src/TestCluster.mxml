@@ -6,16 +6,20 @@
     <mx:Script>
         <![CDATA[
             import clusterers.ClusterRenderer;
+
             import mx.collections.ArrayCollection;
+
             import com.esri.ags.Graphic;
             import com.esri.ags.events.QueryEvent;
             import com.esri.ags.tasks.FeatureSet;
+
+            import flare.events.FlareBranceMouseEvent;
+            import flare.events.TweenFlareContainerEffectEvent;
 
 //            private var clusterRenderer:ClusterRenderer;
 
             private function init():void {
                 queryTask.execute(q);
-
 //                clusterRenderer = new ClusterRenderer(map, graphicsLayer);
             }
 
@@ -23,6 +27,20 @@
                 var source:ArrayCollection = new ArrayCollection(
                     event.featureSet.features);
                 clusterRenderer.mapPointGraphicSource = source;
+                
+                map.addEventListener(FlareBranceMouseEvent.VERTEX_CLICK, function (event:FlareBranceMouseEvent):void {
+                    showInfowindow(event.data as Graphic, event.stageX, event.stageY);
+                });
+                map.addEventListener(TweenFlareContainerEffectEvent.FLARE_CONTAINER_CLOSE_START, function ():void {
+                    map.infoWindow.hide();
+                });
+            }
+
+            private function showInfowindow(gr:Graphic,
+                    stagex:Number, stagey:Number):void {
+                map.infoWindow.label = gr.attributes.CITY_NAME;
+                map.infoWindow.closeButtonVisible = false;
+                map.infoWindow.show(map.toMapFromStage(stagex, stagey));
             }
         ]]>
     </mx:Script>
