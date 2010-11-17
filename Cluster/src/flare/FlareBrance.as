@@ -1,3 +1,7 @@
+/*
+ * Copyright
+ */
+
 package flare {
     import flare.events.FlareBranceMouseEvent;
     
@@ -8,6 +12,8 @@ package flare {
 
     /**
      * 将圆均匀地切分成n份, 连接圆心和等份顶点, 画出其中的一个分支, 形成钟摆的样子
+     * 
+     * @author Sun
      */
     public class FlareBrance extends Sprite {
         protected var radius:Number;

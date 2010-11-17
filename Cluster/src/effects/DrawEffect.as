@@ -1,9 +1,15 @@
+/*
+ * Copyright
+ */
+
 package effects {
     import mx.effects.IEffectInstance;
     import mx.effects.TweenEffect;
 
     /**
      * DrawEffectInstance工厂类
+     * 
+     * @author Sun
      */
     public class DrawEffect extends TweenEffect {
         public var startValue:Number;

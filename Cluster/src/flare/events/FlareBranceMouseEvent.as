@@ -1,8 +1,17 @@
+/*
+ * Copyright
+ */
+
 package flare.events {
     import flash.display.InteractiveObject;
     import flash.events.Event;
     import flash.events.MouseEvent;
 
+    /**
+     * 聚合分支散开的鼠标事件
+     * 
+     * @author Sun
+     */
     public class FlareBranceMouseEvent extends MouseEvent {
         public static const VERTEX_CLICK:String = "vertexClick";
 

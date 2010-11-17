@@ -1,3 +1,7 @@
+/*
+ * Copyright
+ */
+
 package flare {
     import flare.events.TweenFlareContainerEffectEvent;
     
@@ -10,6 +14,11 @@ package flare {
     [Event(name="flareContainerCloseStart", type="flare.events.TweenFlareContainerEffectEvent")]
     [Event(name="flareContainerCloseComplete", type="flare.events.TweenFlareContainerEffectEvent")]
     
+    /**
+     * 放置缓动分支的容器, 控制所有分支的散开/合拢, 形成一组动画效果
+     * 
+     * @author Sun
+     */
     public class TweenFlareContainer extends FlareContainer {
         private var compositeEffect:CompositeEffect;
 
