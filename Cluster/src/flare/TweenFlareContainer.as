@@ -7,6 +7,7 @@ package flare {
     import mx.effects.Parallel;
     import mx.events.EffectEvent;
     
+    [Event(name="flareContainerCloseStart", type="flare.events.TweenFlareContainerEffectEvent")]
     [Event(name="flareContainerCloseComplete", type="flare.events.TweenFlareContainerEffectEvent")]
     
     public class TweenFlareContainer extends FlareContainer {
