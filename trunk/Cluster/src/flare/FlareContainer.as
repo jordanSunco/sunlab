@@ -50,13 +50,13 @@ package flare {
          */
         private function addFlareBranceEquably():void {
             for (var i:uint = 0, length:uint = data.length; i < length; i++) {
-                this.addChild(createFlareBrance(radius, length, i, rotationAngle));
+                this.addChild(createFlareBrance(radius, length, i, rotationAngle, data[i]));
             }
         }
 
         protected function createFlareBrance(radius:Number, slice:uint, n:uint,
-                rotation:Number):FlareBrance {
-            return new FlareBrance(radius, slice, n, rotation);
+                rotation:Number, data:Object):FlareBrance {
+            return new FlareBrance(radius, slice, n, rotation, data);
         }
 
         /**
@@ -75,7 +75,7 @@ package flare {
 
                 // 每次将分支添加到显示列表的最底部, 这样长半径分支就不会将短半径分支的顶部节点切成2半, 线会位于顶点的下方
                 this.addChildAt(createFlareBrance(flareBranceRadius,
-                    maxBrancePerGroup, i, flareBranceRotationAngle), 0);
+                    maxBrancePerGroup, i, flareBranceRotationAngle, data[i]), 0);
             }
         }
     }

@@ -12,8 +12,8 @@ package flare {
         }
 
         override protected function createFlareBrance(radius:Number, slice:uint,
-                n:uint, rotation:Number):FlareBrance {
-            return new TweenFlareBrance(radius, slice, n, rotation);
+                n:uint, rotation:Number, data:Object):FlareBrance {
+            return new TweenFlareBrance(radius, slice, n, rotation, data);
         }
 
         protected function initCompositeEffect():void {
