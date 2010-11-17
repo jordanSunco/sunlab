@@ -44,7 +44,7 @@
             }
         ]]>
     </mx:Script>
-    <esri:Map id="map">
+    <esri:Map id="map" openHandCursorVisible="false">
         <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer" />
         <esri:GraphicsLayer id="graphicsLayer" />
     </esri:Map>
