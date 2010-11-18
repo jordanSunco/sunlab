@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:esri="http://www.esri.com/2008/ags" creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import mx.events.ItemClickEvent;
+
+            import com.esri.ags.Graphic;
+            import com.esrichina.tm.plot.PlotDrawEvent;
+            import com.esrichina.tm.plot.DynamicPlot;
+
+            private var dynamicPlot:DynamicPlot;
+
+            private var plotDrawType:Array = [
+                DynamicPlot.SARROW, DynamicPlot.XARROWS, DynamicPlot.LARROW,
+                DynamicPlot.BASE, DynamicPlot.CIRCLE, DynamicPlot.Clear
+            ];
+
+            private function init():void {
+                dynamicPlot = new DynamicPlot(map);
+                dynamicPlot.graphicsLayer = graphicsLayer;
+
+                dynamicPlot.addEventListener(PlotDrawEvent.PLOT_DRAW_END, function (event:PlotDrawEvent):void {
+                    // FIXEDME DynamicPlot.XARROWS, DynamicPlot.CIRCLE 不会进入此方法, 应该是没有派发事件出来, 需要修改源代码
+                    (event.data as Graphic).filters = [new DropShadowFilter()];
+                });
+            }
+
+            private function activePlotTool(event:ItemClickEvent):void {
+                if (event.item.toString() == DynamicPlot.Clear) {
+                    graphicsLayer.clear();
+                } else {
+                    dynamicPlot.activate(event.item.toString());
+                }
+            }
+        ]]>
+    </mx:Script>
+    <mx:ToggleButtonBar dataProvider="{plotDrawType}" itemClick="activePlotTool(event)" />
+    <esri:Map id="map">
+        <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer" />
+        <esri:GraphicsLayer id="graphicsLayer" />
+    </esri:Map>
+</mx:Application>
