@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:esri="http://www.esri.com/2008/ags" creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.esri.ags.layers.Layer;
+            import com.esri.tools.SpotlightTool;
+            import com.esri.tools.SwipeTool;
+
+            private var activeLayer:Layer;
+            private var swipeTool:SwipeTool;
+            private var spotlightTool:SpotlightTool;
+
+            private function init():void {
+                activeLayer = imageryLayer;
+                swipeTool = new SwipeTool(map, activeLayer);
+                spotlightTool = new SpotlightTool(map, activeLayer);
+            }
+
+            private function activeSwipeTool():void {
+                swipeTool.activate();
+                spotlightTool.deactivate();
+                map.mapNavigationEnabled = false;
+            }
+
+            private function activeSpotlightTool():void {
+                spotlightTool.activate();
+                swipeTool.deactivate();
+                map.mapNavigationEnabled = false;
+            }
+        ]]>
+    </mx:Script>
+    <mx:HBox>
+        <mx:Button label="卷帘效果" click="activeSwipeTool()" />
+        <mx:Button label="聚光灯(放大镜)效果" click="activeSpotlightTool()" />
+        <mx:HSlider id="spotlightRadius" minimum="25" maximum="200" value="75" 
+            snapInterval="25" tickInterval="25" liveDragging="true"
+            change="spotlightTool.radius = spotlightRadius.value" />
+    </mx:HBox>
+    <esri:Map id="map" level="3">
+        <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer" />
+        <esri:ArcGISTiledMapServiceLayer id="imageryLayer" url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer" />
+    </esri:Map>
+</mx:Application>
