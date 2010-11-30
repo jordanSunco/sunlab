@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="添加图书">
+    <mx:Script>
+        <![CDATA[
+            import mx.events.ListEvent;
+            import model.Book;
+            
+            import controller.events.BookEvent;
+            
+            [Bindable]
+            public var modelLocator:BookModelLocator = BookModelLocator.getInstance();
+
+            private function addBook():void {
+                var book:Book = new Book(bookName.text, bookAuthor.text,
+                    bookPrice.text);
+
+                var event:BookEvent = new BookEvent(BookEvent.ADD_BOOK, book);
+                event.dispatch();
+            }
+
+            private function deleteBook(event:ListEvent):void {
+                var bookEvent:BookEvent = new BookEvent(BookEvent.DELETE_BOOK, 
+                    event.itemRenderer.data as Book);
+                bookEvent.dispatch();
+            }
+        ]]>
+    </mx:Script>
+    <mx:Form>
+        <mx:FormItem label="书名">
+            <mx:TextInput id="bookName" />
+        </mx:FormItem>
+        <mx:FormItem label="作者">
+            <mx:TextInput id="bookAuthor" />
+        </mx:FormItem>
+        <mx:FormItem label="单价">
+            <mx:TextInput id="bookPrice" />
+        </mx:FormItem>
+        <mx:Button label="添加" click="addBook()" />
+    </mx:Form>
+    <mx:DataGrid id="dg" dataProvider="{modelLocator.books}"
+            doubleClickEnabled="true" itemDoubleClick="deleteBook(event)">
+        <mx:columns>
+            <mx:DataGridColumn headerText="书名" dataField="name" />
+            <mx:DataGridColumn headerText="作者" dataField="author" />
+            <mx:DataGridColumn headerText="单价" dataField="price" />
+        </mx:columns>
+    </mx:DataGrid>
+</mx:Panel>
