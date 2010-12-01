@@ -3,6 +3,7 @@
     <mx:Script>
         <![CDATA[
             import mx.events.ListEvent;
+            import mx.rpc.Responder;
             import model.Book;
             
             import controller.events.BookEvent;
@@ -14,14 +15,40 @@
                 var book:Book = new Book(bookName.text, bookAuthor.text,
                     bookPrice.text);
 
-                var event:BookEvent = new BookEvent(BookEvent.ADD_BOOK, book);
+                // mx.rpc.Responder 与 flash.net.Responder 命名冲突, 必须写全名.
+                // 发出带IResponder的event后, 触发指定的Command去(由FrontController控制),
+                // Command通过主动调用IResponder.result或者通delegate回调,
+                // 即到达handleAddResult方法.
+                var event:BookEvent = new BookEvent(BookEvent.ADD_BOOK,
+                    new mx.rpc.Responder(handleAddResult, handleAddFault), book);
                 event.dispatch();
             }
 
+            private function handleAddResult(data:Object):void {
+                trace(data);
+                // 添加成功后, 重置表单并设置焦点到第一个字段,
+                // 标准的Cairgorm很难做到这点(不让command依赖view).
+                resetForm();
+            }
+
+            private function handleAddFault(info:Object):void {
+                trace(info);
+                resetForm();
+            }
+
             private function deleteBook(event:ListEvent):void {
-                var bookEvent:BookEvent = new BookEvent(BookEvent.DELETE_BOOK, 
-                    event.itemRenderer.data as Book);
+                // 不发出带IResponder的event, 所有的事情由Command处理
+                var bookEvent:BookEvent = new BookEvent(BookEvent.DELETE_BOOK,
+                    null, event.itemRenderer.data as Book);
                 bookEvent.dispatch();
+            }
+
+            private function resetForm():void {
+                bookName.text = "";
+                bookAuthor.text = "";
+                bookPrice.text = "";
+
+                bookName.setFocus();
             }
         ]]>
     </mx:Script>
