@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:michaelvandaniker="http://michaelvandaniker.com"
+        creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.michaelvandaniker.visualization.GradientDictionary;
+            import mx.collections.ArrayCollection;
+
+            [Bindable]
+            private var points:ArrayCollection = new ArrayCollection();
+
+            private function init():void {
+                // 必须在初始化后赋值heatMap.dataProvider,
+                // 或者改变dataProvider中的数据, 才能使渲染热点
+                // 例如往ArrayCollection中添加数据
+                points.addItem(new Point(50, 50));
+
+                heatMap.dataProvider = new ArrayCollection([
+                    new Point(50, 50)
+                ]);
+            }
+        ]]>
+    </mx:Script>
+    <mx:Label text="绑定dataProvider" />
+    <michaelvandaniker:HeatMap width="100" height="100" backgroundColor="0xffffff"
+        backgroundAlpha="0.5" dataProvider="{points}" />
+    <mx:HRule />
+    <mx:Label text="初始化完成后再设置dataProvider" />
+    <michaelvandaniker:HeatMap id="heatMap" width="100" height="100"
+        backgroundColor="0xffffff" backgroundAlpha="0.5" />
+    <mx:HRule />
+    <mx:Label text="直接初始化dataProvider, 热点图没有渲染" />
+    <michaelvandaniker:HeatMap width="100" height="100" backgroundColor="0xffffff"
+        backgroundAlpha="0.5"
+        dataProvider="{new ArrayCollection([new Point(100, 200)])}" />
+</mx:Application>
