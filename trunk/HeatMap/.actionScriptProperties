@@ -10,6 +10,7 @@
 </compiler>
 <applications>
 <application path="HeatMap.mxml"/>
+<application path="TestArcGisHeatMap.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>

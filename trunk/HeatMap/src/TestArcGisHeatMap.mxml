@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+        xmlns:esri="http://www.esri.com/2008/ags"
+        creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.esri.ags.geometry.MapPoint;
+            import mx.collections.ArrayCollection;
+            import heatmap.ArcGisHeatMap;
+
+            private var mapPoints:ArrayCollection = new ArrayCollection([
+                new MapPoint(113.4186, 35.1806), 
+                new MapPoint(113.5186, 35.1806)])
+
+            private function init():void {
+                map.level = 6;
+                map.centerAt(mapPoints.getItemAt(0) as MapPoint);
+
+                var heatMap:ArcGisHeatMap = new ArcGisHeatMap();
+                heatMap.map = map;
+                // 延迟才能一开始就看见热点, 否则要漫游一下或者extent改变.
+                // 应该是heatMap加入到Map中, 需要时间渲染显示?
+                callLater(function ():void {
+                    heatMap.dataProvider = mapPoints;
+                });
+            }
+        ]]>
+    </mx:Script>
+    <esri:Map id="map">
+        <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer" />
+    </esri:Map>
+</mx:Application>
