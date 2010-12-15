@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        xmlns:controls="maps.controls.*">
+    <mx:Script>
+        <![CDATA[
+            import com.esri.ags.symbol.SimpleLineSymbol;
+            import com.esri.ags.symbol.SimpleFillSymbol;
+            import com.esri.ags.symbol.Symbol;
+            import maps.controls.ArcGisFlashMapLevelConfig;
+
+            private var defaultSymbol:Symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 0xaaaaaa, 0.7, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0xffffff, 1, 2));
+            private var rollOverSymbol:Symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_HORIZONTAL, 0, 0.5, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0xfff, 1, 2));
+
+            private var configs:Array = [
+                // 配置查询市(面图层)
+                new ArcGisFlashMapLevelConfig("省", 0, "http://192.168.200.102:8399/arcgis/rest/services/henjichu/MapServer/17", "", ["city_id"], ["city_id"]),
+                // 配置查询县(面图层)
+                new ArcGisFlashMapLevelConfig("市", 1, "http://192.168.200.102:8399/arcgis/rest/services/henjichu/MapServer/16", "CITY_ID = '?'", ["COUNTY_ID"], ["COUNTY_ID"]),
+                // 配置查询乡镇(面图层)
+                new ArcGisFlashMapLevelConfig("县", 2, "http://192.168.200.102:8399/arcgis/rest/services/henqudao/MapServer/15", "COUNTY_ID = '?'", ["*"], ["*"])
+            ];
+        ]]>
+    </mx:Script>
+
+    <mx:Button label="后退" click="map.rollUp()" enabled="{map.canRollUpValue}" />
+    <controls:ArcGisFlashlikeMap id="map" flashMapLevelConfigs="{configs}"
+            defaultSymbol="{defaultSymbol}" rollOverSymbol="{rollOverSymbol}">
+        <esri:ArcGISTiledMapServiceLayer url="http://192.168.200.102:8399/arcgis/rest/services/henjichu/MapServer" />
+    </controls:ArcGisFlashlikeMap>
+</mx:Application>
