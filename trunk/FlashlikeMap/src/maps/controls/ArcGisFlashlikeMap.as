@@ -58,8 +58,8 @@ package maps.controls {
         [ArrayElementType("com.esri.ags.tasks.FeatureSet")]
         private var highlightFeatureSetHistory:Array = [];
 
-        private var _defaultSymbol:Symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 0xD2F386, 0.7, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0xFFFFFF, 1, 2));
-        private var _rollOverSymbol:Symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_CROSS, 0, 0.5, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0x003D5C, 1, 2));
+        protected var _defaultSymbol:Symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID, 0xD2F386, 0.7, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0xFFFFFF, 1, 2));
+        protected var _rollOverSymbol:Symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_CROSS, 0, 0.5, new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, 0x003D5C, 1, 2));
 
         /**
          * 用于回退到全图视野(zoomToFullExtent)
@@ -349,6 +349,7 @@ package maps.controls {
             // 取得下一层flash地图层级配置的ArcGIS地图图层, 定位过去
             zoomToExtent(featureSet.features,
                 getFlashMapLevelConfig(this._flashMapLevel).mapLevel);
+            styleGraphics(featureSet.features);
             renderGraphics(featureSet.features);
         }
 
@@ -367,16 +368,17 @@ package maps.controls {
         }
 
         /**
-         * 渲染传入的graphics.
-         * 设置graphics的样式(包含Symbol和Filter), 并添加到专门用于高亮的GraphicsLayer中
+         * 将graphics添加到专门用于高亮的GraphicsLayer中
          * 
          * @param graphics
          */
         private function renderGraphics(graphics:Array):void {
-            styleGraphics(graphics);
             this.highlightGraphicsLayer.graphicProvider = graphics;
         }
 
+        /**
+         * 设置graphics的样式(可以是Symbol和Filter)
+         */
         protected function styleGraphics(graphics:Array):void {
             for each (var graphic:Graphic in graphics) {
                 graphic.symbol = this._defaultSymbol;
