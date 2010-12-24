@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        xmlns:controls="maps.controls.*">
+    <mx:Script>
+        <![CDATA[
+            import maps.controls.ArcGisFlashMapLevelConfig;
+            
+            private var configs:Array = [
+                // 配置查询市(面图层)
+                new ArcGisFlashMapLevelConfig("省", 0, "http://192.168.200.102:8399/arcgis/rest/services/henjichu/MapServer/17", "", ["city_id"], ["city_id"]),
+                // 配置查询县(面图层)
+                new ArcGisFlashMapLevelConfig("市", 1, "http://192.168.200.102:8399/arcgis/rest/services/henjichu/MapServer/16", "CITY_ID = '?'", ["COUNTY_ID"], ["COUNTY_ID"]),
+                // 配置查询乡镇(面图层)
+                new ArcGisFlashMapLevelConfig("县", 2, "http://192.168.200.102:8399/arcgis/rest/services/henqudao/MapServer/15", "COUNTY_ID = '?'", ["*"], ["*"])
+            ];
+
+            private function switchMap(event:MouseEvent):void {
+                if (event.target.selected) { // 颜色渲染
+                    map.graphicsAssociateVos = [{
+                        id: "a", value: 100
+                    }, {
+                        id: "b", value: -100
+                    }];
+                } else { // 一般填充地图
+                    map.graphicsAssociateVos = null;
+                }
+            }
+        ]]>
+    </mx:Script>
+    <mx:Button label="后退" click="map.rollUp()" enabled="{map.canRollUpValue}" />
+    <mx:Button label="切换地图显示效果" toggle="true" click="switchMap(event)"
+        toolTip="设置区域值, 根据该值与区域的对应关系决定填充色" />
+    <controls:ArcGisClassBreaksRenderMap id="map"
+            flashMapLevelConfigs="{configs}"
+            graphicStyleStrategyImplClass="maps.GraphicStyleImpl">
+        <esri:ArcGISTiledMapServiceLayer url="http://192.168.200.102:8399/arcgis/rest/services/henjichu/MapServer" />
+    </controls:ArcGisClassBreaksRenderMap>
+</mx:Application>
