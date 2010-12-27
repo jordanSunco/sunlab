@@ -33,9 +33,10 @@ package maps {
          * 根据Graphic匹配的值对象来决定Graphic的样式.
          * 例如根据值对象中某属性值来决定填充色.
          * 
+         * @param level 从层级概念中推算出传入的Graphic是什么类型的区域, 例如第2层为县区域
          * @param graphic
          * @param graphicVo
          */
-        function styleIt(graphic:Graphic, graphicVo:Object):void;
+        function styleIt(level:uint, graphic:Graphic, graphicVo:Object):void;
     }
 }
