@@ -13,15 +13,15 @@ package maps.events {
          */
         public static const RENDER_GRAPHIC:String = "renderGraphic";
 
-        public var startDrillDownFlashMapLevel:uint;
+        public var flashMapLevel:uint;
         public var featureSet:FeatureSet;
 
         public function ArcGisFlashlikeMapEvent(type:String,
-                startDrillDownFlashMapLevel:uint, featureSet:FeatureSet,
-                bubbles:Boolean=false, cancelable:Boolean=false) {
+                flashMapLevel:uint, featureSet:FeatureSet, bubbles:Boolean=false,
+                cancelable:Boolean=false) {
             super(type, bubbles, cancelable);
 
-            this.startDrillDownFlashMapLevel = startDrillDownFlashMapLevel;
+            this.flashMapLevel = flashMapLevel;
             this.featureSet = featureSet;
         }
     }

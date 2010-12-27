@@ -357,14 +357,13 @@ package maps.controls {
             styleGraphics(featureSet.features);
             renderGraphics(featureSet.features);
 
-            dispatchRenderGraphicEvent(startDrillDownFlashMapLevel, featureSet);
+            dispatchRenderGraphicEvent(this._flashMapLevel, featureSet);
         }
 
-        protected function dispatchRenderGraphicEvent(
-                startDrillDownFlashMapLevel:uint, featureSet:FeatureSet):void {
+        protected function dispatchRenderGraphicEvent(flashMapLevel:uint,
+                    featureSet:FeatureSet):void {
             var renderGraphicEvent:ArcGisFlashlikeMapEvent = new ArcGisFlashlikeMapEvent(
-                ArcGisFlashlikeMapEvent.RENDER_GRAPHIC,
-                startDrillDownFlashMapLevel, featureSet);
+                ArcGisFlashlikeMapEvent.RENDER_GRAPHIC, flashMapLevel, featureSet);
 
             dispatchEvent(renderGraphicEvent);
         }

@@ -19,7 +19,7 @@
             private var lastGraphicsAssociateVos:Array;
 
             private function getGraphicsAssociateVos(event:ArcGisFlashlikeMapEvent):void {
-                trace(event.startDrillDownFlashMapLevel, event.featureSet);
+                trace(event.flashMapLevel, event.featureSet);
                 switchMap();
             }
 
