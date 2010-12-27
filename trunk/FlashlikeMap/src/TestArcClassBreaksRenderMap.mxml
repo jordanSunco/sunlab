@@ -4,6 +4,7 @@
         xmlns:controls="maps.controls.*">
     <mx:Script>
         <![CDATA[
+            import maps.events.ArcGisFlashlikeMapEvent;
             import maps.controls.ArcGisFlashMapLevelConfig;
             
             private var configs:Array = [
@@ -15,13 +16,28 @@
                 new ArcGisFlashMapLevelConfig("县", 2, "http://192.168.200.102:8399/arcgis/rest/services/henqudao/MapServer/15", "COUNTY_ID = '?'", ["*"], ["*"])
             ];
 
-            private function switchMap(event:MouseEvent):void {
-                if (event.target.selected) { // 颜色渲染
-                    map.graphicsAssociateVos = [{
-                        id: "a", value: 100
-                    }, {
-                        id: "b", value: -100
-                    }];
+            private var lastGraphicsAssociateVos:Array;
+
+            private function getGraphicsAssociateVos(event:ArcGisFlashlikeMapEvent):void {
+                trace(event.startDrillDownFlashMapLevel, event.featureSet);
+                switchMap();
+            }
+
+            /**
+             * 这里通过业务代理获取真实数据, 一般是异步过程,
+             * 等数据返回后, 赋值给graphicsAssociateVos既可渲染地图
+             */
+            private function asynsGetGraphicsAssociateVos():void {
+                map.graphicsAssociateVos = [{
+                    id: "a", value: 100
+                }, {
+                    id: "b", value: -100
+                }];
+            }
+
+            private function switchMap():void {
+                if (switchMapButton.selected) { // 颜色渲染
+                    asynsGetGraphicsAssociateVos();
                 } else { // 一般填充地图
                     map.graphicsAssociateVos = null;
                 }
@@ -29,11 +45,12 @@
         ]]>
     </mx:Script>
     <mx:Button label="后退" click="map.rollUp()" enabled="{map.canRollUpValue}" />
-    <mx:Button label="切换地图显示效果" toggle="true" click="switchMap(event)"
-        toolTip="设置区域值, 根据该值与区域的对应关系决定填充色" />
+    <mx:Button id="switchMapButton" label="切换地图显示效果" toggle="true"
+        toolTip="颜色渲染/高亮渲染" click="switchMap()" />
     <controls:ArcGisClassBreaksRenderMap id="map"
             flashMapLevelConfigs="{configs}"
-            graphicStyleStrategyImplClass="maps.GraphicStyleImpl">
+            graphicStyleStrategyImplClass="maps.GraphicStyleImpl"
+            renderGraphic="getGraphicsAssociateVos(event)">
         <esri:ArcGISTiledMapServiceLayer url="http://192.168.200.102:8399/arcgis/rest/services/henjichu/MapServer" />
     </controls:ArcGisClassBreaksRenderMap>
 </mx:Application>
