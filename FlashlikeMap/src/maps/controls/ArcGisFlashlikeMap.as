@@ -11,11 +11,16 @@ package maps.controls {
     import com.esri.ags.tasks.Query;
     import com.esri.ags.toolbars.Navigation;
     import com.esri.ags.utils.GraphicUtil;
-    import maps.FlashlikeMap;
-    import maps.business.SpatialBusinessDelegate;
-    import utils.DefaultResponder;
     
     import flash.events.MouseEvent;
+    
+    import maps.FlashlikeMap;
+    import maps.business.SpatialBusinessDelegate;
+    import maps.events.ArcGisFlashlikeMapEvent;
+    
+    import utils.DefaultResponder;
+
+    [Event(name="renderGraphic", type="maps.events.ArcGisFlashlikeMapEvent")]
 
     /**
      * 通过高亮ArcGIS切片图层特定区域的办法来达到类似Flash静态地图的效果.
@@ -351,6 +356,17 @@ package maps.controls {
                 getFlashMapLevelConfig(this._flashMapLevel).mapLevel);
             styleGraphics(featureSet.features);
             renderGraphics(featureSet.features);
+
+            dispatchRenderGraphicEvent(startDrillDownFlashMapLevel, featureSet);
+        }
+
+        protected function dispatchRenderGraphicEvent(
+                startDrillDownFlashMapLevel:uint, featureSet:FeatureSet):void {
+            var renderGraphicEvent:ArcGisFlashlikeMapEvent = new ArcGisFlashlikeMapEvent(
+                ArcGisFlashlikeMapEvent.RENDER_GRAPHIC,
+                startDrillDownFlashMapLevel, featureSet);
+
+            dispatchEvent(renderGraphicEvent);
         }
 
         /**
