@@ -10,7 +10,7 @@ package maps {
     public class GraphicStyleImpl implements GraphicStyleStrategy {
         public function initGraphicStyle(level:uint, graphic:Graphic,
                 vos:Array):void {
-            styleIt(graphic, getGraphicVo(level, graphic, vos));
+            styleIt(level, graphic, getGraphicVo(level, graphic, vos));
         }
 
         public function getGraphicVo(level:uint, graphic:Graphic,
@@ -19,7 +19,8 @@ package maps {
             return vos[Math.floor(Math.random() * vos.length)];
         }
 
-        public function styleIt(graphic:Graphic, graphicVo:Object):void {
+        public function styleIt(level:uint, graphic:Graphic,
+                graphicVo:Object):void {
             trace("FIXME styleIt 模板方法, 子类必须实现具体逻辑");
             graphic.symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
                 0xff00ff >> Math.random() * 10);
