@@ -361,7 +361,7 @@ package maps.controls {
         }
 
         protected function dispatchRenderGraphicEvent(flashMapLevel:uint,
-                    featureSet:FeatureSet):void {
+                featureSet:FeatureSet):void {
             var renderGraphicEvent:ArcGisFlashlikeMapEvent = new ArcGisFlashlikeMapEvent(
                 ArcGisFlashlikeMapEvent.RENDER_GRAPHIC, flashMapLevel, featureSet);
 
