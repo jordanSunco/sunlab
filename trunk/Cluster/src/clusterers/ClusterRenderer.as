@@ -163,12 +163,8 @@ package clusterers {
             // TODO 写死最多能展开30个点
             var flareMaxCount:uint = 30;
 
-            // TODO 样式切换会有闪烁的现象, 飘浮不定
             if ((graphic.geometry as Cluster).getMapPointCount() <= flareMaxCount) {
                 graphic.addEventListener(MouseEvent.ROLL_OVER, function (event:MouseEvent):void {
-//                    setTimeout(function ():void {
-//                        
-//                    }, 500);
                     event.target.symbol = new FlareSymbol();
                 });
                 graphic.addEventListener(TweenFlareContainerEffectEvent.FLARE_CONTAINER_CLOSE_COMPLETE, function ():void {
