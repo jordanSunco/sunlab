@@ -21,11 +21,9 @@ package flare {
 
         public function TweenFlareBrance(radius:Number, slice:uint = 6, n:uint = 0,
                 rotation:Number = 0, data:Object = null) {
-            super(0, slice, n, rotation, data);
-
             this.expectRadius = radius;
-
             initTween();
+            super(0, slice, n, rotation, data);
         }
 
         private function initTween():void {
@@ -45,6 +43,23 @@ package flare {
             this.radius = Number(value);
 
             this.drawFlareBrance();
+        }
+
+        override protected function drawFlareBrance():void {
+            super.drawFlareBrance();
+            fillExpectRadiusCircle();
+        }
+
+        /**
+         * 绘制一个最大半径的透明圆占据空间, 解决鼠标ROLL_OVER事件频发的问题.
+         * 在动画绘制分支的过程中, 半径为0时Sprite也只占据0空间(此时Sprite等于不存在),
+         * 造成鼠标ROLL_OVER被持续触发.
+         */
+        private function fillExpectRadiusCircle():void {
+            this.graphics.lineStyle(0, 0, 0);
+            this.graphics.beginFill(0, 0);
+            this.graphics.drawCircle(0, 0, expectRadius);
+            this.graphics.endFill();
         }
 
         /**
