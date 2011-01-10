@@ -259,7 +259,7 @@ package maps.controls {
             this._canRollUpValue = value;
         }
 
-        private function backToFirstFlashMapLevel():void {
+        protected function backToFirstFlashMapLevel():void {
             this.highlightGraphicsLayer.clear();
             this._flashMapLevel = 0;
             // 当flash地图位于第0层时, 就不能进行地图回退操作了, 已经到达顶层
