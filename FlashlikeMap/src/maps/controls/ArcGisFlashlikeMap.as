@@ -412,7 +412,7 @@ package maps.controls {
             event.target.symbol = _defaultSymbol;
         }
 
-        private function getFlashMapLevelConfig(flashMapLevel:uint):ArcGisFlashMapLevelConfig {
+        protected function getFlashMapLevelConfig(flashMapLevel:uint):ArcGisFlashMapLevelConfig {
             return this._flashMapLevelConfigs[flashMapLevel] as ArcGisFlashMapLevelConfig;
         }
 
