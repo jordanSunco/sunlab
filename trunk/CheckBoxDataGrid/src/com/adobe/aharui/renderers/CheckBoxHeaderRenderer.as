@@ -4,9 +4,11 @@ package com.adobe.aharui.renderers {
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
     import flash.text.TextField;
+    
     import mx.controls.CheckBox;
     import mx.controls.dataGridClasses.DataGridListData;
     import mx.controls.listClasses.ListBase;
+    import mx.events.ListEvent;
 
     /** 
      * The Renderer.
@@ -70,6 +72,9 @@ package com.adobe.aharui.renderers {
                     arr.push(i);
                 ListBase(owner).selectedIndices = arr;
             }
+            
+            // 在点击全选/全不选时, 派发change事件, 告知已选项发生改变
+            ListBase(owner).dispatchEvent(new ListEvent(ListEvent.CHANGE));
     	}
 
     	/**
