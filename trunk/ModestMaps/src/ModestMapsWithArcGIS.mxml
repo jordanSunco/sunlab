@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:modest="com.modestmaps.flex.*" creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import mx.core.UIComponent;
+            import com.modestmaps.Map;
+            import com.modestmaps.TweenMap;
+            import com.modestmaps.extras.ZoomSlider;
+            import com.modestmaps.mapproviders.EsriMapProvider;
+            
+            import flash.events.MouseEvent;
+            
+            public var map:Map;
+            private var esriMapUrl:String = "http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer";
+
+            private function init():void {
+                initMap();
+
+                var ui:UIComponent = new UIComponent();
+                ui.percentWidth = 100;
+                ui.percentHeight = 100;
+
+                ui.addChild(map);
+                addChild(ui);
+            }
+
+            private function initMap():void {
+                map = new TweenMap(this.width, this.height, true,
+                    new EsriMapProvider(esriMapUrl, 0, 15));
+                map.addEventListener(MouseEvent.DOUBLE_CLICK, map.onDoubleClick);
+                map.addChild(new ZoomSlider(map));
+            }
+        ]]>
+    </mx:Script>
+</mx:Application>
