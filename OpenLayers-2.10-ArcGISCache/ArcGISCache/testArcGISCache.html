@@ -1,0 +1,140 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>OpenLayers Basic ESRI Map Cache Example</title>
+    <link rel="stylesheet" href="../theme/default/style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="../OpenLayers.js"></script>
+    <script src="ArcGISCache.js"></script>
+    <script src="AgsTiled.js"></script>
+    <script src="ModifiedXYZ.js"></script>
+    <script type="text/javascript">
+        var ARC_GIS_TILE_SERVER_URL = "http://192.168.200.102:8399/arcgis/rest/services/henjichu/MapServer";
+        var TILE_ORIGIN = new OpenLayers.LonLat(-400,400);
+        var TILE_SIZE = new OpenLayers.Size(512,512);
+        var MAX_EXTENT = new OpenLayers.Bounds(110.03992934964583, 31.134783400499995,
+            116.9596256503196, 36.6254465895);
+        var RESOLUTIONS = [
+            0.006583916254990255,
+            0.0016459802534780667,
+            8.229889370085304E-4,
+            4.114944685042652E-4,
+            1.028736171260663E-4,
+            2.571959401201949E-5,
+            1.2858607275506831E-5,
+            6.4293036377534154E-6,
+            8.351908130464281E-7
+        ];
+
+        var map;
+
+        function init() {
+            // 有可能读取到404瓦片(/4/2/-1), 出现异常图片区域
+            OpenLayers.Util.onImageLoadError = function() {
+                this.style.display = "none";
+            };
+            // DPI
+            OpenLayers.DOTS_PER_INCH = 96;
+
+            map = new OpenLayers.Map("map");
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.PanZoomBar());
+
+            addXYZ();
+            addArcGISCache();
+            addAgsTiled();
+            addModifiedXYZ();
+        }
+
+        /**
+         * 通过OpenLayers.Layer.XYZ读取ArcGIS Server REST瓦片服务
+         * 
+         * TODO 地图有偏移问题, 初始地图显示不全
+         * 
+         * @see http://gisdemo.agro.nl/OL/OSM_AGS2.htm
+         */
+        function addXYZ() {
+            var layerOptions = {
+                sphericalMercator: false,
+                // TODO 不是原地图服务中的MAX_EXTENT, 如何计算得出?
+                maxExtent: new OpenLayers.Bounds(-400, 31.134783400499995,
+                    116.9596256503196, 400),
+                resolutions: RESOLUTIONS,
+                // 这个属性值只对TMS有用, XYZ根本不认
+                // tileOrigin: TILE_ORIGIN,
+                tileSize: TILE_SIZE
+            };
+            var layer = new OpenLayers.Layer.XYZ("XYZ",
+                ARC_GIS_TILE_SERVER_URL + "/tile/${z}/${y}/${x}", layerOptions);
+
+            map.addLayer(layer);
+            map.zoomToExtent(MAX_EXTENT);
+        }
+
+        /**
+         * 通过OpenLayers.Layer.ArcGISCache读取ArcGIS Server REST瓦片服务
+         * 
+         * TODO 初始地图显示不全
+         * 
+         * @see http://trac.osgeo.org/openlayers/ticket/3030
+         */
+        function addArcGISCache() {
+            var layerOptions = {
+                maxExtent: MAX_EXTENT,
+                resolutions: RESOLUTIONS,
+                tileOrigin: TILE_ORIGIN,
+                tileSize: TILE_SIZE
+            };
+            var layer = new OpenLayers.Layer.ArcGISCache("ArcGISCache",
+                ARC_GIS_TILE_SERVER_URL, layerOptions);
+
+            map.addLayer(layer);
+            // map.zoomToMaxExtent();
+        }
+
+        /**
+         * 通过OpenLayers.Layer.AgsTiled读取ArcGIS Server REST瓦片服务
+         * 
+         * TODO 地图有偏移问题, 初始地图显示不全
+         * 
+         * @see http://trac.osgeo.org/openlayers/ticket/2748
+         * @see http://mkgeomatics.com/apps/REST_Dev/agsGeoprocessor.html
+         */
+        function addAgsTiled() {
+            var layerOptions = {
+                maxExtent: MAX_EXTENT,
+                resolutions: RESOLUTIONS,
+                tileOrigin: TILE_ORIGIN,
+                tileSize: TILE_SIZE,
+                tileFormat: "png"
+            };
+            var layer = new OpenLayers.Layer.AgsTiled("AgsTiled",
+                ARC_GIS_TILE_SERVER_URL + "/tile/", layerOptions);
+
+            map.addLayer(layer);
+            // map.zoomToMaxExtent();
+        }
+
+        /**
+         * 通过OpenLayers.Layer.XYZ.Modified读取ArcGIS Server REST瓦片服务
+         * 
+         * @see http://trac.osgeo.org/openlayers/ticket/2741
+         */
+        function addModifiedXYZ() {
+            var layerOptions = {
+                maxExtent: MAX_EXTENT,
+                resolutions: RESOLUTIONS,
+                tileOrigin: TILE_ORIGIN,
+                tileSize: TILE_SIZE
+            };
+            var layer = new OpenLayers.Layer.XYZ.Modified("XYZ.Modified",
+                ARC_GIS_TILE_SERVER_URL + "/tile/${z}/${y}/${x}", layerOptions);
+
+            map.addLayer(layer);
+            // map.zoomToMaxExtent();
+        }
+        </script>
+    </head>
+    <body onload="init()">
+        <div id="map"></div>
+    </body>
+</html>
