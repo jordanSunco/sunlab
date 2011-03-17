@@ -56,11 +56,12 @@
             var layerOptions = {
                 sphericalMercator: false,
                 // TODO 不是原地图服务中的MAX_EXTENT, 如何计算得出?
+                // Layer.XYZ是通过maxExtent来获得XYZ, 而实际需要通过tileOrigin来获取XYZ.
+                // 因此必定存在算法通过tileOrigin算出一个合理的maxExtent.
                 maxExtent: new OpenLayers.Bounds(-400, 31.134783400499995,
                     116.9596256503196, 400),
                 resolutions: RESOLUTIONS,
-                // 这个属性值只对TMS有用, XYZ根本不认
-                // tileOrigin: TILE_ORIGIN,
+                tileOrigin: TILE_ORIGIN,
                 tileSize: TILE_SIZE
             };
             var layer = new OpenLayers.Layer.XYZ("XYZ",
