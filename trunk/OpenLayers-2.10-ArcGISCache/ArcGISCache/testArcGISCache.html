@@ -55,11 +55,14 @@
         function addXYZ() {
             var layerOptions = {
                 sphericalMercator: false,
-                // TODO 不是原地图服务中的MAX_EXTENT, 如何计算得出?
+                // TODO 不是原地图服务中的MAX_EXTENT, 必须计算出来才能正常显示地图.
                 // Layer.XYZ是通过maxExtent来获得XYZ, 而实际需要通过tileOrigin来获取XYZ.
                 // 因此必定存在算法通过tileOrigin算出一个合理的maxExtent.
-                maxExtent: new OpenLayers.Bounds(-400, 31.134783400499995,
-                    116.9596256503196, 400),
+                // 根据ArcGISCache.getMaxExtentForResolution, 计算出来的maxExtent
+                // (109.01573350580662, 29.193836518948824, 119.12862887347165, 42.67769700916887)
+                // 再将头尾替换为tileOrigin(-400, 400), 得出能正常显示的maxExtent(算法原理未知).
+                maxExtent: new OpenLayers.Bounds(-400, 29.193836518948824,
+                    119.12862887347165, 400),
                 resolutions: RESOLUTIONS,
                 tileOrigin: TILE_ORIGIN,
                 tileSize: TILE_SIZE
