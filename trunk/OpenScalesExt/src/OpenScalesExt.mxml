@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+        xmlns:os="http://openscales.org"
+        creationComplete="init()">
+    <fx:Script source="test.as" />
+<!--    <os:Map width="100%" height="100%" >
+        <os:WMS name="WMS" url="http://192.168.200.102:8399/arcgis/services/tmpbsarea/MapServer/WMSServer"
+            layers="0" styles="" format="image/jpeg"
+            maxExtent="110.03992934964583,31.134783400499995,116.9596256503196,36.6254465895"
+            resolutions="0.006583916254990255,0.0016459802534780667,8.229889370085304E-4,4.114944685042652E-4,1.028736171260663E-4,2.571959401201949E-5,1.2858607275506831E-5,6.4293036377534154E-6,8.351908130464281E-7" />
+        <os:WFS name="WFS" url="http://192.168.200.102:8399/arcgis/services/wgyw/MapServer/WFSServer"
+                typename="baseStationSector" style="{Style.getDefaultSurfaceStyle()}" />
+        <os:PanZoom />
+        <os:DragHandler />
+        <os:WheelHandler />
+        <os:Spinner x="{width / 2}" y="{height / 2}"/>
+        <os:MousePosition x="10" y="{height-20}" />
+        <os:ControlPanel title="Layers" x="{width - 225}" y="10" width="215">
+            <os:LayerManager />
+        </os:ControlPanel>
+    </os:Map>-->
+</s:Application>
