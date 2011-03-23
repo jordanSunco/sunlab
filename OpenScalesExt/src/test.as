@@ -147,10 +147,12 @@ private function addWms():void {
     var wms:WMS = new WMS("ArcGIS WMS业务图层", arcgisWmsUrl, "0");
     // 告诉WMS输出支持透明的图片格式来进行图层叠加, 这种机制可以成功叠加图层, 但会遮盖底图.
     // 因为没有办法预先调整透明度(如让WMS输出50%透明度的图层), 需要通过SLD来调整图层样式.
-    // wms.params["transparent"] = true;
-    // wms.params["format"] = "image/png";
+    wms.params["transparent"] = true;
+    wms.params["format"] = "image/png";
 
     // 通过Flex原生的透明度机制来进行图层叠加, 可以达到预先图层透明的效果
+    // 同时采用2种透明支持展现效果最好
+    // 如果只采用Flex原生的透明, 会有蒙板的感觉, 有点模糊不清
     wms.alpha = 0.5;
 
     map.addLayer(wms, false, true);
