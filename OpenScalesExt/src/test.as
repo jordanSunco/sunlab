@@ -21,7 +21,8 @@ import org.openscales.geometry.basetypes.Bounds;
 import org.openscales.geometry.basetypes.Location;
 
 private var arcgisTileCacheBaseUrl:String = "http://192.168.200.58:8399/arcgis/rest/services/HeNan512/MapServer/tile/${z}/${y}/${x}";
-// styles参数是必须的, 直接添加到URL中
+// arcgis server 9.3.1 发布的WMS服务是1.0.0版, styles参数是必须的, 直接添加到URL中
+// geoserver 发布的WMS服务是1.1.1版, styles参数是可选的
 private var arcgisWmsUrl:String = "http://192.168.200.102:8399/arcgis/services/tmpbsarea/MapServer/WMSServer?styles=";
 private var arcgisWfsUrl:String = "http://192.168.200.102:8399/arcgis/services/wgyw/MapServer/WFSServer";
 
