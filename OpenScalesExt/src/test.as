@@ -53,10 +53,7 @@ private function initMap(event:FlexEvent):void {
 
     addBasemap();
     addWms();
-    // TODO 换用1.2.1版本后, 加载WFS图层报错, 经测试只是公司的服务报错, 使用OpenScales的WFS没有问题
-    // 元素类型“FeatureCollection”必须以匹配的结束标记“</FeatureCollection>”结束。
-    // org\openscales\core\format\GMLFormat.as:143]
-//    addWfs();
+    addWfs();
     addFeatureLayer();
     testSpatialAnalysis();
 
@@ -165,7 +162,6 @@ private function addWms():void {
  */
 private function addWfs():void {
     var wfs:WFS = new WFS("ArcGIS WFS要素图层", arcgisWfsUrl, "baseStationSector");
-//    var wfs:WFS = new WFS("wfs", "http://openscales.org/geoserver/wfs", "topp:states");
     wfs.style = Style.getDefaultSurfaceStyle();
 
     map.addLayer(wfs, false, true);
