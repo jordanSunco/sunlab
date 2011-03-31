@@ -1,12 +1,18 @@
+import flash.events.Event;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import flash.net.URLVariables;
+
 import mx.core.UIComponent;
 import mx.events.FlexEvent;
-import mx.rpc.events.ResultEvent;
 
 import org.openscales.core.Map;
+import org.openscales.core.basetypes.maps.HashMap;
 import org.openscales.core.control.LayerManager;
 import org.openscales.core.control.PanZoom;
 import org.openscales.core.events.FeatureEvent;
 import org.openscales.core.feature.Feature;
+import org.openscales.core.format.GMLFormat;
 import org.openscales.core.format.WKTFormat;
 import org.openscales.core.handler.feature.SelectFeaturesHandler;
 import org.openscales.core.handler.mouse.DragHandler;
@@ -23,8 +29,8 @@ import org.openscales.geometry.basetypes.Location;
 private var arcgisTileCacheBaseUrl:String = "http://192.168.200.58:8399/arcgis/rest/services/HeNan512/MapServer/tile/${z}/${y}/${x}";
 // arcgis server 9.3.1 发布的WMS服务是1.0.0版, styles参数是必须的, 直接添加到URL中
 // geoserver 发布的WMS服务是1.1.1版, styles参数是可选的
-private var arcgisWmsUrl:String = "http://192.168.200.102:8399/arcgis/services/tmpbsarea/MapServer/WMSServer?styles=";
-private var arcgisWfsUrl:String = "http://192.168.200.102:8399/arcgis/services/wgyw/MapServer/WFSServer";
+private var arcgisWmsUrl:String = "http://192.168.200.58:8399/arcgis/services/tmpbsarea/MapServer/WMSServer?styles=";
+private var arcgisWfsUrl:String = "http://192.168.200.58:8399/arcgis/services/testwfs/MapServer/WFSServer";
 
 private var map:Map;
 private var featureLayer:FeatureLayer;
@@ -56,6 +62,9 @@ private function initMap(event:FlexEvent):void {
     addWfs();
     addFeatureLayer();
     testSpatialAnalysis();
+//    testWfsFilterByHttpGet();
+    testWfsFilterByHttpPost();
+    testGeoserverWfsFilter();
 
     ui.addChild(map);
 }
@@ -85,8 +94,8 @@ private function testSpatialAnalysis():void {
 
     // FIXME WKT读取GEOMETRYCOLLECTION格式错误.
     // PS: 可以成功写入
-    // trace(new WKTFormat().write([lineFeature, pointFeature]));
-    // new WKTFormat().read("GEOMETRYCOLLECTION(LINESTRING(111.11 33,112.22 33),POINT(113.11 33))");
+//     trace(new WKTFormat().write([lineFeature, pointFeature]));
+//     new WKTFormat().read("GEOMETRYCOLLECTION(LINESTRING(111.11 33,112.22 33),POINT(113.11 33))");
 }
 
 /**
@@ -161,8 +170,99 @@ private function addWms():void {
  * 因为没有进行Filter Encoding过滤, 如果数据量过大会造成前端卡死.
  */
 private function addWfs():void {
-    var wfs:WFS = new WFS("ArcGIS WFS要素图层", arcgisWfsUrl, "baseStationSector");
-    wfs.style = Style.getDefaultSurfaceStyle();
+    var wfs:WFS = new WFS("ArcGIS WFS要素图层", arcgisWfsUrl, "restaurant");
+    wfs.style = Style.getDefaultPointStyle();
 
     map.addLayer(wfs, false, true);
+}
+
+private function testWfsFilterByHttpGet():void {
+    var filter:String = "<Filter xmlns='http://www.opengis.net/ogc'><PropertyIsGreaterThan><PropertyName>FID</PropertyName><Literal>189</Literal></PropertyIsGreaterThan></Filter>";
+
+    var urlRequest:URLRequest = new URLRequest(arcgisWfsUrl);
+    // 必须指定为1.0.0版本的WFS服务, 否则能得到feature但不能显示feature
+    var params:URLVariables = new URLVariables("service=wfs&version=1.0.0&request=getFeature&typeName=restaurant&filter=" + filter);
+    urlRequest.data = params;
+
+    loadWfsGml(urlRequest);
+}
+
+private function testWfsFilterByHttpPost():void {
+    var getFeatureXml:XML =
+        <wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd"
+                service="WFS" version="1.0.0">
+            <wfs:Query typeName="testwfs:restaurant" xmlns:testwfs="http://localhost/arcgis/services/testwfs/MapServer/WFSServer">
+                <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                    <ogc:PropertyIsGreaterThan>
+                        <ogc:PropertyName>FID</ogc:PropertyName>
+                        <ogc:Literal>189</ogc:Literal>
+                    </ogc:PropertyIsGreaterThan>
+                </ogc:Filter>
+            </wfs:Query>
+        </wfs:GetFeature>;
+
+    var urlRequest:URLRequest = new URLRequest(arcgisWfsUrl);
+    urlRequest.method = URLRequestMethod.POST;
+    urlRequest.contentType = "text/xml";
+    urlRequest.data = getFeatureXml.toXMLString();
+
+    loadWfsGml(urlRequest);
+}
+
+private function testGeoserverWfsFilter():void {
+    var getFeatureXml:XML =
+        <wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd"
+                service="WFS" version="1.0.0">
+            <wfs:Query typeName="za:za_natural" xmlns:za="http://opengeo.org/za">
+                <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                    <ogc:Or>
+                        <ogc:PropertyIsEqualTo>
+                            <ogc:PropertyName>name</ogc:PropertyName>
+                            <ogc:Literal>Alexandra Reservoir</ogc:Literal>
+                        </ogc:PropertyIsEqualTo>
+                        <ogc:PropertyIsEqualTo>
+                            <ogc:PropertyName>name</ogc:PropertyName>
+                            <ogc:Literal>Beervlei Dam</ogc:Literal>
+                        </ogc:PropertyIsEqualTo>
+                    </ogc:Or>
+                </ogc:Filter>
+            </wfs:Query>
+        </wfs:GetFeature>;
+
+    var urlRequest:URLRequest = new URLRequest("http://demo.opengeo.org/geoserver/wfs");
+    urlRequest.method = URLRequestMethod.POST;
+    urlRequest.contentType = "text/xml";
+    urlRequest.data = getFeatureXml.toXMLString();
+
+    loadWfsGml(urlRequest);
+}
+
+private function loadWfsGml(urlRequest:URLRequest):void {
+    var urlLoader:URLLoader = new URLLoader();
+    urlLoader.load(urlRequest);
+    urlLoader.addEventListener(Event.COMPLETE, function (event:Event):void {
+        var gml:GMLFormat = new GMLFormat(addFeature, new HashMap());
+        gml.read(urlLoader.data);
+    });
+}
+
+private function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true,
+        reproject:Boolean=true):void {
+    // TODO 通过GMLFormat读取ArcGIS Server WFS的GML数据, 能够正常读取到每一个feature,
+    // 但是不管有多少个feature, 只有第一个feature能够加入到featureLayer中.
+    // 使用org.openscales.core.layer.ogc.WFS来叠加ArcGIS Server WFS也是一样的,
+    // 在地图只会展现一个feature.
+    // 测试geoserver WFS没有这种问题, 莫非是返回的GML数据有微妙的差别?
+    // XXX 通过clone的方式, 可以正常显示所有feature, 但attributes全部丢失, 需复制过去
+//    var f:Feature = feature.clone();
+//    f.attributes = feature.attributes;
+//    f.style = Style.getDefaultPointStyle();
+//    featureLayer.addFeature(f);
+    feature.style = Style.getDefaultPointStyle();
+    featureLayer.addFeature(feature);
+    trace(feature, featureLayer.features.length);
 }
