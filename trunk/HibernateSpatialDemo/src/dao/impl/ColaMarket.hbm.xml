@@ -1,0 +1,12 @@
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="domain">
+    <class name="ColaMarket" table="COLA_MARKETS" lazy="false">
+        <id name="id" column="ID">
+            <generator class="native"/>
+        </id>
+        <property name="name" column="NAME" />
+        <property name="location" type="org.hibernatespatial.GeometryUserType"
+            column="Shape" />
+    </class>
+</hibernate-mapping>
