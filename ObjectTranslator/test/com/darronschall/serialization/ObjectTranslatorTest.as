@@ -54,7 +54,7 @@ public class ObjectTranslatorTest extends TestCase
 							   publishedDate: publishedDate,
 							   inLibrary: true,
 							   random: [0,{test:1},2,3] };
-		
+		// 要求需要转换的Class构造函数不带参数
 		var book:Book = ObjectTranslator.objectToInstance( bookObj, Book ) as Book;
 		assertNotNull( book );
 		assertTrue( "book is Book?",  book is Book );
