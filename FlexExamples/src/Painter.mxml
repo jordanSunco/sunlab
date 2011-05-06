@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        creationComplete="init()">
+    <mx:Style>
+        Panel {
+           titleStyleName: "myPanelTitle";
+        }
+
+        .myPanelTitle {
+           fontSize: 20;
+        }
+    </mx:Style>
+    <mx:Script>
+        <![CDATA[
+            private function init():void {
+                canvas.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+                canvas.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+            }
+            
+            /**
+             * 
+             * @see http://www.gwycon.com/simple-flash-paint-program/
+             */
+            private function onMouseDown(event:MouseEvent):void {
+                setLineStyle();
+
+                canvas.graphics.moveTo(canvas.mouseX, canvas.mouseY);
+                canvas.addEventListener(MouseEvent.MOUSE_MOVE, draw);
+            }
+
+            private function setLineStyle():void {
+                canvas.graphics.lineStyle(thicknessControl.value, 
+                    colorControl.selectedColor, alphaControl.value);
+            }
+
+            private function draw(event:MouseEvent):void {
+                canvas.graphics.lineTo(canvas.mouseX, canvas.mouseY);
+            }
+
+            private function onMouseUp(event:MouseEvent):void {
+                canvas.removeEventListener(MouseEvent.MOUSE_MOVE, draw);
+            }
+
+            // TODO
+            private function replay():void {
+            }
+            
+            private function clear():void {
+                canvas.graphics.clear();
+            }
+        ]]>
+    </mx:Script>
+    <mx:Panel title="画板" width="100%" height="100%">
+        <mx:Canvas id="canvas" width="100%" height="100%" />
+        <mx:ControlBar>
+            <mx:Label styleName="myPanelTitle" text="线宽: "/>
+            <mx:HSlider id="thicknessControl" value="5" minimum="1" maximum="20"
+                tickInterval="1" snapInterval="1" />
+            <mx:Label styleName="myPanelTitle" text="透明度: "/>
+            <mx:HSlider id="alphaControl" value="1" minimum="0" maximum="1"
+                tickInterval="0.1" snapInterval="0.1" />
+            <mx:Label styleName="myPanelTitle" text="颜色: "/>
+            <mx:ColorPicker id="colorControl" />
+            <mx:Spacer width="100%" />
+            <!--<mx:Button styleName="myPanelTitle" label="重放" click="replay()" />-->
+            <mx:Button styleName="myPanelTitle" label="清除" click="clear()" />
+        </mx:ControlBar>
+    </mx:Panel>
+</mx:Application>
