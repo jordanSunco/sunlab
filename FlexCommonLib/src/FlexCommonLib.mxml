@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+    xmlns:s="library://ns.adobe.com/flex/spark" 
+    xmlns:mx="library://ns.adobe.com/flex/mx"
+    pageTitle="组件示例">
+    <s:layout>
+        <s:HorizontalLayout />
+    </s:layout>
+    <fx:Script>
+        <![CDATA[
+            import com.monkey.common.components.ProgressMask;
+            
+            import mx.controls.ProgressBarMode;
+            import mx.events.ListEvent;
+            import mx.managers.PopUpManager;
+            
+            // 在Module调用PopUpManager的问题(Module域)
+            // http://www.iteye.com/wiki/flex/1479-flex-module
+            // http://www.blogjava.net/alex0927/archive/2008/11/24/241989.html
+            // Create dummy variables
+            private var popUpManager:PopUpManager;
+            
+            [Bindable]
+            private var examples:Array = [{
+                id: "ProgressMaskDemo.swf", // Flex Module编译后的swf文件地址
+                label: "进度条组件"
+            }];
+
+            private function loadExample(event:ListEvent):void {
+                var swfUrl:String = event.itemRenderer.data.id;
+                exampleLoader.unloadModule();
+                exampleLoader.loadModule(swfUrl);
+            }
+
+            private function showProgress():void {
+                var progressMask:ProgressMask = new ProgressMask();
+                // 由于ModuleLoader不会派发Event.COMPLETE事件(派发了其得有的ModuleEvent.READY), 
+                // 因此指定ProgressBar.source为ModuleLoader时, 必须通过ProgressEvent.PROGRESS事件
+                // 来判断数据是否全部加载完成
+                // progressMask.addEventListener(Event.COMPLETE,
+                //    function ():void {
+                //        progressMask.close();
+                //    }
+                // );
+                progressMask.addEventListener(ProgressEvent.PROGRESS,
+                    function (event:ProgressEvent):void {
+                        if (event.bytesLoaded == event.bytesTotal) {
+                            progressMask.close();
+                        }
+                    }
+                );
+                progressMask.indeterminate = false;
+                progressMask.mode = ProgressBarMode.EVENT;
+                progressMask.source = exampleLoader;
+                progressMask.modal = false;
+                progressMask.popUpParent = exampleLoader;
+                progressMask.open();
+            }
+        ]]>
+    </fx:Script>
+    <mx:Tree dataProvider="{examples}" width="20%" height="100%"
+        itemClick="loadExample(event)" />
+    <mx:ModuleLoader id="exampleLoader" width="80%" height="100%"
+        loading="showProgress()" />
+</s:Application>
