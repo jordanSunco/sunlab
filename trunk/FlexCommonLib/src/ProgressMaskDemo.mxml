@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+        xmlns:s="library://ns.adobe.com/flex/spark" 
+        xmlns:mx="library://ns.adobe.com/flex/mx"
+        layout="vertical" width="100%" height="100%"
+        creationComplete="init()">
+    <fx:Script>
+        <![CDATA[
+            import com.monkey.common.components.ProgressMask;
+            
+            import mx.controls.ProgressBarLabelPlacement;
+            import mx.controls.ProgressBarMode;
+            import mx.controls.SWFLoader;
+
+            private const PREVIEW_IMAGE_URL:String = "http://www.wallcoo.com/nature/New_Zealand_landscapes_2_1920x1200/images/Wallcoo_com_New_Zealand_landscape_The_tree_over_the_lake.jpg";
+            private const ORIGINAL_IMAGE_URL:String = "http://www.wallcoo.com/nature/New_Zealand_landscapes_2_1920x1200/wallpapers/1024x768/Wallcoo_com_New_Zealand_landscape_The_tree_over_the_lake.jpg";
+            
+            private function init():void {
+                loadImageByImage(PREVIEW_IMAGE_URL);
+            }
+
+            private function openProgressMask():void {
+                var progressMask:ProgressMask = new ProgressMask();
+//                progressMask.popUpParent = this;
+                progressMask.timeout = 1000;
+                progressMask.open();
+            }
+
+            /**
+             * 通过SWFLoader来加载图片数据计算进度, 加载完成后再将数据赋值给Image.
+             * 这样在加载过程中, 屏幕始终会显示有图片, 不会出现突然空白的问题.
+             */
+            private function loadImageBySwfLoader(imageUrl:String):void {
+                var loader:SWFLoader = new SWFLoader();
+                loader.addEventListener(Event.COMPLETE, function ():void {
+                    prviewImage.source = loader.content;
+                    progressMask.close();
+                });
+
+                var progressMask:ProgressMask = new ProgressMask();
+                if (prviewImage.width) {
+                    progressMask.width = prviewImage.width;
+                }
+                progressMask.labelPlacement = ProgressBarLabelPlacement.CENTER;
+
+                // 根据loader派发的progress和complete事件来显示进度
+                progressMask.indeterminate = false;
+                progressMask.mode = ProgressBarMode.EVENT;
+                progressMask.source = loader;
+
+                progressMask.modal = false;
+                progressMask.popUpParent = prviewImage;
+                progressMask.open();
+
+                // 通过MXML来实例化SWFLoader, 直接指定source属性即可加载内容
+                // <mx:SWFLoader source="url" progress="progressHandler(event)" />
+                // 通过代码方式来实例化SWFLoader, 需要指定source属性后调用load();
+                // 为了演示每次加载的进度效果, 通过URL追加随机数来禁用缓存
+                loader.source = imageUrl + "?" + Math.random();
+                loader.load();
+            }
+
+            /**
+             * Image是继承SWFLoader的, 可以用其自身来完成进度加载.
+             * 这样就不需要使用额外的SWFLoader来加载图片数据计算进度, 加载完成后再将数据赋值给Image.
+             * 不过这样会造成加载图片时, 原始图片数据被清空, 屏幕显示一片空白, 待图片加载完毕后才会有显示.
+             */
+            private function loadImageByImage(imageUrl:String):void {
+                prviewImage.addEventListener(Event.COMPLETE, function ():void {
+                    progressMask.close();
+                });
+
+                var progressMask:ProgressMask = new ProgressMask();
+                if (prviewImage.width) {
+                    progressMask.width = prviewImage.width;
+                }
+                progressMask.labelPlacement = ProgressBarLabelPlacement.CENTER;
+
+                // 根据loader派发的progress和complete事件来显示进度
+                progressMask.indeterminate = false;
+                progressMask.mode = ProgressBarMode.EVENT;
+                progressMask.source = prviewImage;
+
+                progressMask.modal = false;
+                progressMask.popUpParent = prviewImage;
+                progressMask.open();
+
+                // 通过MXML来实例化SWFLoader, 直接指定source属性即可加载内容
+                // <mx:SWFLoader source="url" progress="progressHandler(event)" />
+                // 通过代码方式来实例化SWFLoader, 需要指定source属性后调用load();
+                // 为了演示每次加载的进度效果, 通过URL追加随机数来禁用缓存
+                prviewImage.source = imageUrl + "?" + Math.random();
+                prviewImage.load();
+            }
+        ]]>
+    </fx:Script>
+    <s:Button click="openProgressMask()" label="打开不确定进度的进度条" />
+    <!-- 演示加载预览图片, 点击预览图片后加载原图, 加载过程均显示进度 -->
+    <mx:Image id="prviewImage" click="loadImageBySwfLoader(ORIGINAL_IMAGE_URL)"
+        buttonMode="true" toolTip="点击查看原图" />
+</mx:Module>
