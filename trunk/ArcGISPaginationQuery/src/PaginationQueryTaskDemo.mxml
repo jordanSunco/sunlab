@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        pageTitle="分页查询空间数据" creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.esri.ags.tasks.FeatureSet;
+            import com.esri.ags.tasks.Query;
+            
+            import esri.ext.PaginationQueryTask;
+            
+            import mx.events.NumericStepperEvent;
+            import mx.rpc.Responder;
+
+            private static const LAYER_URL:String = "http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/Earthquakes/Since_1970/MapServer/0";
+            private static const PK_FIELD_NAME:String = "OBJECTID";
+            private static const WHERE:String = "magnitude >= 5";
+
+            private static const PAGE_SIZE:uint = 21;
+
+            [Bindable]
+            private var queryTask:PaginationQueryTask;
+            [Bindable]
+            private var paginationFsAttributes:Array;
+            [Bindable]
+            private var numPages:uint;
+            [Bindable]
+            private var numRecords:uint;
+
+            private function init():void {
+                var queryParameter:Query = new Query();
+                queryParameter.outFields = ["*"]
+                queryParameter.where = WHERE;
+
+                queryTask = new PaginationQueryTask(LAYER_URL, queryParameter,
+                    PK_FIELD_NAME, PAGE_SIZE);
+
+                queryTask.queryPage(1,
+                    new mx.rpc.Responder(extractPaginationData, fault));
+            }
+
+            private function pageNumberChangeHandler(event:NumericStepperEvent):void {
+                queryTask.queryPage(event.value,
+                    new mx.rpc.Responder(extractPaginationData, fault));
+            }
+
+            private function extractPaginationData(fs:FeatureSet):void {
+                paginationFsAttributes = fs.attributes;
+                numPages = queryTask.numPages;
+                numRecords = queryTask.numRecords;
+            }
+
+            private function fault(info:Object):void {
+                trace(info);
+            }
+        ]]>
+    </mx:Script>
+    <mx:HBox width="100%">
+        <mx:Label text="图层URL: " />
+        <mx:TextInput text="{LAYER_URL}" enabled="false" />
+        <mx:Label text="图层PK字段名: " />
+        <mx:TextInput text="{PK_FIELD_NAME}" width="65" enabled="false" />
+        <mx:Label text="SQL: " />
+        <mx:TextInput text="{WHERE}" enabled="false" />
+    </mx:HBox>
+    <mx:DataGrid dataProvider="{paginationFsAttributes}" rowCount="{PAGE_SIZE}"
+        width="100%" />
+    <mx:HBox width="100%">
+        <mx:Label text="第" />
+        <mx:NumericStepper minimum="1" maximum="{numPages}"
+            change="pageNumberChangeHandler(event)" />
+        <mx:Label text="/ {numPages} 页" />
+        <mx:Spacer width="100%" />
+        <mx:Label text="每页" />
+        <mx:TextInput text="{PAGE_SIZE}" width="30" enabled="false" />
+        <mx:Label text="条 共 {numRecords} 条" />
+    </mx:HBox>
+</mx:Application>
