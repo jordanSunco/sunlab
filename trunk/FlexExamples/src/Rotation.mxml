@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        pageTitle="自定义旋转的原点(控制点)">
+    <mx:Script>
+        <![CDATA[
+            import mx.core.UIComponent;
+            import mx.effects.Rotate;
+            import mx.events.ItemClickEvent;
+
+            [Bindable]
+            private var actionButtons:Array = [{
+                handlerName: "rotateByRotateEffect",
+                label: "通过mx.effects.Rotate进行旋转"
+            },{
+                handlerName: "rotateByEmbed",
+                label: "通过外层容器进行旋转"
+            }, {
+                handlerName: "rotateByMatrix",
+                label: "通过transform.matrix进行旋转"
+            }];
+
+            private function rotateByRotateEffect():void {
+                canvas.removeAllChildren();
+
+                var ui:UIComponent = createUIContainer();
+                drawLine(ui.graphics);
+                canvas.addChild(ui);
+
+                var rotate:Rotate = new Rotate(ui);
+                // 以组件的中心点为旋转原点
+                rotate.originX = 50;
+                rotate.originY = 50;
+                rotate.angleFrom = 0;
+                rotate.angleTo = 360;
+                rotate.duration = 7200;
+                rotate.repeatCount = 0;
+                rotate.play();
+            }
+
+            /**
+             * FIXME 后遗症, 由于子组件移动到了容器范围以外的位置(-50, -50), 造成容器位置偏移
+             */
+            private function rotateByEmbed():void {
+                canvas.removeAllChildren();
+
+                var ui:UIComponent = createUIContainer();
+                canvas.addChild(ui);
+
+                var s:Sprite = new Sprite();
+                drawLine(s.graphics);
+
+                // 以子组件的中心点为旋转原点
+                s.x = -s.width / 2;
+                s.y = -s.height / 2;
+                ui.addChild(s);
+
+                setInterval(function ():void {
+                    ui.rotation += 5;
+                }, 100);
+            }
+
+            private function rotateByMatrix():void {
+                canvas.removeAllChildren();
+
+                var ui:UIComponent = createUIContainer();
+                canvas.addChild(ui);
+
+                var s:Sprite = new Sprite();
+                drawLine(s.graphics);
+                ui.addChild(s);
+
+                var degree:Number = 0;
+                // 以组件的中心点为旋转原点
+                var originX:Number = s.width / 2;
+                var originY:Number = s.height / 2;
+
+                setInterval(function ():void {
+                    degree += 5;
+                    var radian:Number = degree * Math.PI / 180;
+
+                    var tempMatrix:Matrix = s.transform.matrix;
+                    tempMatrix.translate(-originX, -originY);
+                    tempMatrix.rotate(radian);
+                    tempMatrix.translate(+originX, +originY);
+
+                    s.transform.matrix = tempMatrix;
+                }, 100);
+            }
+
+            private function createUIContainer():UIComponent {
+                var ui:UIComponent = new UIComponent();
+                ui.opaqueBackground = 0x00CCFF;
+                ui.x = canvas.width / 2;
+                ui.y = canvas.height / 2;
+
+                return ui;
+            }
+
+            private function drawLine(graphics:Graphics, x:Number = 100,
+                    y:Number = 100, thickness:Number = 1, color:uint = 0):void {
+                graphics.lineStyle(thickness, color);
+                graphics.lineTo(x, y);
+            }
+
+            private function showRotateEffect(event:ItemClickEvent):void {
+                switch (event.item["handlerName"]) {
+                    case "rotateByRotateEffect":
+                        rotateByRotateEffect();
+                        break;
+                    case "rotateByEmbed":
+                        rotateByEmbed();
+                        break;
+                    case "rotateByMatrix":
+                        rotateByMatrix();
+                        break;
+                    default:
+                        trace("default");
+                }
+            }
+        ]]>
+    </mx:Script>
+    <mx:ToggleButtonBar selectedIndex="-1" dataProvider="{actionButtons}"
+        itemClick="showRotateEffect(event)" />
+    <mx:Canvas id="canvas" width="100%" height="100%" borderColor="0xfff"
+        borderStyle="solid" />
+</mx:Application>
