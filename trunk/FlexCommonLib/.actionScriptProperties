@@ -18,6 +18,7 @@
     <application path="FlexCommonLib.mxml"/>
   </applications>
   <modules>
+    <module application="src/FlexCommonLib.mxml" destPath="ButtonTileListDemo.swf" optimize="true" sourcePath="src/ButtonTileListDemo.mxml"/>
     <module application="src/FlexCommonLib.mxml" destPath="ProgressMaskDemo.swf" optimize="true" sourcePath="src/ProgressMaskDemo.mxml"/>
   </modules>
   <buildCSSFiles/>
