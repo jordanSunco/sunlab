@@ -24,6 +24,9 @@
             private var examples:Array = [{
                 id: "ProgressMaskDemo.swf", // Flex Module编译后的swf文件地址
                 label: "进度条组件"
+            }, {
+                id: "ButtonTileListDemo.swf",
+                label: "使用按钮来渲染TileList"
             }];
 
             private function loadExample(event:ListEvent):void {

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+        xmlns:s="library://ns.adobe.com/flex/spark" 
+        xmlns:mx="library://ns.adobe.com/flex/mx"
+        xmlns:components="com.monkey.common.components.*"
+        layout="vertical" width="100%" height="100%">
+    <fx:Script>
+        <![CDATA[
+            import mx.events.ListEvent;
+
+            private const foo:Array = [{
+                label: "a",
+                enabled: false
+            }, {
+                label: "b"
+            }, {
+                label: "c",
+                enabled: false
+            }, {
+                label: "d"
+            }];
+
+            private function changeHandler(event:ListEvent):void {
+                trace(event.target, (event.target as TileList).selectedItems);
+            }
+        ]]>
+    </fx:Script>
+    <s:Label text="默认的TileList, 注意烦人的背景色标识选中状态" />
+    <mx:TileList dataProvider="{[1, 2, 3]}">
+        <mx:itemRenderer>
+            <fx:Component>
+                <mx:Button toggle="true" />
+            </fx:Component>
+        </mx:itemRenderer>
+    </mx:TileList>
+    <mx:Spacer height="15" />
+
+    <s:Label text="扩展的TileList, 去除默认的背景色标识, 分别测试单选/多选" />
+    <components:NoIndicatorTileList dataProvider="{foo}"
+        itemRenderer="com.monkey.common.components.renderers.ListButtonRenderer"
+        change="changeHandler(event)" />
+    <components:NoIndicatorTileList dataProvider="{foo}" selectedIndices="[3]"
+        allowMultipleSelection="true"
+        itemRenderer="com.monkey.common.components.renderers.ListButtonRenderer"
+        change="changeHandler(event)" />
+</mx:Module>
