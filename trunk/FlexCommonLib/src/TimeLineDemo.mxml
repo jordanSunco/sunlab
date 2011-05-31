@@ -30,6 +30,15 @@
             private function yearLabelFunction(item:Object):String {
                 return item["fullYear"] + "年";
             }
+
+            private function testDateType(event:MouseEvent):void {
+                var randomDateType:Array = ["fullYear", "month", "date"];
+                var dateTypeIndex:Number = Math.floor(Math.random() * randomDateType.length);
+                timeLine.dateType = randomDateType[dateTypeIndex];
+                
+                // 仅仅为了方便观察是否正确切换了时间轴, 和功能无关
+                event.target.toolTip = randomDateType[dateTypeIndex];
+            }
         ]]>
     </fx:Script>
     <mx:Label text="分别测试主动提供年, 月, 日日期数据来初始化时间轴" styleName="testDesc" />
@@ -54,4 +63,16 @@
     <mx:HRule width="100%" toolTip="华丽的分割线" />
     <mx:Label text="测试设置时间轴的时间数量" styleName="testDesc" />
     <components:TimeLine size="12" />
+
+    <mx:HRule width="100%" toolTip="华丽的分割线" />
+    <mx:Label text="测试设置时间轴的时间数量" styleName="testDesc" />
+    <components:TimeLine size="12" />
+    <mx:HRule width="100%" toolTip="华丽的分割线" />
+    <mx:Button label="测试切换时间轴类型" click="testDateType(event)" />
+    <mx:HBox horizontalGap="0" verticalAlign="middle">
+        <mx:LinkButton label="&lt;" />
+        <components:TimeLine id="timeLine" startDate="{new Date(2010, 1, 20)}" size="10"
+            rowHeight="40" columnWidth="40" borderStyle="none" />
+        <mx:LinkButton label=">" />
+    </mx:HBox>
 </mx:Module>
