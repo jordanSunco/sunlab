@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:mx="library://ns.adobe.com/flex/mx"
+        xmlns:components="com.monkey.common.components.*"
+        width="100%" height="100%" creationComplete="init()">
+    <fx:Script>
+        <![CDATA[
+            import com.monkey.utils.DateUtil;
+
+            [Bindable]
+            private var years:Array;
+            [Bindable]
+            private var months:Array;
+            [Bindable]
+            private var dates:Array;
+
+            private function init():void {
+                years = DateUtil.getIncreaseDateArray(new Date(), 10, "fullYear");
+                months = DateUtil.getIncreaseDateArray(new Date(), 10, "month");
+                dates = DateUtil.getIncreaseDateArray(new Date(), 10, "date");
+            }
+
+            private function yearLabelFunction(item:Object):String {
+                return item["fullYear"] + "年";
+            }
+        ]]>
+    </fx:Script>
+    <components:TimeLine dataProvider="{years}" dateType="fullYear"
+        width="100%" labelFunction="yearLabelFunction" borderStyle="none" />
+    <components:TimeLine dataProvider="{months}" dateType="month"
+        width="100%" />
+    <components:TimeLine dataProvider="{dates}" dateType="date"
+        width="100%" />
+</mx:Module>

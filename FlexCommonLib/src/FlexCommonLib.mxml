@@ -27,6 +27,9 @@
             }, {
                 id: "ButtonTileListDemo.swf",
                 label: "使用按钮来渲染TileList"
+            }, {
+                id: "TimeLineDemo.swf",
+                label: "时间轴"
             }];
 
             private function loadExample(event:ListEvent):void {
