@@ -38,4 +38,20 @@
     <components:TimeLine dataProvider="{months}" dateType="month"
         width="100%" />
     <components:TimeLine dataProvider="{dates}" dateType="date" width="100%" />
+
+    <mx:HRule width="100%" toolTip="华丽的分割线" />
+    <mx:Label text="测试默认加载时间轴效果" styleName="testDesc" />
+    <components:TimeLine />
+    
+    <mx:HRule width="100%" toolTip="华丽的分割线" />
+    <mx:Label text="测试设置时间轴的起始时间(2011-1)" styleName="testDesc" />
+    <components:TimeLine startDate="{new Date(2011, 0)}" />
+    
+    <mx:HRule width="100%" toolTip="华丽的分割线" />
+    <mx:Label text="测试设置时间轴的日期类型" styleName="testDesc" />
+    <components:TimeLine dateType="date" />
+    
+    <mx:HRule width="100%" toolTip="华丽的分割线" />
+    <mx:Label text="测试设置时间轴的时间数量" styleName="testDesc" />
+    <components:TimeLine size="12" />
 </mx:Module>
