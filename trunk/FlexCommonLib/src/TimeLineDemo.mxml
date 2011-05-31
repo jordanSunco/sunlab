@@ -4,6 +4,12 @@
         xmlns:mx="library://ns.adobe.com/flex/mx"
         xmlns:components="com.monkey.common.components.*"
         width="100%" height="100%" creationComplete="init()">
+    <fx:Style>
+        .testDesc {
+            font-size: 15;
+            font-weight: bold;
+        }
+    </fx:Style>
     <fx:Script>
         <![CDATA[
             import com.monkey.utils.DateUtil;
@@ -26,10 +32,10 @@
             }
         ]]>
     </fx:Script>
+    <mx:Label text="分别测试主动提供年, 月, 日日期数据来初始化时间轴" styleName="testDesc" />
     <components:TimeLine dataProvider="{years}" dateType="fullYear"
-        width="100%" labelFunction="yearLabelFunction" borderStyle="none" />
+        width="100%" labelFunction="yearLabelFunction" />
     <components:TimeLine dataProvider="{months}" dateType="month"
         width="100%" />
-    <components:TimeLine dataProvider="{dates}" dateType="date"
-        width="100%" />
+    <components:TimeLine dataProvider="{dates}" dateType="date" width="100%" />
 </mx:Module>
