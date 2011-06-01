@@ -1,0 +1,38 @@
+﻿<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>JavaScript Worker多线程</title>
+        <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="sum.js"></script>
+        <script type="text/javascript" src="demo.js"></script>
+    </head>
+    <body>
+        <h1>演示JavaScript Worker多线程, 要成功运行示例请使用 Firefox 3.5 ↑</h1>
+        <p>
+            Worker: 后台运行的一段JavaScript, 突破了JavaScript的单线程模式.
+            但worker不能进行界面DOM操作, 同Java Swing类似, 界面操作仍然要单线程.
+            worker通过消息传递, 将结果传给主线程, 只有主线程才能进行界面操作, 实现UI和处理线程分离.
+        </p>
+        <p>
+            以前对于大计算量的应用为了使得界面不至于假死, 只有将任务分成子任务, 用timeout来分批运行,
+            其根本原因是<a href="http://ejohn.org/blog/how-javascript-timers-work/" target="_blank">JavaScript本质是单线程的</a>,
+            集中时间大计算量的话会使得界面失去响应, 更常用的是将任务传到server端运行, 利用xhr读取server端返回的结果.
+        </p>
+        <p>
+            setTimeout方式只是相当于模拟了多线程, 而不是真正的多线程.
+            比如当今的多核处理器, 真正的多线程可以利用运行在不同的core而真正并行执行加快运行效率,
+            这种timeout模拟的方式就不行了, 只能在一个core运行.
+        </p>
+        <p>
+            现在通过Worker, 可以将大数据量计算直接放在client端后台运行, 异步获取结果, 界面不会假死.
+        </p>
+        <label for="maxInput">累加1 ~ max: </label><input id="maxInput" type="text" value="10000000" />
+        <input type="button" value="by Worker" onclick="startWork()" />
+        <input type="button" value="by 当前线程, 浏览器假死 -_-&quot;" onclick="workByMyself()" />
+        <div id="status">
+        </div>
+        <p>
+            参考: <a href="http://yiminghe.iteye.com/blog/437313" target="_blank">使用 javascript Workers 进行计算</a>
+        </p>
+    </body>
+</html>
