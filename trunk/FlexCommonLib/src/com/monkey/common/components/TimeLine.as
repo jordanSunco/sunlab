@@ -61,7 +61,8 @@ package com.monkey.common.components {
 //        }
 
         public function set startDate(value:Date):void {
-            this._startDate = value;
+            // clone传入的日期以免在改变时间轴时影响传入的参数
+            this._startDate = new Date(value.time);
             invalidateProperties();
         }
 
