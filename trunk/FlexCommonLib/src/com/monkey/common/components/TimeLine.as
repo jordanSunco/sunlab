@@ -119,13 +119,38 @@ package com.monkey.common.components {
         }
 
         public function back():void {
-            this._startDate[_dateType]--;
+            moveStartDate(false);
             initDataProvider();
         }
 
         public function forward():void {
-            this._startDate[_dateType]++;
+            moveStartDate(true);
             initDataProvider();
+        }
+
+        /**
+         * 对时间轴进行前/后移动时改变时间轴的起始日期项.
+         * 
+         * @see DateUtil.getIncreaseDateArray
+         */
+        protected function moveStartDate(increase:Boolean):void {
+            // 时间轴默认从开始时间起加载连续的一段时间
+            // 例如从2010.1.31起, 加载3个月份递增时间, 因此时间轴上的数据为:
+            // 2010.1.31, 2010.2.1, 2010.3.1
+            // 当需要向右移动时间轴时, 我们对2010.1.31的month进行++操作, 会发生日期越界情况
+            // 2010.1.31 --> (1++) --> 2010.2.31(不存在的日期31 - 28 = 3) --> 2010.3.3
+            // 同理当2010.11.31向左移动时, 也会发生日期越界情况
+            // 2010.12.31 --> (12--) --> 2010.11.31(不存在的日期31 - 30 = 1) --> 2010.12.1
+            // 为了解决这个问题, 当对month进行移动操作时, 将date设置为1来防止越界
+            if (_dateType == "month") {
+                this._startDate.setDate(1);
+            }
+
+            if (increase) {
+                this._startDate[_dateType]++;
+            } else {
+                this._startDate[_dateType]--;
+            }
         }
     }
 }
