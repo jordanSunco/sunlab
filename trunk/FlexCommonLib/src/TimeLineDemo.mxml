@@ -70,9 +70,9 @@
     <mx:HRule width="100%" toolTip="华丽的分割线" />
     <mx:Button label="测试切换时间轴类型" click="testDateType(event)" />
     <mx:HBox horizontalGap="0" verticalAlign="middle">
-        <mx:LinkButton label="&lt;" />
+        <mx:LinkButton label="&lt;" click="timeLine.back()" />
         <components:TimeLine id="timeLine" startDate="{new Date(2010, 1, 20)}" size="10"
             rowHeight="40" columnWidth="40" borderStyle="none" />
-        <mx:LinkButton label=">" />
+        <mx:LinkButton label=">" click="timeLine.forward()" />
     </mx:HBox>
 </mx:Module>
