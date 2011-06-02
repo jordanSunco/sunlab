@@ -117,5 +117,15 @@ package com.monkey.common.components {
             this.dataProvider = DateUtil.getIncreaseDateArray(_startDate,
                 _size, _dateType);
         }
+
+        public function back():void {
+            this._startDate[_dateType]--;
+            initDataProvider();
+        }
+
+        public function forward():void {
+            this._startDate[_dateType]++;
+            initDataProvider();
+        }
     }
 }
