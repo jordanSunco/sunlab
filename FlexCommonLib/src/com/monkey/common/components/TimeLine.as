@@ -39,13 +39,34 @@ package com.monkey.common.components {
         }
 
         /**
-         * 根据日期类型提取出Date中的日期值
+         * 根据时间轴的维度, 取得时间轴上各个日期值应该显示的label.
+         * 例如月维度的时间轴, 就应该取出Date中的month值, 假设得到3, 那么应该显示为4月.
          */
-        protected function getDateLabel(item:Object):String {
-            var dateValue:Number = (item as Date)[_dateType];
+        private function getDateLabel(item:Object):String {
+            var date:Date = item as Date;
+            var dateValue:Number = getDateValue(date);
+
+            return getDateString(dateValue, date);
+        }
+
+        /**
+         * 根据时间轴的维度取出Date中的日期值.
+         * 例如月维度的时间轴, 则取出Date.month.
+         */
+        protected function getDateValue(date:Date):Number {
+            return date[_dateType];
+        }
+
+        /**
+         * 根据时间轴的维度和Date中的日期值, 决定如何显示日期值.
+         * 
+         * @param dateValue Date中的日期值
+         * @param date
+         */
+        protected function getDateString(dateValue:Number, date:Date):String {
             var dateString:String;
 
-            // 由于月份是从0开始的, 需要特殊处理
+            // 由于Date中的月份是从0开始的(0表示1月份), 但现实中月份是从1开始的(1表示1月份)
             if (_dateType == "month") {
                 dateString = (dateValue + 1).toString();
             } else {
