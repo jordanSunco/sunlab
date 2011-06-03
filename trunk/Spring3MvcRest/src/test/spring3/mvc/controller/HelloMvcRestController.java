@@ -56,6 +56,22 @@ public class HelloMvcRestController {
     }
 
     /**
+     * 测试返回JavaBean自动转换成JSON或者XML, 依据客户端Accept或者文件名后缀来决定(内容协商)
+     * http://localhost:8080/Spring3MvcRest/hello/humans/1
+     * http://localhost:8080/Spring3MvcRest/hello/humans/1.xml
+     * http://localhost:8080/Spring3MvcRest/hello/humans/1.json
+     * 
+     * @param id 绑定URL路径 {id}
+     * @return JSON | XML
+     */
+    @RequestMapping("/humans/{id}")
+    public Human rest(@PathVariable int id) {
+        Human h = new Human();
+        h.setId(id);
+        return h;
+    }
+
+    /**
      * 测试返回Map 自动转换成JSON
      * http://localhost:8080/Spring3MvcRest/hello/foo?a=helloworld
      * 
