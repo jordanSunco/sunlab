@@ -3,6 +3,7 @@ package com.monkey.common.components {
     import com.monkey.utils.DateUtil;
     
     import mx.core.ClassFactory;
+    import mx.events.ListEvent;
 
     /**
      * 时间轴组件, 用于显示一段时间周期, 支持多种时间维度, 例如年, 月, 日...
@@ -25,17 +26,27 @@ package com.monkey.common.components {
          */
         protected var _size:uint = 10;
 
+        protected var _selectedDates:Array = [];
+
         public function TimeLine() {
             super();
             this.itemRenderer = new ClassFactory(ListButtonRenderer);
             this.rowCount = 1;
             this.labelFunction = getDateLabel;
+            this.addEventListener(ListEvent.CHANGE, changeSelectedDates);
             // 在构造函数中初始化数据源, 否则首次展现的Button日期项会有异常的宽高
             initDataProvider();
 
 //            TODO 设置了itemRenderer造成无法显示Tip
 //            this.showDataTips = true;
 //            this.dataTipFunction = getDateTip;
+        }
+
+        /**
+         * 当List所选项发生改变时记录选中的日期是哪些
+         */
+        private function changeSelectedDates(event:ListEvent):void {
+            _selectedDates = selectedItems;
         }
 
         /**
@@ -116,6 +127,41 @@ package com.monkey.common.components {
         protected function initDataProvider():void {
             this.dataProvider = DateUtil.getIncreaseDateArray(_startDate,
                 _size, _dateType);
+            selectDates();
+        }
+
+        /**
+         * 在List更新数据后, 根据以往选中的日期项, 再次选中这些日期
+         */
+        private function selectDates():void {
+            if (_selectedDates.length > 0) {
+                // 必须从DataProvider中获取上一次选中的日期, 再赋值给selectedItems.
+                // 直接selectedItems = _selectedDates无效
+                selectedItems = getSelectedDatesFromDataProvider();
+            }
+        }
+
+        /**
+         * 从DataProvider中获取上一次选中的日期
+         */
+        private function getSelectedDatesFromDataProvider():Array {
+            var selectedDatesInDataProvider:Array = [];
+
+            for each (var previousSelectedDate:Date in _selectedDates) {
+                for each (var date:Date in dataProvider) {
+                    // FIXME 这里会有BUG, 只要是日期的同一维度值相同的就会匹配, 继而选项处于选中状态
+                    // 例如当前选中2010.2, 这里只判断日期的月份是否相等,
+                    // 因此当日期为2011.2时也会被选中, 同理日时间的时候也是如此
+                    trace(previousSelectedDate);
+                    trace(date);
+                    trace(getDateValue(date) == getDateValue(previousSelectedDate), "\n");
+                    if (getDateValue(date) == getDateValue(previousSelectedDate)) {
+                        selectedDatesInDataProvider.push(date);
+                    }
+                }
+            }
+            trace("---------------------------");
+            return selectedDatesInDataProvider;
         }
 
         public function back():void {
