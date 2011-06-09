@@ -40,7 +40,7 @@
                 event.target.toolTip = randomDateType[dateTypeIndex];
             }
 
-            protected function timeLineChangeHandler():void {
+            private function timeLineChangeHandler():void {
                 var dateType:String = timeLine.dateType;
                 var startDateFullValue:String = DateUtil.getDateFullValue(
                     dateType, timeLine.startDate);
