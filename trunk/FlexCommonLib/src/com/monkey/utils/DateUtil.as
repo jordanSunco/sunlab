@@ -59,9 +59,15 @@ package com.monkey.utils {
          * 由于他们的月份是一样的, 如果只通过月份值来判断他们是否相等显然是不正确的.
          * 因此必须得到日期在这个维度的完整值, 那么2010-05-03在月维度下应该是2010-05,
          * 2011-05-04应该是2011-05, 这样就可以判断出2个日期在同一维度是否相等了.
+         * 
+         * @param dateFieldName 日期字段(fullYear, month, date...)
+         * @param date 此值可以是 Date对象, 也可以是已设置日期格式的 String，如"Thursday, April 22, 2004"
+         * @return 经过格式化的完整日期值
+         *  
+         * @see DateFormatter
          */
         public static function getDateFullValue(dateFieldName:String,
-                date:Date):String {
+                date:Object):String {
             var formatString:String = "YYYY";
 
             switch (dateFieldName) {
