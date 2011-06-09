@@ -39,6 +39,21 @@
                 // 仅仅为了方便观察是否正确切换了时间轴, 和功能无关
                 event.target.toolTip = randomDateType[dateTypeIndex];
             }
+
+            protected function timeLineChangeHandler():void {
+                var dateType:String = timeLine.dateType;
+                var startDateFullValue:String = DateUtil.getDateFullValue(
+                    dateType, timeLine.startDate);
+                var selectedDateFullValue:String = DateUtil.getDateFullValue(
+                    dateType, timeLine.selectedItem);
+
+                var stringBuffer:Array = ["时间轴类型: " + dateType];
+                stringBuffer.push("时间轴开始时间: " + startDateFullValue);
+                stringBuffer.push("时间轴Size: " + timeLine.size);
+                stringBuffer.push("选中的日期: " + selectedDateFullValue);
+
+                timeLineStatusText.text = stringBuffer.join("\n");
+            }
         ]]>
     </fx:Script>
     <mx:Label text="分别测试主动提供年, 月, 日日期数据来初始化时间轴" styleName="testDesc" />
@@ -51,18 +66,14 @@
     <mx:HRule width="100%" toolTip="华丽的分割线" />
     <mx:Label text="测试默认加载时间轴效果" styleName="testDesc" />
     <components:TimeLine />
-    
+
     <mx:HRule width="100%" toolTip="华丽的分割线" />
     <mx:Label text="测试设置时间轴的起始时间(2011-1)" styleName="testDesc" />
     <components:TimeLine startDate="{new Date(2011, 0)}" />
-    
+
     <mx:HRule width="100%" toolTip="华丽的分割线" />
     <mx:Label text="测试设置时间轴的日期类型" styleName="testDesc" />
     <components:TimeLine dateType="date" />
-    
-    <mx:HRule width="100%" toolTip="华丽的分割线" />
-    <mx:Label text="测试设置时间轴的时间数量" styleName="testDesc" />
-    <components:TimeLine size="12" />
 
     <mx:HRule width="100%" toolTip="华丽的分割线" />
     <mx:Label text="测试设置时间轴的时间数量" styleName="testDesc" />
@@ -72,7 +83,9 @@
     <mx:HBox horizontalGap="0" verticalAlign="middle">
         <mx:LinkButton label="&lt;" click="timeLine.back()" />
         <components:TimeLine id="timeLine" startDate="{new Date(2010, 1, 20)}" size="10"
-            rowHeight="40" columnWidth="40" borderStyle="none" />
+            rowHeight="40" columnWidth="40" borderStyle="none"
+            change="timeLineChangeHandler()" />
         <mx:LinkButton label=">" click="timeLine.forward()" />
     </mx:HBox>
+    <mx:Text id="timeLineStatusText" />
 </mx:Module>
