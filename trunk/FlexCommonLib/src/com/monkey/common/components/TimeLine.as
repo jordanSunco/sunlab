@@ -92,10 +92,18 @@ package com.monkey.common.components {
 //            return (item as Date).toLocaleDateString();
 //        }
 
+        public function get startDate():Date {
+            return this._startDate;
+        }
+
         public function set startDate(value:Date):void {
             // clone传入的日期以免在改变时间轴时影响传入的参数
             this._startDate = new Date(value.time);
             invalidateProperties();
+        }
+
+        public function get dateType():String {
+            return this._dateType;
         }
 
         /**
@@ -109,6 +117,10 @@ package com.monkey.common.components {
         public function set dateType(dateField:String):void {
             this._dateType = dateField;
             invalidateProperties();
+        }
+
+        public function get size():uint {
+            return this._size;
         }
 
         public function set size(value:uint):void {
