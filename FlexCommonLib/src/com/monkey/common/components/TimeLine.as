@@ -149,18 +149,13 @@ package com.monkey.common.components {
 
             for each (var previousSelectedDate:Date in _selectedDates) {
                 for each (var date:Date in dataProvider) {
-                    // FIXME 这里会有BUG, 只要是日期的同一维度值相同的就会匹配, 继而选项处于选中状态
-                    // 例如当前选中2010.2, 这里只判断日期的月份是否相等,
-                    // 因此当日期为2011.2时也会被选中, 同理日时间的时候也是如此
-                    trace(previousSelectedDate);
-                    trace(date);
-                    trace(getDateValue(date) == getDateValue(previousSelectedDate), "\n");
-                    if (getDateValue(date) == getDateValue(previousSelectedDate)) {
+                    // 如果dataProvider中的日期完整值和上一次选中的日期完整值相等, 则表示需要再次选中
+                    if (DateUtil.getDateFullValue(_dateType, date) == DateUtil.getDateFullValue(_dateType, previousSelectedDate)) {
                         selectedDatesInDataProvider.push(date);
                     }
                 }
             }
-            trace("---------------------------");
+
             return selectedDatesInDataProvider;
         }
 
