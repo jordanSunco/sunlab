@@ -1,4 +1,6 @@
 package com.monkey.utils {
+    import mx.formatters.DateFormatter;
+
     /**
      * 日期工具类, 用于获取递增的时间段
      * 
@@ -49,6 +51,37 @@ package com.monkey.utils {
             }
 
             return dateList;
+        }
+
+        /**
+         * 获取日期在某个维度完整的日期值, 即日期的确切值, 用于判断2个日期在同一维度是否相等.
+         * 例如2个日期, 2010-05-03, 2011-05-04, 需要判断在月维度上这2个日期是否相等.
+         * 由于他们的月份是一样的, 如果只通过月份值来判断他们是否相等显然是不正确的.
+         * 因此必须得到日期在这个维度的完整值, 那么2010-05-03在月维度下应该是2010-05,
+         * 2011-05-04应该是2011-05, 这样就可以判断出2个日期在同一维度是否相等了.
+         */
+        public static function getDateFullValue(dateFieldName:String,
+                date:Date):String {
+            var formatString:String = "YYYY";
+
+            switch (dateFieldName) {
+                case "fullYear":
+                    formatString = "YYYY";
+                    break;
+                case "month":
+                    formatString = "YYYY-MM";
+                    break;
+                case "date":
+                    formatString = "YYYY-MM-DD";
+                    break;
+                default:
+                    trace("暂不支持这样的日期维度");
+            }
+
+            var dateFormatter:DateFormatter = new DateFormatter();
+            dateFormatter.formatString = formatString;
+
+            return dateFormatter.format(date);
         }
     }
 }
