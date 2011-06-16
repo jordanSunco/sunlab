@@ -1,4 +1,6 @@
 @echo off
+mode con cols=50 lines=10
+
 title 根据运行脚本时的时间自动切换到不同的IP配置
 rem /** 
 rem  * 例如设定 8:00 < 运行时时间 < 17:30 时切换到工作的IP配置
