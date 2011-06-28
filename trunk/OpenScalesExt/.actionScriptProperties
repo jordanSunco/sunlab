@@ -14,6 +14,7 @@
   </compiler>
   <applications>
     <application path="OpenScalesExt.mxml"/>
+    <application path="TestWkt.mxml"/>
   </applications>
   <modules/>
   <buildCSSFiles/>
