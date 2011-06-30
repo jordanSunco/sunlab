@@ -2,10 +2,8 @@ package com.monkey.arcgis {
     import com.adobe.serialization.json.JSON;
     import com.darronschall.serialization.ObjectTranslator;
     import com.monkey.arcgis.geometry.Geometry;
-    import com.monkey.arcgis.geometry.MapPoint;
     
     import org.openscales.core.feature.Feature;
-    import org.openscales.core.feature.PointFeature;
     import org.openscales.geometry.Geometry;
     import org.openscales.geometry.LineString;
     import org.openscales.geometry.MultiLineString;
@@ -72,82 +70,45 @@ package com.monkey.arcgis {
         }
 
         /**
-         * Feature(OpenScales) -> Graphic(ArcGIS)
+         * 将所有Feature(OpenScales)转成Graphic(ArcGIS)
+         * 
+         * @param features OpenScales Feature向量
+         * @param geometryType ArcGIS Geometry类型
+         * @return ArcGIS Graphic数组
          */
         private static function getGraphics(features:Vector.<Feature>,
                 geometryType:String):Array {
             var graphics:Array = [];
 
-            switch (geometryType) {
-                case com.monkey.arcgis.geometry.Geometry.MAPPOINT:
-                    populateMapPoint(features, graphics);
-                    break;
+            for each (var feature:Feature in features) {
+                graphics.push(GraphicUtil.feature2Graphic(feature, geometryType));
             }
 
             return graphics;
         }
 
-        /**
-         * TODO 重构
-         */
-        private static function populateMapPoint(features:Vector.<Feature>,
-                graphics:Array):void {
-            for each (var feature:Feature in features) {
-                var graphic:Graphic = new Graphic();
-
-                var geometry:Point = feature.geometry as Point;
-                var mapPoint:MapPoint = new MapPoint();
-                mapPoint.x = geometry.x;
-                mapPoint.y = geometry.y;
-
-                graphic.geometry = mapPoint;
-                graphic.attributes = feature.attributes;
-
-                graphics.push(graphic);
-            }
-        }
-
-        /**
-         * TODO 未实现
-         */
         public static function convertFromFeatureSet(featureSetObject:Object):Vector.<Feature> {
-            var featureSet:FeatureSet = ObjectTranslator.objectToInstance(featureSetObject, FeatureSet);
-            return getFeatures(featureSet);
+            var featureSet:FeatureSet = ObjectTranslator.objectToInstance(
+                featureSetObject, FeatureSet);
+            return getFeatures(featureSet.features, featureSet.geometryType);
         }
 
         /**
-         * Graphic(ArcGIS) -> Feature(OpenScales) 
+         * 将所有Graphic(ArcGIS)转成Feature(OpenScales)
+         * 
+         * @param graphics ArcGIS Graphic数组
+         * @param geometryType ArcGIS Geometry类型
+         * @return OpenScales Feature向量
          */
-        private static function getFeatures(featureSet:FeatureSet):Vector.<Feature> {
+        private static function getFeatures(graphics:Array,
+                geometryType:String):Vector.<Feature> {
             var features:Vector.<Feature> = new Vector.<Feature>();
 
-            switch (featureSet.geometryType) {
-                case com.monkey.arcgis.geometry.Geometry.MAPPOINT:
-                    populatePointFeature(featureSet, features);
-                    break;
+            for each (var graphicObject:Object in graphics) {
+                features.push(GraphicUtil.graphic2Feature(graphicObject, geometryType));
             }
 
             return features;
-        }
-
-        /**
-         * TODO 重构
-         */
-        private static function populatePointFeature(featureSet:FeatureSet,
-                features:Vector.<Feature>):void {
-            for each (var featureObject:Object in featureSet.features) {
-                var graphic:Graphic = ObjectTranslator.objectToInstance(
-                    featureObject, Graphic);
-                var mapPoint:MapPoint = ObjectTranslator.objectToInstance(
-                    graphic.geometry, MapPoint);
-
-                var feature:Feature = new PointFeature();
-                var geometry:Point = new Point(mapPoint.x, mapPoint.y);
-                feature.geometry = geometry;
-                feature.attributes = graphic.attributes;
-
-                features.push(feature);
-            }
         }
     }
 }
