@@ -6,7 +6,13 @@ package com.monkey.arcgis {
     
     import org.openscales.core.feature.Feature;
     import org.openscales.core.feature.PointFeature;
+    import org.openscales.geometry.Geometry;
+    import org.openscales.geometry.LineString;
+    import org.openscales.geometry.MultiLineString;
+    import org.openscales.geometry.MultiPoint;
+    import org.openscales.geometry.MultiPolygon;
     import org.openscales.geometry.Point;
+    import org.openscales.geometry.Polygon;
 
     /**
      * 将OpenScales的Feature数据格式与ArcGIS的Graphic数据格式进行互转.
@@ -31,7 +37,8 @@ package com.monkey.arcgis {
      */
     public class FeatureSetUtil {
         public static function convertToFeatureSetJson(features:Vector.<Feature>):String {
-            var geometryType:String = getGeometryType(features);
+            var aGeometry:org.openscales.geometry.Geometry = ((features[0]) as Feature).geometry;
+            var geometryType:String = getGeometryType(aGeometry);
 
             var featureSet:FeatureSet = new FeatureSet();
             featureSet.geometryType = geometryType;
@@ -43,14 +50,25 @@ package com.monkey.arcgis {
         }
 
         /**
-         * TODO 未完整实现
+         * 获取OpenScales Geometry的类型与ArcGIS Gemetry类型的对应关系
+         * 
+         * @param geometry
+         * @return ArcGIS Gemetry的类型
          */
-        private static function getGeometryType(features:Vector.<Feature>):String {
-            if (features[0] as PointFeature) {
-                return Geometry.MAPPOINT;
+        private static function getGeometryType(geometry:org.openscales.geometry.Geometry):String {
+            var geometryType:String = "";
+
+            if (geometry is Point) {
+                geometryType = com.monkey.arcgis.geometry.Geometry.MAPPOINT;
+            } else if (geometry is MultiPoint) {
+                geometryType = com.monkey.arcgis.geometry.Geometry.MULTIPOINT;
+            } else if (geometry is LineString || geometry is MultiLineString) {
+                geometryType = com.monkey.arcgis.geometry.Geometry.POLYLINE;
+            } else if (geometry is Polygon || geometry is MultiPolygon) {
+                geometryType = com.monkey.arcgis.geometry.Geometry.POLYGON;
             }
 
-            return null;
+            return geometryType;
         }
 
         /**
@@ -61,7 +79,7 @@ package com.monkey.arcgis {
             var graphics:Array = [];
 
             switch (geometryType) {
-                case Geometry.MAPPOINT:
+                case com.monkey.arcgis.geometry.Geometry.MAPPOINT:
                     populateMapPoint(features, graphics);
                     break;
             }
@@ -104,7 +122,7 @@ package com.monkey.arcgis {
             var features:Vector.<Feature> = new Vector.<Feature>();
 
             switch (featureSet.geometryType) {
-                case Geometry.MAPPOINT:
+                case com.monkey.arcgis.geometry.Geometry.MAPPOINT:
                     populatePointFeature(featureSet, features);
                     break;
             }
