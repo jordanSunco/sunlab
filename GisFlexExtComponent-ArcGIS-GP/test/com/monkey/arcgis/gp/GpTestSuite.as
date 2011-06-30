@@ -7,6 +7,7 @@ package com.monkey.arcgis.gp {
     [Suite]
     [RunWith("org.flexunit.runners.Suite")]
     public class GpTestSuite {
-        public var featureSetUtilTest:com.monkey.arcgis.FeatureSetUtilTest;
+        public var featureSetUtilTest:FeatureSetUtilTest;
+        public var geoprocessorTest:GeoprocessorTest;
     }
 }
