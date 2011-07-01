@@ -5,9 +5,9 @@ package com.monkey.arcgis.gp {
     
     import flash.net.URLRequestMethod;
     
+    import mx.rpc.AsyncResponder;
     import mx.rpc.AsyncToken;
     import mx.rpc.IResponder;
-    import mx.rpc.Responder;
     import mx.rpc.events.ResultEvent;
     import mx.rpc.http.HTTPService;
     
@@ -23,7 +23,6 @@ package com.monkey.arcgis.gp {
         private static const EXECUTE_API:String = "execute";
 
         private var httpService:HTTPService;
-        private var responder:IResponder;
 
         private var _executeLastResult:ExecuteResult;
 
@@ -43,13 +42,11 @@ package com.monkey.arcgis.gp {
         public function execute(inputParameters:Object,
                 responder:IResponder):AsyncToken {
             prepareTask(inputParameters);
-
-            this.responder = responder;
             this.httpService.url = getApiUrl(this.httpService.url, EXECUTE_API);
 
             var asyncToken:AsyncToken = this.httpService.send(inputParameters);
-            asyncToken.addResponder(new Responder(handleExecuteResult,
-                defaultFault));
+            asyncToken.addResponder(new AsyncResponder(handleExecuteResult,
+                defaultFault, responder));
 
             return asyncToken;
         }
@@ -107,7 +104,8 @@ package com.monkey.arcgis.gp {
             return apiUrl;
         }
 
-        private function handleExecuteResult(event:ResultEvent):void {
+        private function handleExecuteResult(event:ResultEvent,
+                responder:IResponder):void {
             var executeResultObject:Object = JSON.decode(event.result.toString());
             var executeResult:ExecuteResult = ObjectTranslator.objectToInstance(
                 executeResultObject, ExecuteResult);
@@ -122,7 +120,8 @@ package com.monkey.arcgis.gp {
 
             executeResult.results = parameterValues;
             this._executeLastResult = executeResult;
-            this.responder.result(executeResult);
+
+            responder.result(executeResult);
         }
 
         /**
@@ -155,8 +154,8 @@ package com.monkey.arcgis.gp {
             return value;
         }
 
-        private function defaultFault(info:Object):void {
-            this.responder.fault(info);
+        private function defaultFault(info:Object, responder:IResponder):void {
+            responder.fault(info);
         }
     }
 }
