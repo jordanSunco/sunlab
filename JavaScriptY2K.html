@@ -1,0 +1,38 @@
+﻿<script type="text/javascript">
+/**
+ * Java(对Javascript)的影响, 主要是把数据分成基本类型(primitive)和对象类型(object)两种,
+ * 比如字符串和字符串对象, 以及引入了Y2K问题.
+ * 
+ * Y2K问题完全来源于Java, 因为Javascript的日期类直接采用了java.util.Date函数库.
+ * 根据设想, Date.getYear()返回的应该是年份的最后两位.
+ * 但是实际上, 对于2000年, 它返回的是100!
+ * Brendan Eich显然很不满意这个结果, 这导致后来不得不添加了一个返回四位数年份的Date.getFullYear()函数
+ * 
+ * 与其说我爱Javascript, 不如说我恨它. 它是C语言和Self语言一夜情的产物.
+ * 十八世纪英国文学家约翰逊博士说得好: "它的优秀之处并非原创, 它的原创之处并不优秀."
+ * (the part that is good is not original, and the part that is original is not good.)
+ * 
+ * @author Sun
+ * @see http://www.ruanyifeng.com/blog/2011/06/birth_of_javascript.html
+ */
+(function() {
+    // For years between and including 1900 and 1999, the value returned by getYear is the year minus 1900.
+    // For example, if the year is 1976, the value returned is 76. 
+    var date1900 = new Date(1900, 0);
+    var date1999 = new Date(1999, 0);
+
+    // For years less than 1900 or greater than 1999, the value returned by getYear is the four-digit year.
+    // For example, if the year is 1856, the value returned is 1856.
+    // If the year is 2026, the value returned is 2026.
+    var date1899 = new Date(1899, 0);
+    var date2000 = new Date(2000, 0);
+
+    // IE: 0 99 1899 2000 遵循了上述规则
+    // Firefox: 0 99 -1 100 只遵循Date.getYear() - 1900的规则
+    var result = "date1900.getYear(): " + date1900.getYear() + "\n"
+        + "date1999.getYear(): " + date1999.getYear() + "\n"
+        + "date1899.getYear(): " + date1899.getYear() + "\n"
+        + "date2000.getYear(): " + date2000.getYear()
+    alert(result);
+})()
+</script>
