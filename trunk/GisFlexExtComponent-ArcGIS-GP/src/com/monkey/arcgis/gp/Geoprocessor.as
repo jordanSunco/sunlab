@@ -41,7 +41,7 @@ package com.monkey.arcgis.gp {
             prepareTask(inputParameters);
 
             this.responder = responder;
-            this.httpService.url = getExecuteApiUrl();
+            this.httpService.url = getApiUrl(this.httpService.url, EXECUTE_API);
 
             var asyncToken:AsyncToken = this.httpService.send(inputParameters);
             asyncToken.addResponder(new Responder(handleExecuteResult,
@@ -63,16 +63,16 @@ package com.monkey.arcgis.gp {
             this.httpService.method = URLRequestMethod.POST;
         }
 
-        private function getExecuteApiUrl():String {
-            var gpTaskUrl:String = this.httpService.url;
+        private function getApiUrl(baseUrl:String, api:String):String {
+            var apiUrl:String = "";
 
-            if (gpTaskUrl.lastIndexOf("/") == (gpTaskUrl.length - 1)) {
-                gpTaskUrl += EXECUTE_API;
+            if (baseUrl.lastIndexOf("/") == (baseUrl.length - 1)) {
+                apiUrl = baseUrl + api;
             } else {
-                gpTaskUrl += "/" + EXECUTE_API;
+                apiUrl = baseUrl + "/" + api;
             }
 
-            return gpTaskUrl;
+            return apiUrl;
         }
 
         private function handleExecuteResult(event:ResultEvent):void {
