@@ -1,6 +1,6 @@
 package com.monkey.arcgis.gp {
+    import mx.rpc.AsyncResponder;
     import mx.rpc.IResponder;
-    import mx.rpc.Responder;
     import mx.utils.ObjectUtil;
     
     import org.flexunit.asserts.assertEquals;
@@ -8,6 +8,9 @@ package com.monkey.arcgis.gp {
     import org.openscales.core.feature.Feature;
     import org.openscales.geometry.Point;
 
+    /**
+     * @author Sun
+     */
     public class GeoprocessorTest {
         [Test(async)]
         /**
@@ -25,13 +28,16 @@ package com.monkey.arcgis.gp {
             var gp:Geoprocessor = new Geoprocessor("http://192.168.200.58:8399/arcgis/rest/services/TestGP/GPServer/TestPointInput");
             // flexunit的异步测试机制
             var asyncResponder:IResponder = Async.asyncResponder(this,
-                new Responder(handleExecuteResult, traceFault), 0);
+                new AsyncResponder(handleExecuteResult, traceFault, gp), 0);
             gp.execute(inputParameters, asyncResponder);
         }
 
-        private function handleExecuteResult(executeResult:ExecuteResult):void {
+        private function handleExecuteResult(executeResult:Object,
+                gp:Geoprocessor):void {
             var p1x:Array = [1298200.1895321002, 1946777.692202618];
             var p1y:Array = [4064264.699309526, 4241780.243755155];
+
+            // TODO 现在返回的2组结果是一样的
             var featureAttributes:Array = [{
                 FID: 0,
                 OBJECTID: 1
@@ -44,25 +50,27 @@ package com.monkey.arcgis.gp {
             var p2x:Array = [1298200.1895321002, 1946777.692202618];
             var p2y:Array = [4064264.699309526, 4241780.243755155];
 
-            for each (var parameterValue:ParameterValue in executeResult.results) {
-                var features:Vector.<Feature> = parameterValue.value as Vector.<Feature>;
+            var param1Features:Vector.<Feature> = gp.getExecuteResultValue("POINT_FS_Project") as Vector.<Feature>;
+            var param2Features:Vector.<Feature> = gp.getExecuteResultValue("POINT_FS_Project1") as Vector.<Feature>;
 
-                for (var i:uint = 0, length:uint = features.length; i < length; i++) {
-                    var feature:Feature = features[i];
-                    var point:Point = feature.geometry as Point;
+            for (var i:uint = 0, length:uint = param1Features.length; i < length; i++) {
+                var param1Feature:Feature = param1Features[i];
+                var param1Point:Point = param1Feature.geometry as Point;
 
-                    if (parameterValue.paramName == "POINT_FS_Project") {
-                        assertEquals(p1x[i], point.x);
-                        assertEquals(p1y[i], point.y);
-                        assertEquals(0, ObjectUtil.compare(feature.attributes,
-                            featureAttributes[i]));
-                    } else if (parameterValue.paramName == "POINT_FS_Project1") {
-                        assertEquals(p2x[i], point.x);
-                        assertEquals(p2y[i], point.y);
-                        assertEquals(0, ObjectUtil.compare(feature.attributes,
-                            featureAttributes[i]));
-                    }
-                }
+                assertEquals(p1x[i], param1Point.x);
+                assertEquals(p1y[i], param1Point.y);
+                assertEquals(0, ObjectUtil.compare(param1Feature.attributes,
+                    featureAttributes[i]));
+            }
+
+            for (var j:uint = 0, lengthj:uint = param2Features.length; j < lengthj; j++) {
+                var param2Feature:Feature = param2Features[j];
+                var param2Point:Point = param2Feature.geometry as Point;
+
+                assertEquals(p2x[j], param2Point.x);
+                assertEquals(p2y[j], param2Point.y);
+                assertEquals(0, ObjectUtil.compare(param2Feature.attributes,
+                    featureAttributes[j]));
             }
         }
 
