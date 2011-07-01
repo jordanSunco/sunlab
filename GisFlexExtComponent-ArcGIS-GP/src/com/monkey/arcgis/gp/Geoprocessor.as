@@ -23,6 +23,8 @@ package com.monkey.arcgis.gp {
         private var httpService:HTTPService;
         private var responder:IResponder;
 
+        private var _executeLastResult:ExecuteResult;
+
         public function Geoprocessor(gpTaskUrl:String) {
             this.httpService = new HTTPService();
             this.httpService.url = gpTaskUrl;
@@ -89,6 +91,7 @@ package com.monkey.arcgis.gp {
             }
 
             executeResult.results = parameterValues;
+            this._executeLastResult = executeResult;
             this.responder.result(executeResult);
         }
 
@@ -103,6 +106,23 @@ package com.monkey.arcgis.gp {
                 parameterValue.value = FeatureSetUtil.convertFromFeatureSet(
                     parameterValue.value);
             }
+        }
+
+        public function get executeLastResult():ExecuteResult {
+            return this._executeLastResult;
+        }
+
+        public function getExecuteResultValue(paramName:String):Object {
+            var value:Object = null;
+
+            for each (var parameterValue:ParameterValue in _executeLastResult.results) {
+                if (parameterValue.paramName == paramName) {
+                    value = parameterValue.value;
+                    break;
+                }
+            }
+
+            return value;
         }
 
         private function defaultFault(info:Object):void {
