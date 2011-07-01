@@ -1,17 +1,43 @@
 package com.monkey.arcgis.gp {
     import mx.rpc.AsyncResponder;
     import mx.rpc.IResponder;
+    import mx.rpc.Responder;
     import mx.utils.ObjectUtil;
     
     import org.flexunit.asserts.assertEquals;
     import org.flexunit.async.Async;
     import org.openscales.core.feature.Feature;
+    import org.openscales.core.feature.PointFeature;
     import org.openscales.geometry.Point;
 
     /**
      * @author Sun
      */
     public class GeoprocessorTest {
+        [Test]
+        public function testPrepareTask():void {
+            var features:Vector.<Feature> = new Vector.<Feature>();
+            var feature:Feature = new PointFeature(new Point(30, 10), {label: "Point"});
+            features.push(feature);
+
+            var inputParameters:Object = {
+                feature: feature,
+                features: features,
+                a: 1,
+                b: 2
+            };
+
+            var gp:Geoprocessor = new Geoprocessor("http://192.168.200.58:8399/arcgis/rest/services/TestGP/GPServer/TestPointInput");
+            gp.execute(inputParameters, new Responder(function ():void {},
+                traceFault));
+
+            // 经过GP处理, 部分输入参数由Object变成了字符串, 例如Feature转成了FeatureSet JSON
+            assertEquals(true, inputParameters.feature is String);
+            assertEquals(true, inputParameters.features is String);
+            // 经过GP处理, 输入参数追加f=json
+            assertEquals("json", inputParameters.f);
+        }
+
         [Test(async)]
         /**
          * 异步程序需要通过flexunit的异步测试机制来运行, 否则单元测试会马上走完测试流程, 显示测试通过.
