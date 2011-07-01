@@ -119,9 +119,9 @@ package com.monkey.arcgis.gp {
             }
 
             executeResult.results = parameterValues;
-            this._executeLastResult = executeResult;
-
             responder.result(executeResult);
+
+            this._executeLastResult = executeResult;
         }
 
         /**
