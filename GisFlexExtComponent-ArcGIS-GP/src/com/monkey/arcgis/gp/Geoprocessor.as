@@ -10,6 +10,8 @@ package com.monkey.arcgis.gp {
     import mx.rpc.Responder;
     import mx.rpc.events.ResultEvent;
     import mx.rpc.http.HTTPService;
+    
+    import org.openscales.core.feature.Feature;
 
     /**
      * 通过ArcGIS Server REST API执行GP服务(GPServer)的Task
@@ -53,9 +55,37 @@ package com.monkey.arcgis.gp {
         }
 
         private function prepareTask(inputParameters:Object):void {
+            serializeInputParameterValue(inputParameters);
             // 告诉GP服务任务执行结果返回JSON格式数据
             inputParameters.f = JSON_RESULT_FORMAT;
             httpGetOrPostAccordingToInputParametersContentLength(inputParameters);
+        }
+
+        /**
+         * 对输入参数中的复杂数据类型进行序列化, 以确保提供GP能够识别的数据.
+         * 例如参数中包含Feature, 则需要将其转为ArcGIS FeatureSet的JSON字符串格式.
+         */
+        private function serializeInputParameterValue(inputParameters:Object):void {
+            for (var propertyName:String in inputParameters) {
+                var value:Object = inputParameters[propertyName];
+                serializeValueByType(inputParameters, propertyName, value);
+            }
+        }
+
+        private function serializeValueByType(inputParameters:Object,
+                propertyName:String, value:Object):void {
+            if (value is Vector.<Feature>) {
+                inputParameters[propertyName] = features2Json(value);
+            } else if (value is Feature) {
+                var features:Vector.<Feature> = new Vector.<Feature>();
+                features.push(value);
+
+                inputParameters[propertyName] = features2Json(features);
+            }
+        }
+
+        private function features2Json(value:Object):String {
+            return FeatureSetUtil.convertToFeatureSetJson(value as Vector.<Feature>);
         }
 
         /**
