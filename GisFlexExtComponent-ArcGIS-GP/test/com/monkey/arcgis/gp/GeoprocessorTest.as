@@ -1,13 +1,20 @@
 package com.monkey.arcgis.gp {
+    import mx.rpc.IResponder;
     import mx.rpc.Responder;
     import mx.utils.ObjectUtil;
     
     import org.flexunit.asserts.assertEquals;
+    import org.flexunit.async.Async;
     import org.openscales.core.feature.Feature;
     import org.openscales.geometry.Point;
 
     public class GeoprocessorTest {
-        [Test]
+        [Test(async)]
+        /**
+         * 异步程序需要通过flexunit的异步测试机制来运行, 否则单元测试会马上走完测试流程, 显示测试通过.
+         * 但当运行到回调中时, 如果有异常则会报错, 而测试结果仍然是通过的.
+         * 通过flexunit的异步测试机制让异步程序在测试过程中以"同步"的方式执行.
+         */
         public function testExecute():void {
             // TODO 目前GP服务没有使用输入参数
             var inputParameters:Object = {
@@ -16,8 +23,10 @@ package com.monkey.arcgis.gp {
             };
 
             var gp:Geoprocessor = new Geoprocessor("http://192.168.200.58:8399/arcgis/rest/services/TestGP/GPServer/TestPointInput");
-            gp.execute(inputParameters, new Responder(handleExecuteResult,
-                traceFault));
+            // flexunit的异步测试机制
+            var asyncResponder:IResponder = Async.asyncResponder(this,
+                new Responder(handleExecuteResult, traceFault), 0);
+            gp.execute(inputParameters, asyncResponder);
         }
 
         private function handleExecuteResult(executeResult:ExecuteResult):void {
