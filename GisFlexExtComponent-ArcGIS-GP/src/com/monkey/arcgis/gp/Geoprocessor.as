@@ -43,6 +43,8 @@ package com.monkey.arcgis.gp {
          * @param inputParameters GP Task所需的输入参数
          * @param responder
          * @return AsyncToken
+         * 
+         * @see http://services.arcgisonline.com/ArcGIS/SDK/REST/gpexecute.html
          */
         public function execute(inputParameters:Object,
                 responder:IResponder):AsyncToken {
@@ -176,6 +178,15 @@ package com.monkey.arcgis.gp {
             responder.fault(info);
         }
 
+        /**
+         * 提交异步的GP Task
+         * 
+         * @param inputParameters GP Task所需的输入参数
+         * @param responder
+         * @return AsyncToken
+         * 
+         * @see http://services.arcgisonline.com/ArcGIS/SDK/REST/gpsubmit.html
+         */
         public function submitJob(inputParameters:Object, responder:IResponder):AsyncToken {
             this.httpService.url = getApiUrl(this.gpTaskUrl, SUBMIT_JOB_API);
             prepareTask(inputParameters, true, this.httpService);
@@ -205,6 +216,14 @@ package com.monkey.arcgis.gp {
             }
         }
 
+        /**
+         * 检测Job执行的状态, 看其在运行中还是已经执行成功?
+         * 
+         * @param jobId
+         * @param responder
+         * 
+         * @see http://services.arcgisonline.com/ArcGIS/SDK/REST/gpjob.html
+         */
         private function checkJobStatus(jobId:String, responder:IResponder):void {
             var checkJobHttpService:HTTPService = new HTTPService();
             checkJobHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
@@ -219,6 +238,15 @@ package com.monkey.arcgis.gp {
                 defaultFault, responder));
         }
 
+        /**
+         * 异步GP Task Job执行完成后, 获取GP的输出参数
+         * 
+         * @param jobInfo Job执行完成后的JobInfo
+         * @param paramName GP的输出参数名
+         * @param responder
+         * 
+         * @see http://services.arcgisonline.com/ArcGIS/SDK/REST/gpresult.html
+         */
         public function getJobResultValue(jobInfo:JobInfo, paramName:String,
                 responder:IResponder):void {
             var getJobResultHttpService:HTTPService = new HTTPService();
