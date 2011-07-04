@@ -14,7 +14,7 @@ package com.monkey.arcgis.gp {
      * @author Sun
      */
     public class GeoprocessorTest {
-        [Test]
+        [Test(async)]
         public function testPrepareTask():void {
             var features:Vector.<Feature> = new Vector.<Feature>();
             var feature:Feature = new PointFeature(new Point(30, 10), {label: "Point"});
@@ -28,8 +28,11 @@ package com.monkey.arcgis.gp {
             };
 
             var gp:Geoprocessor = new Geoprocessor("http://192.168.200.58:8399/arcgis/rest/services/TestGP/GPServer/TestPointInput");
-            gp.execute(inputParameters, new Responder(function ():void {},
-                traceFault));
+            // 同步测试, 等执行完成后再执行其他测试, 对于同步GP服务, 不能同时执行多次, 否则会因为多线程问题出现间歇性错误
+            // 这里先运行testPrepareTask(执行了一次同步GP), 如果结果还没有返回就去运行testExecute(再次执行同步GP), 就会出现上述问题
+            var asyncResponder:IResponder = Async.asyncResponder(this,
+                new Responder(function ():void {}, traceFault), 0);
+            gp.execute(inputParameters, asyncResponder);
 
             // 经过GP处理, 部分输入参数由Object变成了字符串, 例如Feature转成了FeatureSet JSON
             assertEquals(true, inputParameters.feature is String);

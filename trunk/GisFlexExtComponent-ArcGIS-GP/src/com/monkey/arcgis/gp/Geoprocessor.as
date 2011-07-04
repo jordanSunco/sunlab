@@ -119,9 +119,9 @@ package com.monkey.arcgis.gp {
             }
 
             executeResult.results = parameterValues;
-            responder.result(executeResult);
-
             this._executeLastResult = executeResult;
+
+            responder.result(executeResult);
         }
 
         /**
@@ -144,7 +144,7 @@ package com.monkey.arcgis.gp {
         public function getExecuteResultValue(paramName:String):Object {
             var value:Object = null;
 
-            for each (var parameterValue:ParameterValue in _executeLastResult.results) {
+            for each (var parameterValue:ParameterValue in this._executeLastResult.results) {
                 if (parameterValue.paramName == paramName) {
                     value = parameterValue.value;
                     break;
