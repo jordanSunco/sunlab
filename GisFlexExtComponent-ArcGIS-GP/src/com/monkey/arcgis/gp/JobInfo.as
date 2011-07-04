@@ -14,6 +14,7 @@ package com.monkey.arcgis.gp {
 
         public var jobId:String;
         public var jobStatus:String;
+        public var results:Object;
         public var messages:Array;
     }
 }

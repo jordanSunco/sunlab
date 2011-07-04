@@ -218,5 +218,38 @@ package com.monkey.arcgis.gp {
             asyncToken.addResponder(new AsyncResponder(handleJobInfoResult,
                 defaultFault, responder));
         }
+
+        public function getJobResultValue(jobInfo:JobInfo, paramName:String,
+                responder:IResponder):void {
+            var getJobResultHttpService:HTTPService = new HTTPService();
+            getJobResultHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
+            getJobResultHttpService.url = getApiUrl(this.gpTaskUrl, CHECK_JOB_STATUS_API)
+                + "/" + jobInfo.jobId + "/"
+                + getResultUrl(jobInfo, paramName);
+
+            var checkJobParameter:Object = {};
+            prepareTask(checkJobParameter, false, getJobResultHttpService);
+
+            var asyncToken:AsyncToken = getJobResultHttpService.send(checkJobParameter);
+            asyncToken.addResponder(new AsyncResponder(handleJobResult,
+                defaultFault, responder));
+        }
+
+        private function getResultUrl(jobInfo:JobInfo, paramName:String):String {
+            var jobResultInfo:JobResultInfo = ObjectTranslator.objectToInstance(
+                jobInfo.results[paramName], JobResultInfo);
+
+            return jobResultInfo.paramUrl;
+        }
+
+        private function handleJobResult(event:ResultEvent,
+                responder:IResponder):void {
+            var parameterValueObject:Object = JSON.decode(event.result.toString());
+            var parameterValue:ParameterValue = ObjectTranslator.objectToInstance(
+                parameterValueObject, ParameterValue);
+            convertData(parameterValue);
+
+            responder.result(parameterValue.value);
+        }
     }
 }
