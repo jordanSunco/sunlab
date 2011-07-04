@@ -30,8 +30,6 @@ package com.monkey.arcgis.gp {
 
         private var _executeLastResult:ExecuteResult;
 
-        private var checkJobHttpService:HTTPService;
-
         public function Geoprocessor(gpTaskUrl:String) {
             this.gpTaskUrl = gpTaskUrl;
 
@@ -208,15 +206,15 @@ package com.monkey.arcgis.gp {
         }
 
         private function checkJobStatus(jobId:String, responder:IResponder):void {
-            this.checkJobHttpService = new HTTPService();
-            this.checkJobHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
-            this.checkJobHttpService.url = getApiUrl(this.gpTaskUrl,
+            var checkJobHttpService:HTTPService = new HTTPService();
+            checkJobHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
+            checkJobHttpService.url = getApiUrl(this.gpTaskUrl,
                 CHECK_JOB_STATUS_API) + "/" + jobId;
 
             var checkJobParameter:Object = {};
-            prepareTask(checkJobParameter, false, this.checkJobHttpService);
+            prepareTask(checkJobParameter, false, checkJobHttpService);
 
-            var asyncToken:AsyncToken = this.checkJobHttpService.send(checkJobParameter);
+            var asyncToken:AsyncToken = checkJobHttpService.send(checkJobParameter);
             asyncToken.addResponder(new AsyncResponder(handleJobInfoResult,
                 defaultFault, responder));
         }
