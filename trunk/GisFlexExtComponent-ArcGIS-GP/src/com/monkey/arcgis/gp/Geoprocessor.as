@@ -41,7 +41,7 @@ package com.monkey.arcgis.gp {
          */
         public function execute(inputParameters:Object,
                 responder:IResponder):AsyncToken {
-            prepareTask(inputParameters);
+            prepareTask(inputParameters, true, this.httpService);
             this.httpService.url = getApiUrl(this.httpService.url, EXECUTE_API);
 
             var asyncToken:AsyncToken = this.httpService.send(inputParameters);
@@ -51,11 +51,23 @@ package com.monkey.arcgis.gp {
             return asyncToken;
         }
 
-        private function prepareTask(inputParameters:Object):void {
-            serializeInputParameterValue(inputParameters);
+        /**
+         * 执行GP Task之前的准备工作, 例如序列化参数, 追加特殊参数, 是发生GET请求还是POST?
+         * 
+         * @param inputParameters GP的输入参数
+         * @param serialize 是否序列化请求参数的值, 例如将Feature转成FeatureSet JSON
+         * @param httpService
+         */
+        private function prepareTask(inputParameters:Object,
+                serialize:Boolean, httpService:HTTPService):void {
+            if (serialize) {
+                serializeInputParameterValue(inputParameters);
+            }
             // 告诉GP服务任务执行结果返回JSON格式数据
             inputParameters.f = JSON_RESULT_FORMAT;
-            httpGetOrPostAccordingToInputParametersContentLength(inputParameters);
+
+            httpGetOrPostAccordingToInputParametersContentLength(
+                inputParameters, httpService);
         }
 
         /**
@@ -88,8 +100,9 @@ package com.monkey.arcgis.gp {
         /**
          * TODO 根据inputParameters数据量大小选择GET还是POST, ArcGIS本身有这样的机制
          */
-        private function httpGetOrPostAccordingToInputParametersContentLength(inputParameters:Object):void {
-            this.httpService.method = URLRequestMethod.POST;
+        private function httpGetOrPostAccordingToInputParametersContentLength(
+                inputParameters:Object, httpService:HTTPService):void {
+            httpService.method = URLRequestMethod.POST;
         }
 
         private function getApiUrl(baseUrl:String, api:String):String {
