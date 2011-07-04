@@ -103,6 +103,24 @@ package com.monkey.arcgis.gp {
             }
         }
 
+        [Test(async)]
+        public function testSubmitJob():void {
+            var inputParameters:Object = {
+                a: 1,
+                b: 2
+            };
+
+            var gp:Geoprocessor = new Geoprocessor("http://192.168.200.58:8399/arcgis/rest/services/TestGP_Asyn/GPServer/TestPointInput");
+            var asyncResponder:IResponder = Async.asyncResponder(this,
+                new AsyncResponder(handleJobSucceeded, traceFault, gp), 0);
+            gp.submitJob(inputParameters, asyncResponder);
+        }
+
+        private function handleJobSucceeded(jobInfo:JobInfo, gp:Geoprocessor):void {
+            trace(jobInfo);
+            assertEquals(jobInfo.jobStatus, JobInfo.STATUS_SUCCEEDED);
+        }
+
         private function traceFault(info:Object):void {
             trace(info);
         }
