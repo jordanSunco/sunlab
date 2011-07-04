@@ -117,8 +117,34 @@ package com.monkey.arcgis.gp {
         }
 
         private function handleJobSucceeded(jobInfo:JobInfo, gp:Geoprocessor):void {
-            trace(jobInfo);
             assertEquals(jobInfo.jobStatus, JobInfo.STATUS_SUCCEEDED);
+
+            var asyncResponder:IResponder = Async.asyncResponder(this,
+                new Responder(handleJobResultValue, traceFault), 0);
+            gp.getJobResultValue(jobInfo, "POINT_FS_Project", asyncResponder);
+        }
+
+        private function handleJobResultValue(features:Vector.<Feature>):void {
+            var p1x:Array = [1298200.19, 1946777.69];
+            var p1y:Array = [4064264.70, 4241780.24];
+
+            var featureAttributes:Array = [{
+                FID: 0,
+                OBJECTID: 1
+            }, {
+                FID: 1,
+                OBJECTID: 2
+            }];
+
+            for (var i:uint = 0, length:uint = features.length; i < length; i++) {
+                var feature:Feature = features[i];
+                var point:Point = feature.geometry as Point;
+
+                assertEquals(p1x[i], point.x.toFixed(2));
+                assertEquals(p1y[i], point.y.toFixed(2));
+                assertEquals(0, ObjectUtil.compare(feature.attributes,
+                    featureAttributes[i]));
+            }
         }
 
         private function traceFault(info:Object):void {
