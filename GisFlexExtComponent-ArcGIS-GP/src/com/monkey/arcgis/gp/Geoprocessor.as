@@ -4,6 +4,7 @@ package com.monkey.arcgis.gp {
     import com.monkey.arcgis.FeatureSetUtil;
     
     import flash.net.URLRequestMethod;
+    import flash.utils.setTimeout;
     
     import mx.rpc.AsyncResponder;
     import mx.rpc.AsyncToken;
@@ -21,14 +22,20 @@ package com.monkey.arcgis.gp {
     public class Geoprocessor {
         private static const JSON_RESULT_FORMAT:String = "json";
         private static const EXECUTE_API:String = "execute";
+        private static const SUBMIT_JOB_API:String = "submitJob";
+        private static const CHECK_JOB_STATUS_API:String = "jobs";
 
+        private var gpTaskUrl:String;
         private var httpService:HTTPService;
 
         private var _executeLastResult:ExecuteResult;
 
+        private var checkJobHttpService:HTTPService;
+
         public function Geoprocessor(gpTaskUrl:String) {
+            this.gpTaskUrl = gpTaskUrl;
+
             this.httpService = new HTTPService();
-            this.httpService.url = gpTaskUrl;
             this.httpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
         }
 
@@ -41,8 +48,8 @@ package com.monkey.arcgis.gp {
          */
         public function execute(inputParameters:Object,
                 responder:IResponder):AsyncToken {
+            this.httpService.url = getApiUrl(this.gpTaskUrl, EXECUTE_API);
             prepareTask(inputParameters, true, this.httpService);
-            this.httpService.url = getApiUrl(this.httpService.url, EXECUTE_API);
 
             var asyncToken:AsyncToken = this.httpService.send(inputParameters);
             asyncToken.addResponder(new AsyncResponder(handleExecuteResult,
@@ -169,6 +176,49 @@ package com.monkey.arcgis.gp {
 
         private function defaultFault(info:Object, responder:IResponder):void {
             responder.fault(info);
+        }
+
+        public function submitJob(inputParameters:Object, responder:IResponder):AsyncToken {
+            this.httpService.url = getApiUrl(this.gpTaskUrl, SUBMIT_JOB_API);
+            prepareTask(inputParameters, true, this.httpService);
+
+            var asyncToken:AsyncToken = this.httpService.send(inputParameters);
+            asyncToken.addResponder(new AsyncResponder(handleJobInfoResult,
+                defaultFault, responder));
+
+            return asyncToken;
+        }
+
+        private function handleJobInfoResult(event:ResultEvent,
+                responder:IResponder):void {
+            var jobInfoObject:Object = JSON.decode(event.result.toString());
+            var jobInfo:JobInfo= ObjectTranslator.objectToInstance(
+                jobInfoObject, JobInfo);
+
+            if (jobInfo.jobStatus == JobInfo.STATUS_SUCCEEDED) {
+                responder.result(jobInfo);
+            } else if (jobInfo.jobStatus == JobInfo.STATUS_FAILED
+                    || jobInfo.jobStatus == JobInfo.STATUS_TIMED_OUT) {
+                trace(jobInfo.jobId, jobInfo.jobStatus, jobInfo.messages);
+            } else {
+                setTimeout(function ():void {
+                    checkJobStatus(jobInfo.jobId, responder);
+                }, 1000);
+            }
+        }
+
+        private function checkJobStatus(jobId:String, responder:IResponder):void {
+            this.checkJobHttpService = new HTTPService();
+            this.checkJobHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
+            this.checkJobHttpService.url = getApiUrl(this.gpTaskUrl,
+                CHECK_JOB_STATUS_API) + "/" + jobId;
+
+            var checkJobParameter:Object = {};
+            prepareTask(checkJobParameter, false, this.checkJobHttpService);
+
+            var asyncToken:AsyncToken = this.checkJobHttpService.send(checkJobParameter);
+            asyncToken.addResponder(new AsyncResponder(handleJobInfoResult,
+                defaultFault, responder));
         }
     }
 }
