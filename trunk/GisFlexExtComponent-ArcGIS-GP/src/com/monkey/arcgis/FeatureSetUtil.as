@@ -18,17 +18,17 @@ package com.monkey.arcgis {
      * 
      * 转换过程:
      * 1. 将ArcGIS Flex API中涉及FeatureSet的类都移植过来. 例如FeatureSet, Graphic, Geometry, Geometry子类等, 这样通过JSON做序列化时, 直接就可以生成按照ArcGIS规格的字符串了
-     * 2. Vector.<Feature> -> FeatureSetJson字符串, 用于使用Feature做为GP的输出参数
-     *     1) 获取Feature的类型 -> FeatureSet.geometryType
-     *     2) Feature(OpenScales)  -> Graphic(ArcGIS)
-     *     3) Geometry(OpenScales) -> Geometry(ArcGIS)
-     *     4) Feature.attributes -> Graphic.attributes
+     * 2. Vector.&lt;Feature&gt; -&gt; FeatureSetJson字符串, 用于使用Feature做为GP的输出参数
+     *     1) 获取Feature的类型 -&gt; FeatureSet.geometryType
+     *     2) Feature(OpenScales)  -&gt; Graphic(ArcGIS)
+     *     3) Geometry(OpenScales) -&gt; Geometry(ArcGIS)
+     *     4) Feature.attributes -&gt; Graphic.attributes
      *     5) JSON.encode(FeatureSet)
-     * 3. ags FeatureSetJson对象 -> Vector.<Feature>, 用于获取GP的输出, 以转为标准格式接收
+     * 3. ags FeatureSetJson对象 -&gt; Vector.&lt;Feature&gt;, 用于获取GP的输出, 以转为标准格式接收
      *     1) 根据FeatureSet.geometryType来做转换
-     *     2) Graphic(ArcGIS) -> Feature(OpenScales)
-     *     2) Geometry(ArcGIS) -> Geometry(OpenScales)
-     *     3) Graphic.attributes -> Feature.attributes
+     *     2) Graphic(ArcGIS) -&gt; Feature(OpenScales)
+     *     2) Geometry(ArcGIS) -&gt; Geometry(OpenScales)
+     *     3) Graphic.attributes -&gt; Feature.attributes
      * 
      * @author Sun
      * @see http://resources.esri.com/help/9.3/ArcGISServer/apis/rest/geometry.html

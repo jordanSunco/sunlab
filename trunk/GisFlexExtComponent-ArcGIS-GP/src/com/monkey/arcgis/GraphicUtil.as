@@ -1,4 +1,4 @@
-﻿package com.monkey.arcgis {
+package com.monkey.arcgis {
     import com.darronschall.serialization.ObjectTranslator;
     import com.monkey.arcgis.geometry.Geometry;
     import com.monkey.arcgis.geometry.MapPoint;
@@ -9,13 +9,13 @@
     import org.openscales.geometry.Point;
 
     /**
-     * Graphic(ArcGIS) <-> Feature(OpenScales)
+     * Graphic(ArcGIS) &lt;-&gt; Feature(OpenScales)
      * 
      * @author Sun
      */
     public class GraphicUtil {
         /**
-         * Feature(OpenScales) -> Graphic(ArcGIS)
+         * Feature(OpenScales) -&gt; Graphic(ArcGIS)
          * 
          * @param feature OpenScales Feature
          * @param geometryType ArcGIS Geometry类型
@@ -32,7 +32,7 @@
         }
 
         /**
-         * OpenScales Geometry -> ArcGIS Geometry
+         * OpenScales Geometry -&gt; ArcGIS Geometry
          * 
          * @param geometry OpenScales Geometry
          * @param geometryType ArcGIS Geometry类型
@@ -50,9 +50,9 @@
 
             return graphicGeometry;
         }
-        
+
         /**
-         * Point -> MapPoint
+         * Point -&gt; MapPoint
          * 
          * @param geometry OpenScales Geometry Point
          * @return ArcGIS Geometry MapPoint
@@ -68,7 +68,7 @@
         }
 
         /**
-         * Graphic(ArcGIS) -> Feature(OpenScales) 
+         * Graphic(ArcGIS) -&gt; Feature(OpenScales) 
          * 
          * @param graphicObject ArcGIS Graphic Object(因为是从JSON中获取的数据, 因此不是强类型)
          * @param geometryType ArcGIS Geometry类型
@@ -105,7 +105,7 @@
         }
 
         /**
-         * ArcGIS Geometry -> OpenScales Geometry
+         * ArcGIS Geometry -&gt; OpenScales Geometry
          * 
          * @param geometryObject ArcGIS Geometry Object(因为是从JSON中获取的数据, 因此不是强类型)
          * @param geometryType ArcGIS Geometry类型
@@ -125,7 +125,7 @@
         }
 
         /**
-         * MapPoint -> Point 
+         * MapPoint -&gt; Point 
          * 
          * @param geometryObject ArcGIS Geometry MapPoint(因为是从JSON中获取的数据, 因此不是强类型)
          * @return OpenScales Geometry Point
