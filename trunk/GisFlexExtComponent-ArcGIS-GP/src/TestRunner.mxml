@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-	    xmlns:flexUnitUIRunner="http://www.adobe.com/2009/flexUnitUIRunner"
-	    creationComplete="runTests()">
-	<mx:Script>
-		<![CDATA[
+        xmlns:flexUnitUIRunner="http://www.adobe.com/2009/flexUnitUIRunner"
+        creationComplete="runTests()">
+    <mx:Script>
+        <![CDATA[
             import com.monkey.arcgis.gp.GpTestSuite;
             
+            import org.flexunit.listeners.CIListener;
             import org.flexunit.listeners.UIListener;
             import org.flexunit.runner.FlexUnitCore;
-			
-			public function runTests():void {
-				var core:FlexUnitCore = new FlexUnitCore();
-				// graphical test results
-				core.addListener(new UIListener(uiListener));
-				core.run(GpTestSuite);
-			}
-		]]>
-	</mx:Script>
-	<flexUnitUIRunner:TestRunnerBase id="uiListener" />
+            
+            public function runTests():void {
+                var core:FlexUnitCore = new FlexUnitCore();
+                // graphical test results
+                core.addListener(new UIListener(uiListener));
+                // Listener to support continuous integration servers
+                // 使用这个才能通过ANT执行flexunit生成测试报告
+                core.addListener(new CIListener());
+                core.run(GpTestSuite);
+            }
+        ]]>
+    </mx:Script>
+    <flexUnitUIRunner:TestRunnerBase id="uiListener" />
 </mx:Application>
