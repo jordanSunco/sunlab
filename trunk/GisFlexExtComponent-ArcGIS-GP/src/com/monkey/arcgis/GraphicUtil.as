@@ -14,6 +14,8 @@ package com.monkey.arcgis {
      * @author Sun
      */
     public class GraphicUtil {
+        private static const PROJECTION_PREFIX:String = "EPSG";
+
         /**
          * Feature(OpenScales) -&gt; Graphic(ArcGIS)
          * 
@@ -72,15 +74,17 @@ package com.monkey.arcgis {
          * 
          * @param graphicObject ArcGIS Graphic Object(因为是从JSON中获取的数据, 因此不是强类型)
          * @param geometryType ArcGIS Geometry类型
+         * @param spatialReference
          * @return OpenScales Feature
          */
         public static function graphic2Feature(graphicObject:Object,
-                geometryType:String):Feature {
+                geometryType:String, spatialReference:SpatialReference):Feature {
             var graphic:Graphic = ObjectTranslator.objectToInstance(
                 graphicObject, Graphic);
 
             var feature:Feature = getFeature(geometryType);
             feature.geometry = getFeatureGeometry(graphic.geometry, geometryType);
+            feature.geometry.projection = getProjection(spatialReference);
             feature.attributes = graphic.attributes;
 
             return feature;
@@ -122,6 +126,10 @@ package com.monkey.arcgis {
             }
 
             return geometry;
+        }
+
+        private static function getProjection(spatialReference:SpatialReference):String {
+            return PROJECTION_PREFIX + ":" + spatialReference.wkid;
         }
 
         /**

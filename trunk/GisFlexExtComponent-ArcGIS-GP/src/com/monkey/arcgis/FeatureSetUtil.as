@@ -90,7 +90,11 @@ package com.monkey.arcgis {
         public static function convertFromFeatureSet(featureSetObject:Object):Vector.<Feature> {
             var featureSet:FeatureSet = ObjectTranslator.objectToInstance(
                 featureSetObject, FeatureSet);
-            return getFeatures(featureSet.features, featureSet.geometryType);
+            var spatialReference:SpatialReference = ObjectTranslator.objectToInstance(
+                featureSet.spatialReference, SpatialReference);
+
+            return getFeatures(featureSet.features, featureSet.geometryType,
+                spatialReference);
         }
 
         /**
@@ -101,11 +105,12 @@ package com.monkey.arcgis {
          * @return OpenScales Feature向量
          */
         private static function getFeatures(graphics:Array,
-                geometryType:String):Vector.<Feature> {
+                geometryType:String, spatialReference:SpatialReference):Vector.<Feature> {
             var features:Vector.<Feature> = new Vector.<Feature>();
 
             for each (var graphicObject:Object in graphics) {
-                features.push(GraphicUtil.graphic2Feature(graphicObject, geometryType));
+                features.push(GraphicUtil.graphic2Feature(graphicObject,
+                    geometryType, spatialReference));
             }
 
             return features;
