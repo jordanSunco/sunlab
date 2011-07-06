@@ -33,6 +33,13 @@ package com.monkey.arcgis {
             return graphic;
         }
 
+        public static function getSpatialReference(projection:String):SpatialReference {
+            var spatialReference:SpatialReference = new SpatialReference();
+            spatialReference.wkid = projection.replace(PROJECTION_PREFIX + ":", "");
+
+            return spatialReference;
+        }
+
         /**
          * OpenScales Geometry -&gt; ArcGIS Geometry
          * 

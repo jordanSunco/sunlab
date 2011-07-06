@@ -40,8 +40,8 @@ package com.monkey.arcgis {
 
             var featureSet:FeatureSet = new FeatureSet();
             featureSet.geometryType = geometryType;
-            // TODO spatialReference
-//            arcgisFeatureSet.spatialReference = null;
+            featureSet.spatialReference = GraphicUtil.getSpatialReference(
+                aGeometry.projection);
             featureSet.features = getGraphics(features, geometryType);
 
             return JSON.encode(featureSet);
