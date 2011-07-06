@@ -102,6 +102,7 @@ package com.monkey.arcgis {
          * 
          * @param graphics ArcGIS Graphic数组
          * @param geometryType ArcGIS Geometry类型
+         * @param spatialReference
          * @return OpenScales Feature向量
          */
         private static function getFeatures(graphics:Array,
