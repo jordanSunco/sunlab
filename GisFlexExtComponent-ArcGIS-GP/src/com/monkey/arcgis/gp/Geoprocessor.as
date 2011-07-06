@@ -25,6 +25,8 @@ package com.monkey.arcgis.gp {
         private static const SUBMIT_JOB_API:String = "submitJob";
         private static const CHECK_JOB_STATUS_API:String = "jobs";
 
+        private static const CHECK_JOB_STATUS_INTERVAL:uint = 1000;
+
         private var gpTaskUrl:String;
         private var httpService:HTTPService;
 
@@ -213,20 +215,29 @@ package com.monkey.arcgis.gp {
 
         private function handleJobInfoResult(event:ResultEvent,
                 responder:IResponder):void {
-            var jobInfoObject:Object = JSON.decode(event.result.toString());
-            this.lastJobInfo = ObjectTranslator.objectToInstance(
+            this.lastJobInfo = getJobInfo(event.result.toString());
+            checkJobFinished(this.lastJobInfo, responder);
+        }
+
+        private function getJobInfo(json:String):JobInfo {
+            var jobInfoObject:Object = JSON.decode(json);
+            var jobInfo:JobInfo = ObjectTranslator.objectToInstance(
                 jobInfoObject, JobInfo);
 
-            if (this.lastJobInfo.jobStatus == JobInfo.STATUS_SUCCEEDED) {
-                responder.result(this.lastJobInfo);
-            } else if (this.lastJobInfo.jobStatus == JobInfo.STATUS_FAILED
-                    || this.lastJobInfo.jobStatus == JobInfo.STATUS_TIMED_OUT) {
-                trace(this.lastJobInfo.jobId, this.lastJobInfo.jobStatus,
-                    this.lastJobInfo.messages);
+            return jobInfo;
+        }
+
+        private function checkJobFinished(jobInfo:JobInfo, responder:IResponder):void {
+            if (jobInfo.jobStatus == JobInfo.STATUS_SUCCEEDED) {
+                responder.result(jobInfo);
+            } else if (jobInfo.jobStatus == JobInfo.STATUS_FAILED
+                    || jobInfo.jobStatus == JobInfo.STATUS_TIMED_OUT) {
+                trace(jobInfo.jobId, jobInfo.jobStatus, jobInfo.messages);
+                responder.fault(jobInfo);
             } else {
                 setTimeout(function ():void {
-                    checkJobStatus(lastJobInfo.jobId, responder);
-                }, 1000);
+                    checkJobStatus(jobInfo.jobId, responder);
+                }, CHECK_JOB_STATUS_INTERVAL);
             }
         }
 
