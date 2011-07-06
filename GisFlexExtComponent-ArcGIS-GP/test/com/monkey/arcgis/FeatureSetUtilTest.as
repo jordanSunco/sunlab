@@ -50,7 +50,8 @@ package com.monkey.arcgis {
         public function testConvertFromMapPointFeatureSet():void {
             var x:Array = [0, 1];
             var y:Array = [2, 3];
-            var mapPointFeatureSetJson:String = "{\"features\":[{\"attributes\":{\"label\":\"Point1\"},\"geometry\":{\"y\":2,\"x\":0}},{\"attributes\":{\"label\":\"Point2\"},\"geometry\":{\"y\":3,\"x\":1}}],\"geometryType\":\"esriGeometryPoint\"}";
+
+            var mapPointFeatureSetJson:String = "{\"geometryType\":\"esriGeometryPoint\",\"spatialReference\": {\"wkid\": 2431},\"features\":[{\"attributes\":{\"label\":\"Point1\"},\"geometry\":{\"y\":2,\"x\":0}},{\"attributes\":{\"label\":\"Point2\"},\"geometry\":{\"y\":3,\"x\":1}}]}";
             var featureSetObject:Object = JSON.decode(mapPointFeatureSetJson);
 
             var features:Vector.<Feature> = FeatureSetUtil.convertFromFeatureSet(
@@ -61,6 +62,7 @@ package com.monkey.arcgis {
 
                 assertEquals(x[i], point.x);
                 assertEquals(y[i], point.y);
+                assertEquals("EPSG:2431", point.projection);
             }
         }
     }
