@@ -30,6 +30,8 @@ package com.monkey.arcgis.gp {
 
         private var _executeLastResult:ExecuteResult;
 
+        private var lastJobInfo:JobInfo;
+
         public function Geoprocessor(gpTaskUrl:String) {
             this.gpTaskUrl = gpTaskUrl;
 
@@ -201,17 +203,18 @@ package com.monkey.arcgis.gp {
         private function handleJobInfoResult(event:ResultEvent,
                 responder:IResponder):void {
             var jobInfoObject:Object = JSON.decode(event.result.toString());
-            var jobInfo:JobInfo= ObjectTranslator.objectToInstance(
+            this.lastJobInfo = ObjectTranslator.objectToInstance(
                 jobInfoObject, JobInfo);
 
-            if (jobInfo.jobStatus == JobInfo.STATUS_SUCCEEDED) {
-                responder.result(jobInfo);
-            } else if (jobInfo.jobStatus == JobInfo.STATUS_FAILED
-                    || jobInfo.jobStatus == JobInfo.STATUS_TIMED_OUT) {
-                trace(jobInfo.jobId, jobInfo.jobStatus, jobInfo.messages);
+            if (this.lastJobInfo.jobStatus == JobInfo.STATUS_SUCCEEDED) {
+                responder.result(this.lastJobInfo);
+            } else if (this.lastJobInfo.jobStatus == JobInfo.STATUS_FAILED
+                    || this.lastJobInfo.jobStatus == JobInfo.STATUS_TIMED_OUT) {
+                trace(this.lastJobInfo.jobId, this.lastJobInfo.jobStatus,
+                    this.lastJobInfo.messages);
             } else {
                 setTimeout(function ():void {
-                    checkJobStatus(jobInfo.jobId, responder);
+                    checkJobStatus(lastJobInfo.jobId, responder);
                 }, 1000);
             }
         }
@@ -241,19 +244,18 @@ package com.monkey.arcgis.gp {
         /**
          * 异步GP Task Job执行完成后, 获取GP的输出参数
          * 
-         * @param jobInfo Job执行完成后的JobInfo
          * @param paramName GP的输出参数名
-         * @param responder
+         * @param responder 由于获取Job的结果是异步的, 需要指定回调函数
          * 
          * @see http://services.arcgisonline.com/ArcGIS/SDK/REST/gpresult.html
          */
-        public function getJobResultValue(jobInfo:JobInfo, paramName:String,
+        public function getJobResultValue(paramName:String,
                 responder:IResponder):void {
             var getJobResultHttpService:HTTPService = new HTTPService();
             getJobResultHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
             getJobResultHttpService.url = getApiUrl(this.gpTaskUrl, CHECK_JOB_STATUS_API)
-                + "/" + jobInfo.jobId + "/"
-                + getResultUrl(jobInfo, paramName);
+                + "/" + this.lastJobInfo.jobId + "/"
+                + getResultUrl(this.lastJobInfo, paramName);
 
             var checkJobParameter:Object = {};
             prepareTask(checkJobParameter, false, getJobResultHttpService);

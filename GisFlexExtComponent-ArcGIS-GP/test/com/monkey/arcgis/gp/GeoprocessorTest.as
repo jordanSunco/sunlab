@@ -116,12 +116,12 @@ package com.monkey.arcgis.gp {
             gp.submitJob(inputParameters, asyncResponder);
         }
 
-        private function handleJobSucceeded(jobInfo:JobInfo, gp:Geoprocessor):void {
+        private function handleJobSucceeded(jobInfo:Object, gp:Geoprocessor):void {
             assertEquals(jobInfo.jobStatus, JobInfo.STATUS_SUCCEEDED);
 
             var asyncResponder:IResponder = Async.asyncResponder(this,
                 new Responder(handleJobResultValue, traceFault), 0);
-            gp.getJobResultValue(jobInfo, "POINT_FS_Project", asyncResponder);
+            gp.getJobResultValue("POINT_FS_Project", asyncResponder);
         }
 
         private function handleJobResultValue(features:Vector.<Feature>):void {
