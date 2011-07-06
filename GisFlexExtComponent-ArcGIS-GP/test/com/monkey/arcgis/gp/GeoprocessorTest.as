@@ -90,6 +90,7 @@ package com.monkey.arcgis.gp {
                 assertEquals(p1y[i], param1Point.y);
                 assertEquals(0, ObjectUtil.compare(param1Feature.attributes,
                     featureAttributes[i]));
+                assertEquals("EPSG:2431", param1Point.projection);
             }
 
             for (var j:uint = 0, lengthj:uint = param2Features.length; j < lengthj; j++) {
@@ -100,6 +101,7 @@ package com.monkey.arcgis.gp {
                 assertEquals(p2y[j], param2Point.y);
                 assertEquals(0, ObjectUtil.compare(param2Feature.attributes,
                     featureAttributes[j]));
+                assertEquals("EPSG:2431", param2Point.projection);
             }
         }
 
