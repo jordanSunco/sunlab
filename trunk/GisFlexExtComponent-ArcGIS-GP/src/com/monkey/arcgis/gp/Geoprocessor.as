@@ -53,10 +53,17 @@ package com.monkey.arcgis.gp {
         public function execute(inputParameters:Object,
                 responder:IResponder):AsyncToken {
             this.httpService.url = getApiUrl(this.gpTaskUrl, EXECUTE_API);
-            prepareTask(inputParameters, true, this.httpService);
+            return sendTaskApiRequest(inputParameters, true, this.httpService,
+                handleExecuteResult, responder);
+        }
 
-            var asyncToken:AsyncToken = this.httpService.send(inputParameters);
-            asyncToken.addResponder(new AsyncResponder(handleExecuteResult,
+        private function sendTaskApiRequest(inputParameters:Object,
+                serialize:Boolean, httpService:HTTPService,
+                resultHandler:Function, responder:IResponder):AsyncToken {
+            prepareTask(inputParameters, true, httpService);
+
+            var asyncToken:AsyncToken = httpService.send(inputParameters);
+            asyncToken.addResponder(new AsyncResponder(resultHandler,
                 defaultFault, responder));
 
             return asyncToken;
@@ -204,13 +211,8 @@ package com.monkey.arcgis.gp {
          */
         public function submitJob(inputParameters:Object, responder:IResponder):AsyncToken {
             this.httpService.url = getApiUrl(this.gpTaskUrl, SUBMIT_JOB_API);
-            prepareTask(inputParameters, true, this.httpService);
-
-            var asyncToken:AsyncToken = this.httpService.send(inputParameters);
-            asyncToken.addResponder(new AsyncResponder(handleJobInfoResult,
-                defaultFault, responder));
-
-            return asyncToken;
+            return sendTaskApiRequest(inputParameters, true, this.httpService,
+                handleJobInfoResult, responder);
         }
 
         private function handleJobInfoResult(event:ResultEvent,
@@ -251,13 +253,8 @@ package com.monkey.arcgis.gp {
          */
         private function checkJobStatus(jobId:String, responder:IResponder):void {
             var checkJobStatusService:HTTPService = getCheckJobStatusService(jobId);
-
-            var checkJobParameter:Object = {};
-            prepareTask(checkJobParameter, false, checkJobStatusService);
-
-            var asyncToken:AsyncToken = checkJobStatusService.send(checkJobParameter);
-            asyncToken.addResponder(new AsyncResponder(handleJobInfoResult,
-                defaultFault, responder));
+            sendTaskApiRequest({}, false, checkJobStatusService,
+                handleJobInfoResult, responder);
         }
 
         private function getCheckJobStatusService(jobId:String):HTTPService {
@@ -281,13 +278,8 @@ package com.monkey.arcgis.gp {
                 responder:IResponder):void {
             var getJobResultService:HTTPService = getGetJobResultService(
                 this.lastJobInfo, paramName);
-
-            var getJobResultParameter:Object = {};
-            prepareTask(getJobResultParameter, false, getJobResultService);
-
-            var asyncToken:AsyncToken = getJobResultService.send(getJobResultParameter);
-            asyncToken.addResponder(new AsyncResponder(handleJobResult,
-                defaultFault, responder));
+            sendTaskApiRequest({}, false, getJobResultService,
+                handleJobResult, responder);
         }
 
         private function getGetJobResultService(jobInfo:JobInfo, paramName:String):HTTPService {
