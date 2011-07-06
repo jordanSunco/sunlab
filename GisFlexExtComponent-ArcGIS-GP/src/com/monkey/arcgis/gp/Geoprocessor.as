@@ -128,35 +128,46 @@ package com.monkey.arcgis.gp {
 
         private function handleExecuteResult(event:ResultEvent,
                 responder:IResponder):void {
-            var executeResultObject:Object = JSON.decode(event.result.toString());
+            this._executeLastResult = getExecuteResult(event.result.toString());
+            convertExecuteResultData(this._executeLastResult);
+            responder.result(this._executeLastResult);
+        }
+
+        private function getExecuteResult(json:String):ExecuteResult {
+            var executeResultObject:Object = JSON.decode(json);
             var executeResult:ExecuteResult = ObjectTranslator.objectToInstance(
                 executeResultObject, ExecuteResult);
+            return executeResult;
+        }
 
-            var parameterValues:Array = [];
-            for each (var parameterValueObject:Object in executeResult.results) {
-                var parameterValue:ParameterValue = ObjectTranslator.objectToInstance(
-                    parameterValueObject, ParameterValue);
-                convertData(parameterValue);
-                parameterValues.push(parameterValue);
+        private function convertExecuteResultData(executeResult:ExecuteResult):void {
+            for (var i:uint = 0, length:uint = executeResult.results.length; i < length; i++) {
+                var parameterValueObject:Object = executeResult.results[i];
+                var parameterValue:ParameterValue = convertParameterValue(
+                    parameterValueObject);
+
+                executeResult.results[i] = parameterValue;
             }
-
-            executeResult.results = parameterValues;
-            this._executeLastResult = executeResult;
-
-            responder.result(executeResult);
         }
 
         /**
-         * 转换特有数据, 例如ArcGIS特有的FeatureSet
+         * 根据ParameterValue的类型转换GP输出的数据为OpenScales中的数据格式.
+         * 例如ArcGIS特有的FeatureSet转变为Vector.&lt;Feature&gt;
          * 
-         * @param parameterValue
+         * @param parameterValueObject
+         * @return 转换了数据格式后的ParameterValue
          */
-        private function convertData(parameterValue:ParameterValue):void {
+        private function convertParameterValue(parameterValueObject:Object):ParameterValue {
+            var parameterValue:ParameterValue = ObjectTranslator.objectToInstance(
+                parameterValueObject, ParameterValue);
+
             if (parameterValue.dataType == GpDataType.FEATURE_SET_DATA_TYPE) {
                 // 将返回参数中的值(ArcGIS FeatureSet)转成OpenScales Feature
                 parameterValue.value = FeatureSetUtil.convertFromFeatureSet(
                     parameterValue.value);
             }
+
+            return parameterValue;
         }
 
         public function get executeLastResult():ExecuteResult {
@@ -275,9 +286,8 @@ package com.monkey.arcgis.gp {
         private function handleJobResult(event:ResultEvent,
                 responder:IResponder):void {
             var parameterValueObject:Object = JSON.decode(event.result.toString());
-            var parameterValue:ParameterValue = ObjectTranslator.objectToInstance(
-                parameterValueObject, ParameterValue);
-            convertData(parameterValue);
+            var parameterValue:ParameterValue = convertParameterValue(
+                parameterValueObject);
 
             responder.result(parameterValue.value);
         }
