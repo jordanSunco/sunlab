@@ -250,17 +250,23 @@ package com.monkey.arcgis.gp {
          * @see http://services.arcgisonline.com/ArcGIS/SDK/REST/gpjob.html
          */
         private function checkJobStatus(jobId:String, responder:IResponder):void {
-            var checkJobHttpService:HTTPService = new HTTPService();
-            checkJobHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
-            checkJobHttpService.url = getApiUrl(this.gpTaskUrl,
-                CHECK_JOB_STATUS_API) + "/" + jobId;
+            var checkJobStatusService:HTTPService = getCheckJobStatusService(jobId);
 
             var checkJobParameter:Object = {};
-            prepareTask(checkJobParameter, false, checkJobHttpService);
+            prepareTask(checkJobParameter, false, checkJobStatusService);
 
-            var asyncToken:AsyncToken = checkJobHttpService.send(checkJobParameter);
+            var asyncToken:AsyncToken = checkJobStatusService.send(checkJobParameter);
             asyncToken.addResponder(new AsyncResponder(handleJobInfoResult,
                 defaultFault, responder));
+        }
+
+        private function getCheckJobStatusService(jobId:String):HTTPService {
+            var checkJobStatusHttpService:HTTPService = new HTTPService();
+            checkJobStatusHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
+            checkJobStatusHttpService.url = getApiUrl(this.gpTaskUrl,
+                CHECK_JOB_STATUS_API) + "/" + jobId;
+
+            return checkJobStatusHttpService;
         }
 
         /**
@@ -273,18 +279,25 @@ package com.monkey.arcgis.gp {
          */
         public function getJobResultValue(paramName:String,
                 responder:IResponder):void {
-            var getJobResultHttpService:HTTPService = new HTTPService();
-            getJobResultHttpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
-            getJobResultHttpService.url = getApiUrl(this.gpTaskUrl, CHECK_JOB_STATUS_API)
-                + "/" + this.lastJobInfo.jobId + "/"
-                + getResultUrl(this.lastJobInfo, paramName);
+            var getJobResultService:HTTPService = getGetJobResultService(
+                this.lastJobInfo, paramName);
 
-            var checkJobParameter:Object = {};
-            prepareTask(checkJobParameter, false, getJobResultHttpService);
+            var getJobResultParameter:Object = {};
+            prepareTask(getJobResultParameter, false, getJobResultService);
 
-            var asyncToken:AsyncToken = getJobResultHttpService.send(checkJobParameter);
+            var asyncToken:AsyncToken = getJobResultService.send(getJobResultParameter);
             asyncToken.addResponder(new AsyncResponder(handleJobResult,
                 defaultFault, responder));
+        }
+
+        private function getGetJobResultService(jobInfo:JobInfo, paramName:String):HTTPService {
+            var getJobResultService:HTTPService = new HTTPService();
+            getJobResultService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
+            getJobResultService.url = getApiUrl(this.gpTaskUrl, CHECK_JOB_STATUS_API)
+                + "/" + jobInfo.jobId + "/"
+                + getResultUrl(jobInfo, paramName);
+
+            return getJobResultService;
         }
 
         private function getResultUrl(jobInfo:JobInfo, paramName:String):String {
