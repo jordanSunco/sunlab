@@ -32,19 +32,29 @@ package com.monkey.supermap {
 
             switch (superMapGeometry.type) {
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOPOINT:
-                    // TODO 未实现
+                    geometry = getPoint(superMapGeometry);
                     break;
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOLINE:
-                    // TODO 未实现
+                    geometry = getLineString(superMapGeometry);
                     break;
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOREGION:
-                    geometry = getPolygon(superMapGeometry); 
+                    geometry = getPolygon(superMapGeometry);
                     break;
                 default:
                     trace("default");
             }
 
             return geometry;
+        }
+
+        private function getPoint(superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry):Point {
+            var point2D:Point2D = ObjectTranslator.objectToInstance(
+                superMapGeometry.points[0], Point2D);
+            return new Point(point2D.x, point2D.y);
+        }
+
+        private function getLineString(superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry):LineString {
+            return new LineString(getVertices(superMapGeometry));
         }
 
         private function getPolygon(superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry):Polygon {
