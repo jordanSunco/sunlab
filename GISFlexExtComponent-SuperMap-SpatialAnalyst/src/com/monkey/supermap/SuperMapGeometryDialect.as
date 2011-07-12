@@ -6,7 +6,9 @@ package com.monkey.supermap {
     import com.monkey.supermap.web.core.geometry.Geometry;
     
     import org.openscales.geometry.Geometry;
+    import org.openscales.geometry.LineString;
     import org.openscales.geometry.LinearRing;
+    import org.openscales.geometry.Point;
     import org.openscales.geometry.Polygon;
 
     /**
@@ -30,8 +32,10 @@ package com.monkey.supermap {
 
             switch (superMapGeometry.type) {
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOPOINT:
+                    // TODO 未实现
                     break;
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOLINE:
+                    // TODO 未实现
                     break;
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOREGION:
                     geometry = getPolygon(superMapGeometry); 
@@ -58,6 +62,45 @@ package com.monkey.supermap {
                 var point2D:Point2D = ObjectTranslator.objectToInstance(
                     point2DObject, Point2D);
                 vertices.push(point2D.x, point2D.y);
+            }
+
+            return vertices;
+        }
+
+        public function toGeometryJson(geometry:org.openscales.geometry.Geometry):String {
+            return JSON.encode(toSuperMapGeometry(geometry));
+        }
+
+        private function toSuperMapGeometry(geometry:org.openscales.geometry.Geometry):com.monkey.supermap.web.core.geometry.Geometry {
+            var superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry = new com.monkey.supermap.web.core.geometry.Geometry();
+            superMapGeometry.type = getGeometryType(geometry);
+            superMapGeometry.points = getPoint2Ds(geometry);
+
+            return superMapGeometry;
+        }
+
+        private function getGeometryType(geometry:org.openscales.geometry.Geometry):String {
+            var type:String = "";
+
+            if (geometry is Point) {
+                type = com.monkey.supermap.web.core.geometry.Geometry.GEOPOINT;
+            } else if (geometry is LineString) {
+                type = com.monkey.supermap.web.core.geometry.Geometry.GEOLINE;
+            } else if (geometry is Polygon) {
+                type = com.monkey.supermap.web.core.geometry.Geometry.GEOREGION;
+            }
+
+            return type;
+        }
+
+        private function getPoint2Ds(geometry:org.openscales.geometry.Geometry):Array {
+            var vertices:Array = [];
+
+            for each (var point:Point in geometry.toVertices()) {
+                var point2D:Point2D = new Point2D();
+                point2D.x = point.x;
+                point2D.y = point.y;
+                vertices.push(point2D);
             }
 
             return vertices;

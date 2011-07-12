@@ -29,5 +29,12 @@ package com.monkey.supermap {
             assertEquals("-12.91,407.37,-2.91,248.49,250.22,305.78,185.27,413.36,-12.91,407.37",
                 longLat.toString());
         }
+
+        [Test]
+        public function testToPointJson():void {
+            var point:Point = new Point(112, 34);
+            var json:String = geometryDialect.toGeometryJson(point);
+            trace(json);
+        }
     }
 }

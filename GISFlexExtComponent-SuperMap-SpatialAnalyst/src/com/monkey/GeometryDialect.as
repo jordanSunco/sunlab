@@ -10,5 +10,6 @@ package com.monkey {
      */
     public interface GeometryDialect {
         function getGeometry(geometryJson:String):Geometry;
+        function toGeometryJson(geometry:Geometry):String;
     }
 }
