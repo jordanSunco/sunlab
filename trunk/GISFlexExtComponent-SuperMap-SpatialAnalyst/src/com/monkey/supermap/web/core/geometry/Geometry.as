@@ -14,11 +14,8 @@ package com.monkey.supermap.web.core.geometry {
 
         public var id:String;
         public var style:String;
+        public var type:String;
         public var parts:Array;
         public var points:Array;
-
-        public function get type():String {
-            return "";
-        }
     }
 }
