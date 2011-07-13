@@ -45,6 +45,8 @@ package com.monkey.supermap.web.spatialanalyst {
 
         private function traceFault(info:Object, token:Object):void {
             trace(info, token);
+            // 如果服务调用失败或者异常则宣告测试失败
+            assertEquals(1, 2);
         }
 
         [Test(async)]
