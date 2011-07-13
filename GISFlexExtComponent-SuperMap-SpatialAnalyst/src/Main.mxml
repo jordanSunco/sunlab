@@ -3,10 +3,5 @@
         xmlns:s="library://ns.adobe.com/flex/spark" 
         xmlns:mx="library://ns.adobe.com/flex/mx"
         creationComplete="init()">
-    <fx:Script>
-        <![CDATA[
-            private function init():void {
-            }
-        ]]>
-    </fx:Script>
+    <fx:Script source="viewTest.as" />
 </s:Application>
