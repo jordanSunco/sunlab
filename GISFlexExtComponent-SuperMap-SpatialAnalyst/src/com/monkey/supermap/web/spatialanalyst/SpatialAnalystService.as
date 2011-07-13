@@ -27,6 +27,7 @@ package com.monkey.supermap.web.spatialanalyst {
         private static const CONTENT_TYPE_JSON:String = "application/json";
 
         private static const BUFFER_API:String = "buffer.json";
+        private static const OVERLAY_API:String = "overlay.json";
 
         /**
          * 如果在做分析时添加returnContent=true请求参数, 则会立即返回分析结果, 而不是返回结果的URI,
@@ -125,8 +126,27 @@ package com.monkey.supermap.web.spatialanalyst {
             responder.fault(info);
         }
 
-        public function geometryOverlay(overlayParameter:OverlayParameter):AsyncToken {
-            return null;
+        public function geometryOverlay(overlayParameter:OverlayParameter,
+                responder:IResponder):AsyncToken {
+            overlayParameter.sourceGeometry = convert2SuperMapGeometry(
+                overlayParameter.sourceGeometry);
+            overlayParameter.operateGeometry = convert2SuperMapGeometry(
+                overlayParameter.operateGeometry);
+
+            return sendApiRequest(OVERLAY_API, overlayParameter,
+                handleOverlayResult, responder);
+        }
+
+        /**
+         * 叠加分析返回的数据格式和缓冲区分析是一样的, 因此采用相同的处理机制
+         */
+        private function handleOverlayResult(event:ResultEvent,
+                responder:IResponder):void {
+            handleBufferResult(event, responder);
+        }
+
+        public function getOverlayResultGeometry():Geometry {
+            return getBufferResultGeometry();
         }
     }
 }

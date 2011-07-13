@@ -1,6 +1,7 @@
 import com.monkey.supermap.web.spatialanalyst.SpatialAnalystService;
 import com.monkey.supermap.web.spatialanalyst.buffer.BufferAnalystParameter;
 import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
+import com.monkey.supermap.web.spatialanalyst.overlay.OverlayParameter;
 
 import mx.core.UIComponent;
 import mx.events.FlexEvent;
@@ -19,6 +20,7 @@ import org.openscales.core.layer.FeatureLayer;
 import org.openscales.core.popup.Anchored;
 import org.openscales.core.style.Style;
 import org.openscales.geometry.Geometry;
+import org.openscales.geometry.LinearRing;
 import org.openscales.geometry.Point;
 import org.openscales.geometry.Polygon;
 
@@ -85,10 +87,11 @@ private function addFeatureLayer():void {
 }
 
 private function testSpatialAnalystService():void {
-    testBuffer();
+    testGeometryBuffer();
+    testGeometryOverlay();
 }
 
-private function testBuffer():void {
+private function testGeometryBuffer():void {
     var bufferParameter:BufferParameter = new BufferParameter(
         new org.openscales.geometry.Point(1, 2), new BufferAnalystParameter());
 
@@ -107,4 +110,33 @@ private function handlerPointBufferResult(bufferResult:Object,
 
 private function traceFault(info:Object, token:Object):void {
     trace(info, token);
+}
+
+private function testGeometryOverlay():void {
+    var vertices:Vector.<Number> = new Vector.<Number>();
+    vertices.push(23, 23, 33, 35, 43, 22);
+    var ring:LinearRing = new LinearRing(vertices);
+    var rings:Vector.<Geometry> = new Vector.<Geometry>();
+    rings.push(ring);
+    var sourceGeometry:Geometry = new Polygon(rings);
+
+    vertices = new Vector.<Number>();
+    vertices.push(23, 23, 34, 47, 50, 12);
+    ring = new LinearRing(vertices);
+    rings = new Vector.<Geometry>();
+    rings.push(ring);
+    var operateGeometry:Geometry = new Polygon(rings);
+
+    this.spatialAnalystService.geometryOverlay(
+        new OverlayParameter(sourceGeometry, operateGeometry),
+        new AsyncResponder(handlerGeometryOverlayResult, traceFault, this.spatialAnalystService));
+}
+
+private function handlerGeometryOverlayResult(bufferResult:Object,
+        spatialAnalystService:SpatialAnalystService):void {
+    var geometry:Geometry = spatialAnalystService.getBufferResultGeometry();
+
+    var feature:Feature = new PolygonFeature(geometry as Polygon,
+        {label: "Overlay Geometry"});
+    featureLayer.addFeature(feature);
 }
