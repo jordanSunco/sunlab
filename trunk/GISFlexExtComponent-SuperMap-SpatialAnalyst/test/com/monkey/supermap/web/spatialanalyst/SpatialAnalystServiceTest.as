@@ -8,6 +8,7 @@ package com.monkey.supermap.web.spatialanalyst {
     import mx.rpc.IResponder;
     
     import org.flexunit.asserts.assertEquals;
+    import org.flexunit.asserts.fail;
     import org.flexunit.async.Async;
     import org.openscales.geometry.Geometry;
     import org.openscales.geometry.LinearRing;
@@ -45,8 +46,7 @@ package com.monkey.supermap.web.spatialanalyst {
 
         private function traceFault(info:Object, token:Object):void {
             trace(info, token);
-            // 如果服务调用失败或者异常则宣告测试失败
-            assertEquals(1, 2);
+            fail("SuperMap空间分析服务调用失败或者异常宣告测试失败");
         }
 
         [Test(async)]
