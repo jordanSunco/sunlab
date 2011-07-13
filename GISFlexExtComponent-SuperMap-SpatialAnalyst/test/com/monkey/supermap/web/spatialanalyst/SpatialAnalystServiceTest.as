@@ -1,4 +1,6 @@
 package com.monkey.supermap.web.spatialanalyst {
+    import com.monkey.utils.GeometryUtil;
+    
     import mx.rpc.AsyncResponder;
     import mx.rpc.IResponder;
     
@@ -33,19 +35,11 @@ package com.monkey.supermap.web.spatialanalyst {
                 spatialAnalystService:SpatialAnalystService):void {
             var geometry:Geometry = spatialAnalystService.getBufferResultGeometry();
             assertEquals("-1,2,-0.41421356237309515,0.5857864376269051,0.9999999999999996,0,2.414213562373095,0.5857864376269046,3,2,2.414213562373095,3.414213562373095,1.0000000000000002,4,-0.4142135623730947,3.4142135623730954,-1,2",
-                points2Coordinates(geometry.toVertices()));
+                GeometryUtil.getCoordinates(geometry));
         }
 
         private function traceFault(info:Object, token:Object):void {
             trace(info, token);
-        }
-
-        private function points2Coordinates(vertices:Vector.<Point>):Array {
-            var coordinates:Array = [];
-            for each (var point:Point in vertices) {
-                coordinates.push(point.x, point.y);
-            }
-            return coordinates;
         }
     }
 }
