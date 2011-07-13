@@ -9,7 +9,24 @@ package com.monkey {
      * @author Sun
      */
     public interface GeometryDialect {
-        function getGeometry(geometryJson:String):Geometry;
+        /**
+         * Geometry JSON(GIS引擎特有格式) -&gt; Geometry(OpenScales)
+         */
+        function getGeometryFromJson(geometryJson:String):Geometry;
+
+        /**
+         * Geometry Object(GIS引擎特有的Geometry对象) -&gt; Geometry(OpenScales)
+         */
+        function getGeometryFromObject(geometryObject:Object):Geometry;
+
+        /**
+         * Geometry(OpenScales) -&gt; Geometry Object(GIS引擎特有的Geometry对象)
+         */
+        function toGeometry(geometry:Geometry):Object;
+
+        /**
+         * Geometry(OpenScales) -&gt; Geometry JSON(GIS引擎特有格式)
+         */
         function toGeometryJson(geometry:Geometry):String;
     }
 }
