@@ -5,6 +5,7 @@ package com.monkey.supermap.web.spatialanalyst {
     import com.monkey.supermap.SuperMapGeometryDialect;
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferResult;
+    import com.monkey.supermap.web.spatialanalyst.overlay.OverlayParameter;
     
     import flash.net.URLRequestMethod;
     
@@ -122,6 +123,10 @@ package com.monkey.supermap.web.spatialanalyst {
 
         private function defaultFault(info:Object, responder:IResponder):void {
             responder.fault(info);
+        }
+
+        public function geometryOverlay(overlayParameter:OverlayParameter):AsyncToken {
+            return null;
         }
     }
 }
