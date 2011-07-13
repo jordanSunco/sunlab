@@ -1,6 +1,7 @@
 package com.monkey.supermap.web.spatialanalyst {
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferAnalystParameter;
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
+    import com.monkey.supermap.web.spatialanalyst.overlay.OverlayParameter;
     import com.monkey.utils.GeometryUtil;
     
     import mx.rpc.AsyncResponder;
@@ -9,7 +10,9 @@ package com.monkey.supermap.web.spatialanalyst {
     import org.flexunit.asserts.assertEquals;
     import org.flexunit.async.Async;
     import org.openscales.geometry.Geometry;
+    import org.openscales.geometry.LinearRing;
     import org.openscales.geometry.Point;
+    import org.openscales.geometry.Polygon;
 
     /**
      * @author Sun
@@ -42,6 +45,36 @@ package com.monkey.supermap.web.spatialanalyst {
 
         private function traceFault(info:Object, token:Object):void {
             trace(info, token);
+        }
+
+        [Test(async)]
+        public function testGeometryOverlay():void {
+            var vertices:Vector.<Number> = new Vector.<Number>();
+            vertices.push(23, 23, 33, 35, 43, 22);
+            var ring:LinearRing = new LinearRing(vertices);
+            var rings:Vector.<Geometry> = new Vector.<Geometry>();
+            rings.push(ring);
+            var sourceGeometry:Geometry = new Polygon(rings);
+
+            vertices = new Vector.<Number>();
+            vertices.push(23, 23, 34, 47, 50, 12);
+            ring = new LinearRing(vertices);
+            rings = new Vector.<Geometry>();
+            rings.push(ring);
+            var operateGeometry:Geometry = new Polygon(rings);
+
+            var asyncResponder:IResponder = Async.asyncResponder(this,
+                new AsyncResponder(handlerGeometryOverlayResult, traceFault, this.spatialAnalystService), 0);
+            this.spatialAnalystService.geometryOverlay(
+                new OverlayParameter(sourceGeometry, operateGeometry),
+                asyncResponder);
+        }
+
+        private function handlerGeometryOverlayResult(overlayResult:Object,
+                spatialAnalystService:SpatialAnalystService):void {
+            var geometry:Geometry = spatialAnalystService.getOverlayResultGeometry();
+            assertEquals("43,22,23,23,33,35,43,22",
+                GeometryUtil.getCoordinates(geometry));
         }
     }
 }
