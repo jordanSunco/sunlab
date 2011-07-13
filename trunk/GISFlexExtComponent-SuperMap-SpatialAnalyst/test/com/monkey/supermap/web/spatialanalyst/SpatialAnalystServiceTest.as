@@ -1,4 +1,6 @@
 package com.monkey.supermap.web.spatialanalyst {
+    import com.monkey.supermap.web.spatialanalyst.buffer.BufferAnalystParameter;
+    import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
     import com.monkey.utils.GeometryUtil;
     
     import mx.rpc.AsyncResponder;

@@ -1,4 +1,4 @@
-package com.monkey.supermap.web.spatialanalyst {
+package com.monkey.supermap.web.spatialanalyst.buffer {
     import org.openscales.geometry.Geometry;
 
     /**
