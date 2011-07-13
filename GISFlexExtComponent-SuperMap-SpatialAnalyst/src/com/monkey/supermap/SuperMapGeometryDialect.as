@@ -17,17 +17,12 @@ package com.monkey.supermap {
      * @author Sun
      */
     public class SuperMapGeometryDialect implements GeometryDialect {
-        public function getGeometry(geometryJson:String):org.openscales.geometry.Geometry {
-            var superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry = getSuperMapGeometry(geometryJson);
-            return _getGeometry(superMapGeometry);
+        public function getGeometryFromJson(geometryJson:String):org.openscales.geometry.Geometry {
+            return getGeometryFromObject(JSON.decode(geometryJson));
         }
 
-        private function getSuperMapGeometry(geometryJson:String):com.monkey.supermap.web.core.geometry.Geometry {
-            return ObjectTranslator.objectToInstance(JSON.decode(geometryJson),
-                com.monkey.supermap.web.core.geometry.Geometry);
-        }
-
-        private function _getGeometry(superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry):org.openscales.geometry.Geometry {
+        public function getGeometryFromObject(geometryObject:Object):org.openscales.geometry.Geometry {
+            var superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry = getSuperMapGeometry(geometryObject);
             var geometry:org.openscales.geometry.Geometry;
 
             switch (superMapGeometry.type) {
@@ -45,6 +40,11 @@ package com.monkey.supermap {
             }
 
             return geometry;
+        }
+
+        private function getSuperMapGeometry(geometryObject:Object):com.monkey.supermap.web.core.geometry.Geometry {
+            return ObjectTranslator.objectToInstance(geometryObject,
+                com.monkey.supermap.web.core.geometry.Geometry);
         }
 
         private function getPoint(superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry):Point {
@@ -77,11 +77,7 @@ package com.monkey.supermap {
             return vertices;
         }
 
-        public function toGeometryJson(geometry:org.openscales.geometry.Geometry):String {
-            return JSON.encode(toSuperMapGeometry(geometry));
-        }
-
-        private function toSuperMapGeometry(geometry:org.openscales.geometry.Geometry):com.monkey.supermap.web.core.geometry.Geometry {
+        public function toGeometry(geometry:org.openscales.geometry.Geometry):Object {
             var superMapGeometry:com.monkey.supermap.web.core.geometry.Geometry = new com.monkey.supermap.web.core.geometry.Geometry();
             superMapGeometry.type = getGeometryType(geometry);
             superMapGeometry.points = getPoint2Ds(geometry);
@@ -114,6 +110,10 @@ package com.monkey.supermap {
             }
 
             return vertices;
+        }
+
+        public function toGeometryJson(geometry:org.openscales.geometry.Geometry):String {
+            return JSON.encode(toGeometry(geometry));
         }
     }
 }
