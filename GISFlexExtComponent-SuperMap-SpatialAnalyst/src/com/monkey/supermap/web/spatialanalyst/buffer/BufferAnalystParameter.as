@@ -1,4 +1,4 @@
-package com.monkey.supermap.web.spatialanalyst {
+package com.monkey.supermap.web.spatialanalyst.buffer {
     /**
      * SuperMap缓冲区分析参数类
      * 

@@ -3,6 +3,8 @@ package com.monkey.supermap.web.spatialanalyst {
     import com.darronschall.serialization.ObjectTranslator;
     import com.monkey.GeometryDialect;
     import com.monkey.supermap.SuperMapGeometryDialect;
+    import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
+    import com.monkey.supermap.web.spatialanalyst.buffer.BufferResult;
     
     import flash.net.URLRequestMethod;
     

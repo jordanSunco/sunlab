@@ -1,6 +1,6 @@
-import com.monkey.supermap.web.spatialanalyst.BufferAnalystParameter;
-import com.monkey.supermap.web.spatialanalyst.BufferParameter;
 import com.monkey.supermap.web.spatialanalyst.SpatialAnalystService;
+import com.monkey.supermap.web.spatialanalyst.buffer.BufferAnalystParameter;
+import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
 
 import mx.core.UIComponent;
 import mx.events.FlexEvent;
