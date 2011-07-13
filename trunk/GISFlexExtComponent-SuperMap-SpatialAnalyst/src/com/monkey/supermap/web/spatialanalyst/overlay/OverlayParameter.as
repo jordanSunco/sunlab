@@ -43,8 +43,8 @@ package com.monkey.supermap.web.spatialanalyst.overlay {
          */
         public static const OPERATION_UPDATE:String = "UPDATE";
 
-        private var _sourceGeometry:Object;
-        private var _operateGeometry:Object;
+        public var sourceGeometry:Object;
+        public var operateGeometry:Object;
         public var operation:String;
 
         /**
@@ -59,28 +59,6 @@ package com.monkey.supermap.web.spatialanalyst.overlay {
             this.sourceGeometry = sourceGeometry;
             this.operateGeometry = operateGeometry;
             this.operation = operation;
-        }
-
-        public function get sourceGeometry():Object {
-            return this._sourceGeometry;
-        }
-
-        /**
-         * 使用OpenScales的Geometry来做SuperMap的缓冲区分析
-         */
-        public function set sourceGeometry(value:Object):void {
-            this._sourceGeometry = value as Geometry;
-        }
-
-        public function get operateGeometry():Object {
-            return this._operateGeometry;
-        }
-
-        /**
-         * 使用OpenScales的Geometry来做SuperMap的缓冲区分析
-         */
-        public function set operateGeometry(value:Object):void {
-            this._operateGeometry = value as Geometry;
         }
     }
 }
