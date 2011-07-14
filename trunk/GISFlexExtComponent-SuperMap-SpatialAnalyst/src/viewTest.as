@@ -101,9 +101,7 @@ private function testGeometryBuffer():void {
 
 private function handlerPointBufferResult(bufferResult:Object,
         spatialAnalystService:SpatialAnalystService):void {
-    var geometry:Geometry = spatialAnalystService.getBufferResultGeometry();
-
-    var feature:Feature = new PolygonFeature(geometry as Polygon,
+    var feature:Feature = new PolygonFeature(spatialAnalystService.getBufferResultGeometry(),
         {label: "Buffered Point"});
     featureLayer.addFeature(feature);
 }

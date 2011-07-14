@@ -16,6 +16,7 @@ package com.monkey.supermap.web.spatialanalyst {
     import mx.rpc.http.HTTPService;
     
     import org.openscales.geometry.Geometry;
+    import org.openscales.geometry.Polygon;
 
     /**
      * SuperMap的空间分析服务
@@ -107,8 +108,8 @@ package com.monkey.supermap.web.spatialanalyst {
             return this.geometryDialect.getGeometryFromObject(superMapGeometryObject);
         }
 
-        public function getBufferResultGeometry():Geometry {
-            return this._bufferLastResult.resultGeometry as Geometry;
+        public function getBufferResultGeometry():Polygon {
+            return this._bufferLastResult.resultGeometry as Polygon;
         }
 
         private function getApiUrl(baseUrl:String, api:String):String {
