@@ -5,6 +5,7 @@ package com.monkey.supermap.web.spatialanalyst {
     import com.monkey.supermap.SuperMapGeometryDialect;
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferResult;
+    import com.monkey.supermap.web.spatialanalyst.isoline.IsolineParameter;
     import com.monkey.supermap.web.spatialanalyst.overlay.OverlayParameter;
     
     import flash.net.URLRequestMethod;
@@ -30,6 +31,7 @@ package com.monkey.supermap.web.spatialanalyst {
 
         private static const BUFFER_API:String = "buffer.json";
         private static const OVERLAY_API:String = "overlay.json";
+        private static const ISOLINE_API:String = "isoline.json";
 
         /**
          * 如果在做分析时添加returnContent=true请求参数, 则会立即返回分析结果, 而不是返回结果的URI,
@@ -149,6 +151,18 @@ package com.monkey.supermap.web.spatialanalyst {
 
         public function getOverlayResultGeometry():Geometry {
             return getBufferResultGeometry();
+        }
+
+        public function geometryIsoline(isolineParameter:IsolineParameter,
+                responder:IResponder):AsyncToken {
+            return sendApiRequest(ISOLINE_API, isolineParameter,
+                handleIsolineResult, responder);
+        }
+
+        public function handleIsolineResult(event:ResultEvent,
+                responder:IResponder):void {
+            // TODO 转换isoline返回的数据
+            responder.result(event.result);
         }
     }
 }

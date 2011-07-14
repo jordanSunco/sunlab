@@ -8,11 +8,13 @@ package com.monkey.supermap.web.spatialanalyst.isoline {
      * @see http://support.supermap.com.cn/DataWarehouse/WebDocHelp/6.0/iSever6R/mergedProjects/SuperMapiServerRESTAPI/root/spatialanalyst/geometry/geometryIsolineResults/geometryIsolineResults.htm 请求体中的参数
      */
     public class IsolineParameter {
+        [ArrayElementType("com.monkey.supermap.web.core.Point2D")]
         /**
          * 采样点
          */
         public var points:Array;
 
+        [ArrayElementType("Number")]
         /**
          * Z值
          */
@@ -32,5 +34,10 @@ package com.monkey.supermap.web.spatialanalyst.isoline {
          * 返回的提取结果设置
          */
         public var resultSetting:DataReturnOption = new DataReturnOption();
+
+        public function IsolineParameter(points:Array, zValues:Array) {
+            this.points = points;
+            this.zValues = zValues;
+        }
     }
 }
