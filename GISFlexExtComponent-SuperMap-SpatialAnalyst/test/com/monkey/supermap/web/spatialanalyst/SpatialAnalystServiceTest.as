@@ -89,12 +89,10 @@ package com.monkey.supermap.web.spatialanalyst {
             var zValuesJson:String = "[-3,-2,0,-1,-3,0,1,0,1,1,1,2,0,3,-2,5,3,2,4,6,5,5,5,2,7,5,3,4,5,4,6,5,4,8,5,9,4,4,9,6,10,8,8,11,-4,15,12,12,12,7,13,11,12,12,12,13,13,11,4,12,5,10,10,5,10,10,8,8,8,10,3,8,9,5,2,5,0,1,6,4,6,11,-5,1,4,5,2,6,2,6,6,6,5,4,8,5,9,10,9,8,7,9,-1,8,10,9,10,14,10,9,9,10,12,10,15,11,11,13,15,9,9,11,15,12,15,3,8,6,7,5,4,4,6,8,8,7,4,3,8,8,8,7,6,6,8,6,10,10,9,6,8,3,10,11,10,10,10,8,10,13,13,12,11,14,13,12,14,13,13,12,14,15,6,13,13,13,13,14,14,14,14,1,1,0,-3,0,4,0,2,7,7,9,3,6,0,-4,1,-2,4,-3,-1,0,2,3,6,15,2,4,8,7,6,1,8,9,2,6,15,17,13,4,17,17,9,5,7,3,12,6,9,18,12,17,12,13,15,13,11,15,17,15,21,17,16,15,21,15,18,20,23,19,24,22,19,19,12,14,15,7,13,12,15,15,15,15,15,16,15,16,16,15,16,17,17,17,17,17,17,17,17,16,17,17,17,18,18,17,18,17,18,8,15,17,18,17,13,16,18,17,17,12,18,19,15,15,17,17,18,17,19,15,20,15,18,19,19,20,15,14,15,15,15,16,16,16,16,15,16,16,17,16,16,17,17,17,8,9,17,12,18,17,17,18,19,18,18,15,18,18,18,12,18,19,19,20,20,18,19,20,20,13,20,26,17,21,21,20,20,20,21,20,19,22,21,25.2,19,22,22,21,23,22,22,22,23,24,23,22,23,23,23,25,23,23,24,23,23,25,25,24,25,26]";
             var zValues:Array = JSON.decode(zValuesJson);
 
-            var isolineParameter:IsolineParameter = new IsolineParameter(points,
-                zValues);
             var asyncResponder:IResponder = Async.asyncResponder(this,
                 new AsyncResponder(handlerGeometryIsolineResult, traceFault, this.spatialAnalystService), 0);
-            this.spatialAnalystService.geometryIsoline(isolineParameter,
-                asyncResponder);
+            this.spatialAnalystService.geometryIsoline(
+                new IsolineParameter(points, zValues), asyncResponder);
         }
 
         private function handlerGeometryIsolineResult(isolineResult:Object,
