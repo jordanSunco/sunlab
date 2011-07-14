@@ -1,7 +1,9 @@
 package com.monkey.supermap.web.spatialanalyst {
     import com.adobe.serialization.json.JSON;
     import com.darronschall.serialization.ObjectTranslator;
+    import com.monkey.FeatureDialect;
     import com.monkey.GeometryDialect;
+    import com.monkey.supermap.SuperMapFeatureDialect;
     import com.monkey.supermap.SuperMapGeometryDialect;
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferResult;
@@ -43,6 +45,7 @@ package com.monkey.supermap.web.spatialanalyst {
         private var spatialAnalystServiceUrl:String;
         private var httpService:HTTPService;
         private var geometryDialect:GeometryDialect;
+        private var featureDialect:FeatureDialect;
 
         private var _bufferLastResult:BufferResult;
         private var _isolineLastResult:IsolineResult;
@@ -61,6 +64,7 @@ package com.monkey.supermap.web.spatialanalyst {
             this.httpService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
 
             this.geometryDialect = new SuperMapGeometryDialect();
+            this.featureDialect = new SuperMapFeatureDialect(this.geometryDialect);
         }
 
         public function geometryBuffer(bufferParameter:BufferParameter,
@@ -185,19 +189,20 @@ package com.monkey.supermap.web.spatialanalyst {
         private function convertRecordsetFeatures(recordsetObject:Object):Recordset {
             var recordset:Recordset = ObjectTranslator.objectToInstance(
                 recordsetObject, Recordset);
-//            recordset.features = convert2Features(recordset.features);
+            recordset.features = convert2Features(recordset.features);
 
             return recordset;
         }
 
         private function convert2Features(features:Array):Array {
-            // TODO 转换SuperMap Feature -> OpenScales Feature
-            return null;
+            for (var i:uint = 0, length:uint = features.length; i < length; i++) {
+                features[i] = this.featureDialect.getFeatureFromObject(features[i]);
+            }
+            return features;
         }
 
         public function getIsolineResultFeatures():Array {
-            // TODO 从IsolineResult中获取Features
-            return null;
+            return (this._isolineLastResult.recordset as Recordset).features;
         }
     }
 }

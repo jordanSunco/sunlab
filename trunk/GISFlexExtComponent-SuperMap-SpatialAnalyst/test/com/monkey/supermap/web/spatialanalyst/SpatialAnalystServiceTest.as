@@ -8,6 +8,7 @@ package com.monkey.supermap.web.spatialanalyst {
     
     import mx.rpc.AsyncResponder;
     import mx.rpc.IResponder;
+    import mx.utils.ObjectUtil;
     
     import org.flexunit.asserts.assertEquals;
     import org.flexunit.asserts.fail;
@@ -97,8 +98,21 @@ package com.monkey.supermap.web.spatialanalyst {
 
         private function handlerGeometryIsolineResult(isolineResult:Object,
                 spatialAnalystService:SpatialAnalystService):void {
-            trace(isolineResult);
-//            var geometry:Geometry = spatialAnalystService.getIsolineResultFeatures();
+            var features:Array = spatialAnalystService.getIsolineResultFeatures();
+            var attributes:Object = {
+                DZVALUE: "0.0",
+                SMGEOMETRYSIZE: "2136",
+                SMID: "1",
+                SMLENGTH: "1769564.403143",
+                SMSDRIE: "1.5916e+006",
+                SMSDRIN: "5.84465e+006",
+                SMSDRIS: "5.35705e+006",
+                SMSDRIW: "189417",
+                SMTOPOERROR: "0",
+                SMUSERID: "0"
+            };
+            assertEquals(20, features.length);
+            assertEquals(0, ObjectUtil.compare(attributes, features[0].attributes));
         }
     }
 }
