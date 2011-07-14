@@ -6,6 +6,7 @@ package com.monkey.supermap.web.spatialanalyst {
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferParameter;
     import com.monkey.supermap.web.spatialanalyst.buffer.BufferResult;
     import com.monkey.supermap.web.spatialanalyst.isoline.IsolineParameter;
+    import com.monkey.supermap.web.spatialanalyst.isoline.IsolineResult;
     import com.monkey.supermap.web.spatialanalyst.overlay.OverlayParameter;
     
     import flash.net.URLRequestMethod;
@@ -44,6 +45,7 @@ package com.monkey.supermap.web.spatialanalyst {
         private var geometryDialect:GeometryDialect;
 
         private var _bufferLastResult:BufferResult;
+        private var _isolineLastResult:IsolineResult;
 
         /**
          * 空间分析服务
@@ -161,8 +163,41 @@ package com.monkey.supermap.web.spatialanalyst {
 
         public function handleIsolineResult(event:ResultEvent,
                 responder:IResponder):void {
-            // TODO 转换isoline返回的数据
-            responder.result(event.result);
+            this._isolineLastResult = getIsolineResult(event.result.toString());
+            this._isolineLastResult.recordset = convertRecordsetFeatures(
+                this._isolineLastResult.recordset);
+
+            if (this._isolineLastResult.succeed) {
+                responder.result(this._isolineLastResult);
+            } else {
+                responder.fault(this._isolineLastResult);
+            }
+        }
+
+        private function getIsolineResult(json:String):IsolineResult {
+            var isolineResultObject:Object = JSON.decode(json);
+            var isolineResult:IsolineResult = ObjectTranslator.objectToInstance(
+                isolineResultObject, IsolineResult);
+
+            return isolineResult;
+        }
+
+        private function convertRecordsetFeatures(recordsetObject:Object):Recordset {
+            var recordset:Recordset = ObjectTranslator.objectToInstance(
+                recordsetObject, Recordset);
+//            recordset.features = convert2Features(recordset.features);
+
+            return recordset;
+        }
+
+        private function convert2Features(features:Array):Array {
+            // TODO 转换SuperMap Feature -> OpenScales Feature
+            return null;
+        }
+
+        public function getIsolineResultFeatures():Array {
+            // TODO 从IsolineResult中获取Features
+            return null;
         }
     }
 }
