@@ -10,6 +10,7 @@ package com.monkey.supermap {
     import org.openscales.core.feature.LineStringFeature;
     import org.openscales.core.feature.PointFeature;
     import org.openscales.core.feature.PolygonFeature;
+    import org.openscales.core.style.Style;
 
     /**
      * SuperMap Feature &lt;-&gt; OpenScales Feature
@@ -48,12 +49,15 @@ package com.monkey.supermap {
             switch (superMapGeometry.type) {
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOPOINT:
                     feature = new PointFeature();
+                    feature.style = Style.getDefaultPointStyle();
                     break;
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOLINE:
                     feature = new LineStringFeature();
+                    feature.style = Style.getDefaultLineStyle();
                     break;
                 case com.monkey.supermap.web.core.geometry.Geometry.GEOREGION:
                     feature = new PolygonFeature();
+                    feature.style = Style.getDefaultSurfaceStyle();
                     break;
                 default:
                     trace("default");
