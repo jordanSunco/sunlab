@@ -35,6 +35,7 @@ package com.monkey.supermap.web.spatialanalyst {
         private static const BUFFER_API:String = "buffer.json";
         private static const OVERLAY_API:String = "overlay.json";
         private static const ISOLINE_API:String = "isoline.json";
+        private static const ISOREGION_API:String = "isoregion.json";
 
         /**
          * 如果在做分析时添加returnContent=true请求参数, 则会立即返回分析结果, 而不是返回结果的URI,
@@ -148,7 +149,7 @@ package com.monkey.supermap.web.spatialanalyst {
         }
 
         /**
-         * 叠加分析返回的数据格式和缓冲区分析是一样的, 因此采用相同的处理机制
+         * 叠加分析返回的数据结构和缓冲区分析是一样的, 因此采用相同的处理机制
          */
         private function handleOverlayResult(event:ResultEvent,
                 responder:IResponder):void {
@@ -156,7 +157,7 @@ package com.monkey.supermap.web.spatialanalyst {
         }
 
         public function getOverlayResultGeometry():Geometry {
-            return getBufferResultGeometry();
+            return this._bufferLastResult.resultGeometry as Geometry;
         }
 
         public function geometryIsoline(isolineParameter:IsolineParameter,
@@ -165,7 +166,7 @@ package com.monkey.supermap.web.spatialanalyst {
                 handleIsolineResult, responder);
         }
 
-        public function handleIsolineResult(event:ResultEvent,
+        private function handleIsolineResult(event:ResultEvent,
                 responder:IResponder):void {
             this._isolineLastResult = getIsolineResult(event.result.toString());
             this._isolineLastResult.recordset = convertRecordsetFeatures(
@@ -203,6 +204,24 @@ package com.monkey.supermap.web.spatialanalyst {
 
         public function getIsolineResultFeatures():Array {
             return (this._isolineLastResult.recordset as Recordset).features;
+        }
+
+        public function geometryIsoregion(isolineParameter:IsolineParameter,
+                responder:IResponder):AsyncToken {
+            return sendApiRequest(ISOREGION_API, isolineParameter,
+                handleIsoregionResult, responder);
+        }
+
+        /**
+         * 等值面分析返回的数据结构和等值先分析是一样的, 因此采用相同的处理机制
+         */
+        private function handleIsoregionResult(event:ResultEvent,
+                responder:IResponder):void {
+            handleIsolineResult(event, responder);
+        }
+
+        public function getIsoregionResultFeatures():Array {
+            return getIsolineResultFeatures();
         }
     }
 }
