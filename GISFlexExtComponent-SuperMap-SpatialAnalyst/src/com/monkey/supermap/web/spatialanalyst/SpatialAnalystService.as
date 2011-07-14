@@ -21,7 +21,8 @@ package com.monkey.supermap.web.spatialanalyst {
      * SuperMap的空间分析服务
      * 
      * @author Sun
-     * @see com.supermap.web.iServerJava2.mapServices
+     * @see com.supermap.services.components.SpatialAnalyst
+     * @see http://support.supermap.com.cn/DataWarehouse/WebDocHelp/6.0/iSever6R/mergedProjects/SuperMapiServerRESTAPI/root/spatialanalyst/spatialanalyst.htm iServer Spatial Analyst REST API
      */
     public class SpatialAnalystService {
         private static const CONTENT_TYPE_JSON:String = "application/json";

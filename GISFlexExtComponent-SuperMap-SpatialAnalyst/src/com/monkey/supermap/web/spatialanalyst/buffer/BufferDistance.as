@@ -6,7 +6,6 @@ package com.monkey.supermap.web.spatialanalyst.buffer {
      * 
      * @see com.monkey.supermap.web.spatialanalyst.BufferAnalystParameter
      * @see com.supermap.services.components.commontypes.BufferDistance
-     * @see http://support.supermap.com.cn/DataWarehouse/WebDocHelp/6.0/iSever6R/mergedProjects/SuperMapiServerRESTAPI/root/spatialanalyst/geometry/geometryBufferResults/geometryBufferResults.htm 几何对象的缓冲区分析请求体中的参数
      */
     public class BufferDistance {
         public var value:Number;

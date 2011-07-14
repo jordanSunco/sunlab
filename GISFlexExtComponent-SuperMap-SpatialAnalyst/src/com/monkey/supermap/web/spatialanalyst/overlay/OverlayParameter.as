@@ -5,6 +5,7 @@ package com.monkey.supermap.web.spatialanalyst.overlay {
      * SuperMap叠加分析参数类
      * 
      * @author Sun
+     * @see SuperMap.Web.iServerJava6R.SpatialAnalyst.GeometryOverlayAnalystParameters
      * @see http://support.supermap.com.cn/DataWarehouse/WebDocHelp/6.0/iSever6R/mergedProjects/SuperMapiServerRESTAPI/root/spatialanalyst/geometry/geometryOverlayResults/geometryOverlayResults.htm 几何对象叠加分析请求体中的参数
      */
     public class OverlayParameter {

@@ -4,7 +4,6 @@ package com.monkey.supermap.web.spatialanalyst.buffer {
      * 
      * @author Sun
      * @see com.supermap.services.components.commontypes.BufferAnalystParameter
-     * @see com.supermap.web.iServerJava2.queryServices
      */
     public class BufferAnalystParameter {
         /**
