@@ -7,7 +7,8 @@ package com.monkey.supermap {
     [Suite]
     [RunWith("org.flexunit.runners.Suite")]
     public class SpatialAnalystTestSuite {
-        public var spatialAnalystServiceTest:SpatialAnalystServiceTest;
         public var superMapGeometryDialectTest:SuperMapGeometryDialectTest;
+        public var superMapFeatureDialectTest:SuperMapFeatureDialectTest;
+        public var spatialAnalystServiceTest:SpatialAnalystServiceTest;
     }
 }
