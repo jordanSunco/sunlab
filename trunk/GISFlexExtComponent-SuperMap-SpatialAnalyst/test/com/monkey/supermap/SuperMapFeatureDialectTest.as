@@ -7,6 +7,7 @@ package com.monkey.supermap {
     import org.flexunit.asserts.assertEquals;
     import org.openscales.core.feature.Feature;
     import org.openscales.core.feature.PointFeature;
+    import org.openscales.core.style.Style;
     import org.openscales.geometry.Point;
 
     /**
@@ -28,6 +29,7 @@ package com.monkey.supermap {
             assertEquals("18.74,58.01,19.09,58.55", GeometryUtil.getCoordinates(feature.geometry));
             assertEquals("fieldValue1", feature.attributes["fieldName1"]);
             assertEquals("fieldValue2", feature.attributes["fieldName2"]);
+            assertEquals(0, ObjectUtil.compare(Style.getDefaultLineStyle(), feature.style));
         }
 
         [Test]
