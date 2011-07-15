@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="GISFlexExt-ArcGIS-GP-API" basedir="." default="compile">
+<project name="GISFlexExt-SuperMap-SpatialAnalyst-API" basedir="." default="compile">
     <!--
         ANT构建Flex library项目一条龙服务
         * 编译 & 运行单元测试并生成测试报告
