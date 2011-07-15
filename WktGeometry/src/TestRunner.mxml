@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+        xmlns:flexUnitUIRunner="http://www.adobe.com/2009/flexUnitUIRunner"
+        creationComplete="runTests()">
+    <mx:Script>
+        <![CDATA[
+            import com.monkey.gis.data.wkt.WktDialectTestSuite;
+            
+            import org.flexunit.listeners.CIListener;
+            import org.flexunit.listeners.UIListener;
+            import org.flexunit.runner.FlexUnitCore;
+            
+            public function runTests():void {
+                var core:FlexUnitCore = new FlexUnitCore();
+                // graphical test results
+                core.addListener(new UIListener(uiListener));
+                // Listener to support continuous integration servers
+                // 使用这个才能通过ANT执行flexunit生成测试报告
+                core.addListener(new CIListener());
+                core.run(WktDialectTestSuite);
+            }
+        ]]>
+    </mx:Script>
+    <flexUnitUIRunner:TestRunnerBase id="uiListener" />
+</mx:Application>
