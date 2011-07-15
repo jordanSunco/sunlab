@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<project name="WKT-Geometry" basedir="." default="compile">
+    <!--
+        ANT构建Flex library项目一条龙服务
+        * 编译 & 运行单元测试并生成测试报告
+        * 将项目打包为swc
+        * 生成ASDoc文档
+        @see as3corelib/build/build.xml
+    -->
+    <property file="build.properties" />
+
+    <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
+    <taskdef resource="flexUnitTasks.tasks" classpath="${src.libs.dir}/flexunit/flexUnitTasks-4.0.0.jar" />
+
+    <target name="clean">
+        <delete dir="${bin.dir}" />
+        <delete dir="${docs.dir}" />
+        <delete dir="${test.bin.dir}" />
+        <delete dir="${report.dir}" />
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${bin.dir}" />
+        <mkdir dir="${docs.dir}" />
+        <mkdir dir="${test.bin.dir}" />
+        <mkdir dir="${report.dir}" />
+    </target>
+
+    <target name="test" depends="init">
+        <!--
+            ANT运行mxmlc任务报错Java heap space的解决办法:
+            When compiling large Flex apps via ANT on crappy machines You may get a Java out of memory heap error.
+            * Eclipse
+            1. Open up the ANT "run as" dialog box
+            2. JRE tab, add "-Xmx512M" argument to the VM arguments section
+            * Ant from the command line
+            set ANT_OPTS= -Xmx512M
+        -->
+        <!-- Compiles the test runner application -->
+        <mxmlc file="${src.dir}/${test.application.name}.mxml"
+                output="${test.bin.dir}/${test.application.name}.swf">
+            <!-- The TestRunner needs the flexunit libraries in the libs folder -->
+            <library-path dir="${src.libs.dir}" append="true">
+                <include name="**/*.swc" />
+            </library-path>
+            <source-path path-element="${src.dir}" />
+            <source-path path-element="${test.src.dir}" />
+        </mxmlc>
+
+        <!--
+            由于一般都没有安装flash player(不是plug-in那种, 是直接打开swf的播放器),
+            因此将flexunit player改为air, 保证flexunit能跑起来,
+            只是需要手工关闭air应用的窗口(否则会一直卡在这里)才能继续执行后面的任务
+        -->
+        <!-- Run FlexUnit Ant Task to execute the unit tests -->
+        <flexunit swf="${test.bin.dir}/${test.application.name}.swf"
+            toDir="${report.dir}" haltonfailure="false" verbose="false"
+            localTrusted="false" player="air" />
+        <!-- Generate html JUnit-style reports based on test results -->
+        <junitreport todir="${report.dir}">
+            <fileset dir="${report.dir}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="${report.html.dir}" />
+        </junitreport>
+    </target>
+
+    <target name="compile" depends="test" description="Compile the library .swc file">
+        <compc output="${bin.dir}/${library.name}-${library.version}.swc"
+                debug="false" optimize="true">
+            <!--
+                library-path: 将依赖库合并到代码中, 即将N个swc合并为一个, 包括我们自己的库
+            -->
+            <library-path dir="${src.libs.dir}" append="true">
+                <include name="ObjectTranslator.swc" />
+            </library-path>
+            <!--
+                external-library-path: 编译和运行时都依赖这些库, 但不合并到代码中.
+                例如我们做一个基于某库的扩展库, 那么我们只需要打包自己做的扩展库即可, 使用的时候再将依赖库加在一起
+            -->
+            <external-library-path dir="${FLEX_HOME}/frameworks/libs" append="true">
+                <include name = "**/*.swc"/>
+            </external-library-path>
+            <include-sources dir="${src.dir}/com" includes="*" />
+        </compc>
+        <antcall target="docs" />
+    </target>
+
+    <target name="docs">
+        <asdoc output="${docs.dir}" lenient="true" failonerror="true"
+                window-title="${library.name}">
+            <library-path dir="${src.libs.dir}" append="true">
+                <include name="*.swc" />
+            </library-path>
+            <source-path path-element="${src.dir}" />
+            <doc-sources path-element="${src.dir}/com" />
+        </asdoc>
+    </target>
+</project>
