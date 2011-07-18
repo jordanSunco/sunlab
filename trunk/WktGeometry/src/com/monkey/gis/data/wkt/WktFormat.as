@@ -17,6 +17,12 @@ package com.monkey.gis.data.wkt {
         public static const MATCH_XY_PAIR:RegExp = /\d+\s\d+/g;
         public static const MATCH_RING:RegExp = /\(\d[^)]+\)/g;
 
+        public static const SPACE:String = " ";
+        public static const LEFT_PARENTHESES:String = "(";
+        public static const RIGHT_PARENTHESES:String = ")";
+        public static const EMPTY_STRING:String = "";
+        public static const COMMA:String = ",";
+
         public static function getGeometryType(wkt:String):String {
             var type:String = wkt.replace(MATCH_TYPE, "$1");
             return type.toUpperCase();
@@ -98,6 +104,72 @@ package com.monkey.gis.data.wkt {
                 rings.push(getLineStringCoordinates(ring));
             }
             return rings;
+        }
+
+        /**
+         * 将坐标数组输出为WKT格式
+         * 
+         * @see #read()
+         */
+        public static function write(type:String, coordinates:Array):String {
+            var wktStringBuffer:Array = [type, SPACE, LEFT_PARENTHESES];
+
+            switch (type) {
+                case POINT:
+                    wktStringBuffer.push(parsePoint(coordinates));
+                    break;
+                case LINE_STRING:
+                    wktStringBuffer.push(parseLineString(coordinates));
+                    break;
+                case MULTI_LINE_STRING:
+                    // fall-through 多条线的数据格式和多边形一样, 采用相同方式来处理
+                case POLYGON:
+                    wktStringBuffer.push(parseLine(coordinates));
+                    break;
+                default:
+                    trace("default");
+            }
+
+            wktStringBuffer.push(RIGHT_PARENTHESES);
+            return wktStringBuffer.join(EMPTY_STRING);
+        }
+
+        private static function parsePoint(coordinates:Array):String {
+            return coordinates.join(SPACE);
+        }
+
+        private static function parseLineString(coordinates:Array):String {
+            var wktStringBuffer:Array = [];
+
+            for each (var line:Array in coordinates) {
+                for each (var xy:Array in line) {
+                    wktStringBuffer.push(xy.join(SPACE), COMMA);
+                }
+            }
+            // 删除添加最后一个元素时多加的一个逗号
+            wktStringBuffer.pop();
+
+            return wktStringBuffer.join(EMPTY_STRING);
+        }
+
+        private static function parseLine(coordinates:Array):String {
+            var wktStringBuffer:Array = [];
+
+            for each (var lines:Array in coordinates) {
+                wktStringBuffer.push(LEFT_PARENTHESES);
+
+                for each (var xy:Array in lines) {
+                    wktStringBuffer.push(xy.join(SPACE), COMMA);
+                }
+                // 删除添加最后一个元素时多加的一个逗号
+                wktStringBuffer.pop();
+
+                wktStringBuffer.push(RIGHT_PARENTHESES, COMMA);
+            }
+            // 删除添加最后一个元素时多加的一个逗号
+            wktStringBuffer.pop();
+
+            return wktStringBuffer.join(EMPTY_STRING);
         }
     }
 }
