@@ -52,7 +52,7 @@ package com.monkey.gis.data.wkt {
                     coordinates = [getLineStringCoordinates(wkt)];
                     break;
                 case MULTI_LINE_STRING:
-                    // fall-through 多条线的数据格式和多边形一样, 采用相同方式来处理
+                    // fall-through 多条线的数据结构和多边形一样, 采用相同方式来处理
                 case POLYGON:
                     coordinates = getPolygonCoordinates(wkt);
                     break;
@@ -122,7 +122,7 @@ package com.monkey.gis.data.wkt {
                     wktStringBuffer.push(parseLineString(coordinates));
                     break;
                 case MULTI_LINE_STRING:
-                    // fall-through 多条线的数据格式和多边形一样, 采用相同方式来处理
+                    // fall-through 多条线的数据结构和多边形一样, 采用相同方式来处理
                 case POLYGON:
                     wktStringBuffer.push(parseLine(coordinates));
                     break;
