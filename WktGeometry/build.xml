@@ -69,17 +69,14 @@
         <compc output="${bin.dir}/${library.name}-${library.version}.swc"
                 debug="false" optimize="true">
             <!--
-                library-path: 将依赖库合并到代码中, 即将N个swc合并为一个, 包括我们自己的库
-            -->
-            <library-path dir="${src.libs.dir}" append="true">
-                <include name="ObjectTranslator.swc" />
-            </library-path>
-            <!--
                 external-library-path: 编译和运行时都依赖这些库, 但不合并到代码中.
                 例如我们做一个基于某库的扩展库, 那么我们只需要打包自己做的扩展库即可, 使用的时候再将依赖库加在一起
             -->
             <external-library-path dir="${FLEX_HOME}/frameworks/libs" append="true">
                 <include name = "**/*.swc"/>
+            </external-library-path>
+            <external-library-path dir="${src.libs.dir}" append="true">
+                <include name="*.swc" />
             </external-library-path>
             <include-sources dir="${src.dir}/com" includes="*" />
         </compc>
