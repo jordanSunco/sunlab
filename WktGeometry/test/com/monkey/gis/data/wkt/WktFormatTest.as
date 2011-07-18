@@ -8,31 +8,31 @@ package com.monkey.gis.data.wkt {
         [Test]
         public function testGetPointTypeWithUpperCaseWkt():void {
             var wkt:String = "POINT (30 10)";
-            assertEquals(WktFormat.POINT, WktFormat.getGeometryType(wkt));
+            assertEquals(WktFormat.POINT, WktFormat.getType(wkt));
         }
 
         [Test]
         public function testGetPointTypeWithLowerCaseWkt():void {
             var wkt:String = " point (30 10)";
-            assertEquals(WktFormat.POINT, WktFormat.getGeometryType(wkt));
+            assertEquals(WktFormat.POINT, WktFormat.getType(wkt));
         }
 
         [Test]
         public function testGetLineStringType():void {
             var wkt:String = "LINESTRING (30 10, 10 30)";
-            assertEquals(WktFormat.LINE_STRING, WktFormat.getGeometryType(wkt));
+            assertEquals(WktFormat.LINE_STRING, WktFormat.getType(wkt));
         }
 
         [Test]
         public function testGetMultiLineStringType():void {
             var wkt:String = "MULTILINESTRING ((10 10, 20 20), (40 40, 30 30))";
-            assertEquals(WktFormat.MULTI_LINE_STRING, WktFormat.getGeometryType(wkt));
+            assertEquals(WktFormat.MULTI_LINE_STRING, WktFormat.getType(wkt));
         }
 
         [Test]
         public function testGetPolygonType():void {
             var wkt:String = "POLYGON ((30 10, 10 20, 20 40, 30 10))";
-            assertEquals(WktFormat.POLYGON, WktFormat.getGeometryType(wkt));
+            assertEquals(WktFormat.POLYGON, WktFormat.getType(wkt));
         }
 
         [Test]

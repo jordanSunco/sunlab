@@ -23,7 +23,7 @@ package com.monkey.gis.data.wkt {
         public static const EMPTY_STRING:String = "";
         public static const COMMA:String = ",";
 
-        public static function getGeometryType(wkt:String):String {
+        public static function getType(wkt:String):String {
             var type:String = wkt.replace(MATCH_TYPE, "$1");
             return type.toUpperCase();
         }
@@ -40,10 +40,10 @@ package com.monkey.gis.data.wkt {
          *         <p>POLYGON -&gt; [ [[ring1x1, ring1y1], [ring1x2, ring1y2]...], [[ring2x1, ring2y1], [ring2x2, ring2y2]...] ... ]</p>
          */
         public static function read(wkt:String):Array {
-            var geometryType:String = getGeometryType(wkt);
+            var type:String = getType(wkt);
 
             var coordinates:Array;
-            switch (geometryType) {
+            switch (type) {
                 case POINT:
                     coordinates = getPointCoordinates(wkt);
                     break;
