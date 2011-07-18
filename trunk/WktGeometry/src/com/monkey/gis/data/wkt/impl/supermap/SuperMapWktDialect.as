@@ -12,7 +12,7 @@ package com.monkey.gis.data.wkt.impl.supermap {
      */
     public class SuperMapWktDialect implements WktDialect {
         public function getGeometryJson(wkt:String):String {
-            var wktType:String = WktFormat.getGeometryType(wkt);
+            var wktType:String = WktFormat.getType(wkt);
             var coordinates:Array = WktFormat.read(wkt);
 
             var geometry:Geometry = new Geometry();
