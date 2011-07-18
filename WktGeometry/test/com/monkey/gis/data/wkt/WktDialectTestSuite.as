@@ -4,6 +4,7 @@ package com.monkey.gis.data.wkt {
     [Suite]
     [RunWith("org.flexunit.runners.Suite")]
     public class WktDialectTestSuite {
+        public var wktFormatTest:WktFormatTest;
         public var superMapWktDialectTest:SuperMapWktDialectTest;
     }
 }

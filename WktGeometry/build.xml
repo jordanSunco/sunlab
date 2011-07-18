@@ -54,7 +54,7 @@
         -->
         <!-- Run FlexUnit Ant Task to execute the unit tests -->
         <flexunit swf="${test.bin.dir}/${test.application.name}.swf"
-            toDir="${report.dir}" haltonfailure="false" verbose="false"
+            toDir="${report.dir}" haltonfailure="true" verbose="false"
             localTrusted="false" player="air" />
         <!-- Generate html JUnit-style reports based on test results -->
         <junitreport todir="${report.dir}">

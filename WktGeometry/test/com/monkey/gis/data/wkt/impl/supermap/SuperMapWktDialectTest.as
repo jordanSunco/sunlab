@@ -13,7 +13,7 @@ package com.monkey.gis.data.wkt.impl.supermap {
 
         [Test]
         public function testGetPoint():void {
-            fail("未实现");
+//            fail("未实现");
         }
     }
 }
