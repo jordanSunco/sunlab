@@ -13,8 +13,58 @@ package com.monkey.gis.data.wkt.impl.supermap.geometry {
 
         public var id:String;
         public var style:String;
-        public var type:String;
-        public var parts:Array;
-        public var points:Array;
+        private var _type:String;
+        private var _parts:Array;
+        private var _points:Array;
+
+        public function init(type:String, points:Array):void {
+            this._type = type;
+            this._points = points;
+            this._parts = getParts();
+        }
+
+        private function getParts():Array {
+            var parts:Array;
+
+            switch (this.type) {
+                case Geometry.GEOPOINT:
+                    // fall-through 点和线一样, 都是算包含多少个点
+                case Geometry.GEOLINE:
+                    parts = [this.points.length];
+                    break;
+                case Geometry.GEOREGION:
+                    // 由于面的起点和终点始终是一个点, 因此少算一个点
+                    parts = [this.points.length - 1];
+                    break;
+                default:
+                    trace("default");
+            }
+
+            return parts;
+        }
+
+        public function get type():String {
+            return this._type;
+        }
+
+        public function set type(value:String):void {
+            this._type = value;
+        }
+
+        public function get points():Array {
+            return this._points;
+        }
+
+        public function set points(value:Array):void {
+            this._points = value;
+        }
+
+        public function get parts():Array {
+            return this._parts;
+        }
+
+        public function set parts(value:Array):void {
+            this._parts = value;
+        }
     }
 }
