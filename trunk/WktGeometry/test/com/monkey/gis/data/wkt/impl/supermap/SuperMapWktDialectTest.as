@@ -52,6 +52,30 @@ package com.monkey.gis.data.wkt.impl.supermap {
                 getCoordinates(geometry.points));
         }
 
+        [Test]
+        public function testToPointWkt():void {
+            var json:String = '{"type":"POINT","parts":[1],"points":[{"x":25,"y":54}],"style":null,"id":1}';
+            var wkt:String = this.wktDialect.toWkt(json);
+
+            assertEquals("POINT (25 54)", wkt);
+        }
+
+        [Test]
+        public function testToLineWkt():void {
+            var json:String = '{"type":"LINE","parts":[2],"points":[{"x":96,"y":399},{"x":127,"y":290}],"style":null,"id":1}';
+            var wkt:String = this.wktDialect.toWkt(json);
+
+            assertEquals("LINESTRING (96 399,127 290)", wkt);
+        }
+
+        [Test]
+        public function testToRegionWkt():void {
+            var json:String = '{"type":"REGION","parts":[3],"points":[{"x":-12,"y":407},{"x":-2,"y":248},{"x":250,"y":305},{"x":-12,"y":407}],"style":null,"id":1}';
+            var wkt:String = this.wktDialect.toWkt(json);
+
+            assertEquals("POLYGON ((-12 407,-2 248,250 305,-12 407))", wkt);
+        }
+
         private function getCoordinates(points:Array):Array {
             var coordinates:Array = [];
             for each (var point2dObject:Object in points) {
