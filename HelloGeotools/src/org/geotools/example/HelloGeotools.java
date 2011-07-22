@@ -15,6 +15,7 @@ import org.geotools.data.FileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -66,9 +67,10 @@ public class HelloGeotools {
         FeatureIterator<SimpleFeature> fi = fc.features();
         while (fi.hasNext()) {
             SimpleFeature sf = fi.next();
-            for (Object value : sf.getAttributes()) {
-                System.out.println(value);
+            for (Property property : sf.getProperties()) {
+                System.out.println(property.getName() + ": " + property.getValue());
             }
+            System.out.println();
         }
     }
 }
