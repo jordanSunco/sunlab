@@ -54,6 +54,7 @@ public class ArcSdeRw {
 
         String shpFile = "D:/Softs/uDigEclipse/shp/restaurant.shp";
         String shpFileSdeTableName = "SDE.RESTAURANT";
+        // 表字段名必须全部大写
         String shpSdeCql = "NAME_PY = 'DaZhong JiuDian'";
 
         ArcSdeRw arcSdeRw = new ArcSdeRw();
