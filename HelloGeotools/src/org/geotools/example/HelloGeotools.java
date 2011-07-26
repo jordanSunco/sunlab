@@ -32,6 +32,7 @@ public class HelloGeotools {
     public static void main(String[] args) throws IOException {
         String shpFileUrl = "file:/D:/Softs/uDigEclipse/shp/restaurant.shp";
         String dbfCharset = "GB2312";
+        // 字段名必须按照shp文件中规定的大小写格式
         String cql = "Name LIKE '%酒店%'";
 
         HelloGeotools helloGeotools = new HelloGeotools();
