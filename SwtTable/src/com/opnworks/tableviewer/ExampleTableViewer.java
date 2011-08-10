@@ -16,17 +16,17 @@ import com.opnworks.model.ExampleTaskList;
  * @author Sun
  * @version ExampleTableView.java 2011-8-9 17:03:50
  */
-public class ExampleTableView extends TableViewer {
-    private ExampleTableView(Table table, ExampleTaskList taskList) {
+public class ExampleTableViewer extends TableViewer {
+    private ExampleTableViewer(Table table, ExampleTaskList taskList) {
         super(table);
         setContentProvider(new ExampleContentProvider(taskList));
         setLabelProvider(new ExampleLabelProvider());
         setInput(taskList);
     }
 
-    public static ExampleTableView newInstance(Composite parent, int style,
+    public static ExampleTableViewer newInstance(Composite parent, int style,
             ExampleTaskList taskList) {
         Table table = new ExampleTable(parent, style);
-        return new ExampleTableView(table, taskList);
+        return new ExampleTableViewer(table, taskList);
     }
 }
