@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import com.opnworks.model.ExampleTaskList;
-import com.opnworks.tableviewer.ExampleTableView;
+import com.opnworks.tableviewer.ExampleTableViewer;
 
 /**
  * @author Sun
@@ -28,7 +28,7 @@ public class TableViewerExample {
 
         ExampleTaskList taskList = new ExampleTaskList();
         int style = SWT.BORDER | SWT.FULL_SELECTION;
-        ExampleTableView.newInstance(shell, style, taskList);
+        ExampleTableViewer.newInstance(shell, style, taskList);
 
         shell.open();
         Display display = shell.getDisplay();
