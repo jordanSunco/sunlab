@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:esri="http://www.esri.com/2008/ags"
+        layout="absolute">
+    <!--
+        @see http://forums.esri.com/Thread.asp?c=158&f=2421&t=302851
+    -->
+    <mx:Script>
+        <![CDATA[
+            import com.esri.ags.events.ExtentEvent;
+            import com.esri.ags.geometry.MapPoint;
+
+            private var center:MapPoint;
+
+            private function buttonClickHandler():void {
+                if (toggleButton.selected) {
+                    map.percentWidth = 100;
+                } else {
+                    map.percentWidth = 50;
+                }
+            }
+
+            private function mapResizeHandler():void {
+                // 地图初始化加载时会触发一次resize事件, 但地图还未load完成
+                // 初始地图会自动调整中心点到地图容器中心位置, 因此不需要手动调整
+                if (map.loaded) {
+                    trace("这里还是地图resize之前的extent", map.extent);
+                    trace("我们想要地图定位到该中心点", map.extent.center);
+                    center = map.extent.center;
+                    map.addEventListener(ExtentEvent.EXTENT_CHANGE, mapExtentChangeHandler);
+                }
+            }
+
+            private function mapExtentChangeHandler(event:ExtentEvent):void {
+                map.removeEventListener(ExtentEvent.EXTENT_CHANGE, mapExtentChangeHandler);
+                // 如果不callLater, 会有bug(地图缩放时中心点偏移)
+                callLater(function(center:MapPoint):void {
+                        trace("地图resize之后会改变地图的extent", map.extent);
+                        trace("地图resize之后extent的中心点", map.extent.center);
+                        map.centerAt(center);
+                    }, [center]);
+            }
+        ]]>
+    </mx:Script>
+    <esri:Map id="map" resize="mapResizeHandler()" 
+            width="50%" height="100%" borderColor="0xfff" borderStyle="solid">
+        <esri:ArcGISTiledMapServiceLayer url="http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer" />
+    </esri:Map>
+    <mx:Button id="toggleButton" label="100%" click="buttonClickHandler()" toggle="true" />
+</mx:Application>
