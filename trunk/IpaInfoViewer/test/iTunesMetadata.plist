@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>appleId</key>
+	<string>aya_iiii@yahoo.cn</string>
+	<key>artistId</key>
+	<integer>297062933</integer>
+	<key>artistName</key>
+	<string>InMethod s.r.o.</string>
+	<key>bundleVersion</key>
+	<string>2.4.9</string>
+	<key>copyright</key>
+	<string>© 2010 InMethod s.r.o.</string>
+	<key>drmVersionNumber</key>
+	<integer>0</integer>
+	<key>fileExtension</key>
+	<string>.app</string>
+	<key>genre</key>
+	<string>工具</string>
+	<key>genreId</key>
+	<integer>6002</integer>
+	<key>itemId</key>
+	<integer>306550020</integer>
+	<key>itemName</key>
+	<string>Air Video - Watch your videos anywhere!</string>
+	<key>kind</key>
+	<string>software</string>
+	<key>playlistArtistName</key>
+	<string>InMethod s.r.o.</string>
+	<key>playlistName</key>
+	<string>Air Video - Watch your videos anywhere!</string>
+	<key>purchaseDate</key>
+	<date>2011-10-05T03:19:06Z</date>
+	<key>rating</key>
+	<dict>
+		<key>content</key>
+		<string></string>
+		<key>label</key>
+		<string>4+</string>
+		<key>rank</key>
+		<integer>100</integer>
+		<key>system</key>
+		<string>itunes-games</string>
+	</dict>
+	<key>releaseDate</key>
+	<string>2009-03-04T04:16:03Z</string>
+	<key>s</key>
+	<integer>143465</integer>
+	<key>softwareIcon57x57URL</key>
+	<string>http://a1756.phobos.apple.com/us/r1000/106/Purple/3d/27/ce/mzi.wikbkydf.png</string>
+	<key>softwareIconNeedsShine</key>
+	<false/>
+	<key>softwareSupportedDeviceIds</key>
+	<array>
+		<integer>1</integer>
+	</array>
+	<key>softwareVersionBundleId</key>
+	<string>com.inmethod.AirVideo</string>
+	<key>softwareVersionExternalIdentifier</key>
+	<integer>3783590</integer>
+	<key>softwareVersionExternalIdentifiers</key>
+	<array>
+		<integer>1492144</integer>
+		<integer>1513904</integer>
+		<integer>1533201</integer>
+		<integer>1631374</integer>
+		<integer>1675581</integer>
+		<integer>1807904</integer>
+		<integer>1869697</integer>
+		<integer>1897194</integer>
+		<integer>1942767</integer>
+		<integer>1991021</integer>
+		<integer>2053944</integer>
+		<integer>2315762</integer>
+		<integer>2375290</integer>
+		<integer>2516384</integer>
+		<integer>2602692</integer>
+		<integer>2637357</integer>
+		<integer>2935667</integer>
+		<integer>2991217</integer>
+		<integer>3168832</integer>
+		<integer>3213578</integer>
+		<integer>3461473</integer>
+		<integer>3509097</integer>
+		<integer>3654581</integer>
+		<integer>3699553</integer>
+		<integer>3783590</integer>
+	</array>
+	<key>vendorId</key>
+	<integer>132716</integer>
+	<key>versionRestrictions</key>
+	<integer>16843008</integer>
+</dict>
+</plist>
