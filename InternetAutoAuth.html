@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html>
+    <!--
+        @author Sun
+        @version 1.0 2012.9.7
+        通过将脚本(html)加入到启动项的方式, 实现开机自动授权公司上网认证, 不用每次打开浏览器, 再输入用户名/密码, 确定这一系列重复重复再重复的繁琐劳动, so easy!
+    -->
+    <head>
+        <title>上网自动授权脚本</title>
+        <meta charset="UTF-8" />
+    </head>
+    <body>
+        <h1>上网自动授权脚本</h1>
+        <p>要使用此脚本的必要条件</p>
+        <ul>
+            <li>在脚本中填写上网帐号(userName)和密码(password)</li>
+            <li>将此文件设置为启动项, 必须是用IE(只有它支持本地文件调用xhr时可以跨域)打开</li>
+            <li>取消IE"已限制此网页运行可以访问计算机的脚本或ActiveX控件", 否则需要每次点击允许才能运行, 那这东西不是坑爹吗
+                <blockquote cite="http://blog.csdn.net/jiafugui/article/details/4425939">
+                    在本地调试html页面, 如果其中包含js或flash, IE经常会提示"IE已限制此网页运行可以访问计算机的脚本或ActiveX控件".
+                    <br/>
+                    虽然IE出于安全考虑阻止本地脚本运行, 这个做法没错, 但作为开发者来说, 每次都要点允许, 非常之讨厌, 于是开始想办法去掉这个提示.
+                    在IE选项里翻了半天, 终于让我找到了.
+                    <br/>
+                    <strong>方法是: 工具 – Internet选项 – 高级标签 – 在安全分类下面，勾选"允许活动内容在我的计算机上的文件中运行*". 重启IE就行了(如果还开着其它程序, 只关IE没用，还必须重启电脑).</strong>
+                    <br/>
+                    此方法适用于所有阻止本地脚本运行的IE版本. 以后在本地运行包含js脚本的网页再也不会出现那个提示了, 世界从此清净了.
+                </blockquote>
+            </li>
+        </ul>
+        <textarea id="logInfo" rows="20" cols="80" readonly="readonly"></textarea>
+        <script>
+            (function() {
+                var authUrl = 'http://172.16.2.242/login';
+                var userName = '';
+                var password = '';
+
+                var homePage = 'http://www.g.cn';
+
+                var interval = 2000;
+                var retry = 30;
+
+                var logInfoEl = document.getElementById('logInfo');
+
+                // 只在工作日(星期一 ~ 五工作时间)执行脚本
+                var now = new Date();
+                if (now.getDay() > 5 || now.getDay() == 0 || now.getHours() > 17) {
+                    closeWindow();
+                    return;
+                }
+                if (!userName || !password) {
+                    alert('请在脚本中填写/传入上网帐号(userName)和密码(password)');
+                    closeWindow();
+                    return;
+                }
+                if (! /msie/gi.test(navigator.userAgent)) {
+                    alert('必须使用IE来运行此脚本');
+                    closeWindow();
+                    return;
+                }
+
+                function login(config) {
+                    // 禁止xhr缓存
+                    var url = '';
+                    var timestamp = new Date().getTime();
+                    if (config.authUrl.indexOf('?') != -1) {
+                        url = config.authUrl + '&' + timestamp;
+                    } else {
+                        url = config.authUrl + '?' + timestamp;
+                    }
+
+                    // 反正必须用IE, 干脆用ActiveXObject来获得xhr
+                    var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                    xhr.open('GET', url, true, config.userName, config.password);
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState == 4 && xhr.responseText !== '') {
+                            config.success();
+                        }
+                    };
+                    xhr.send();
+                }
+
+                function log(info) {
+                    logInfoEl.value = logInfoEl.value + info + '\n';
+                }
+
+                function closeWindow() {
+                    // 去掉IE询问【你查看的网页正在试图关闭窗口?】提示
+                    // http://blog.csdn.net/greatchao88/article/details/4986017I
+                    window.opener = null;
+                    window.open('', '_self');
+                    window.close();
+                }
+
+                setInterval(function() {
+                    if (retry > 0) {
+                        log('ping ' + authUrl);
+                        login({
+                            authUrl: authUrl,
+                            userName: userName,
+                            password: password,
+                            success: function() {
+                                if (homePage) {
+                                    location.href = homePage;
+                                } else {
+                                    closeWindow();
+                                }
+                            }
+                        });
+                        log(new Date() + ' 等待网络连接 ' + retry + '\n');
+                    } else {
+                        alert(new Date() + ' 网络还没连接上, 你丫在火星打酱油呢?\n放弃吧, 骚年!');
+                        closeWindow();
+                    }
+                    retry--;
+                }, interval);
+            })();
+        </script>
+    </body>
+</html>
