@@ -24,7 +24,7 @@ import sun.misc.BASE64Encoder;
  * 上网自动授权App
  * 
  * @author Sun
- * @version InternetAutoAuth.java 2012-9-10 下午6:01:13
+ * @version 1.0 2012-9-10 下午6:01:13
  * @see <a href="http://www.comscigate.com/JDJ/archives/0807/morin/index.html">java.net.NetworkInterface</a>
  */
 public class InternetAutoAuth {
@@ -40,7 +40,7 @@ public class InternetAutoAuth {
     private String userName;
     private String password;
 
-    private int retry = 60;
+    private int retry = 200;
     private long interval = 3000;
 
     private boolean debug = false;
@@ -179,27 +179,44 @@ public class InternetAutoAuth {
         return networkInterfaceName;
     }
 
-    private boolean auth() throws MalformedURLException, IOException {
+    private boolean auth() throws MalformedURLException {
         boolean success = false;
-
-        URL urlObject = new URL(this.authUrl);
-        HttpURLConnection conn = (HttpURLConnection) urlObject.openConnection();
 
         // Basic认证实现登录
         BASE64Encoder enc = new BASE64Encoder();
         String userNamePassword = this.userName + ":" + this.password;
         String encodedAuthorization = enc.encode(userNamePassword.getBytes());
-        conn.setRequestProperty("Authorization", "Basic "
-                + encodedAuthorization);
-        conn.setRequestMethod("GET");
 
-        if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            success = true;
-        } else {
+        URL urlObject = new URL(this.authUrl);
+        HttpURLConnection conn = null;
+        for (int i = 0; i < this.retry; i++) {
+            try {
+                conn = (HttpURLConnection) urlObject.openConnection();
+                conn.setRequestProperty("Authorization", "Basic "
+                        + encodedAuthorization);
+                conn.setRequestMethod("GET");
+                System.out.println(new Date() + " - " + encodedAuthorization);
+
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    success = true;
+                    break;
+                }
+                Thread.sleep(this.interval);
+            } catch (IOException e) {
+                e.printStackTrace(System.out);
+            } catch (InterruptedException e) {
+                e.printStackTrace(System.out);
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            }
+        }
+
+        if (!success) {
             error("认证失败!\n" + userNamePassword);
         }
 
-        conn.disconnect();
         return success;
     }
 }
