@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello RequireJS boilerplate</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h1>RequireJS load module mechanism</h1>
+    <p>Open your console</p>
+    <ol>
+        <li>require module: mod1</li>
+        <li>require module: mod2</li>
+        <li>require module: main</li>
+        <li>hello mod1</li>
+        <li>hello mod2</li>
+        <li>hello main</li>
+    </ol>
+    <h2>Conclusion</h2>
+    <p>RequireJS execute module as <strong>SOON</strong> as possible(RequireJS会先尽早地执行[依赖]模块, 相当于所有的require都被提前了, 而且模块执行的顺序也不一定100%就是先mod1再mod2)</p>
+    <p>So DO NOT trust your code!(因此你看到执行顺序和你预想的完全不一样! 颤抖吧~ RequireJS!)</p>
+    <strong>Orz!</strong>
+    <p>Test with RequireJS 2.1.6</p>
+    <script data-main="js/app.js" src="lib/require.js"></script>
+    <!-- 正式发布只需要引入一个js文件 -->
+    <!-- <script src="build/app-all.js"></script> -->
+</body>
+</html>
